@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+    /* SWAPIFHY CORE PALETTE (SOFT + APPROACHABLE) */
+    --color-brand-blue: hsl(189, 45%, 62%);     /* #72bfcc */
+    --color-brand-blue-soft: hsl(190, 40%, 70%);/* #94cdd6 */
+    --color-brand-blue-muted: hsl(190, 35%, 74%);/* #a5cbd1 */
+
+    --color-brand-lavender: hsl(255, 45%, 88%); /* #d4caeb */
+    --color-brand-lavender-mid: hsl(255, 25%, 70%); /* #a397bf */
+    --color-brand-lavender-light: hsl(255, 35%, 93%); /* #ded8ed */
+
+    --color-brand-pink: hsla(330, 43%, 62%, 1.00);     /* #e0b6cb */
+    --color-brand-pink-mid: hsl(330, 30%, 68%); /* #c799b0 */
+    --color-brand-pink-light: hsl(330, 45%, 90%); /* #f2d8e5 */
+
+    /* TYPOGRAPHY (AS REQUESTED) */
+    --font-heading: "Lexend", sans-serif;
+    --font-tech: "Lexend", sans-serif;
+    --font-sans: "Quicksand", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+
+    /* SEMANTIC SYSTEM (LIGHT-FIRST NOW) */
+    --color-background: hsl(210, 40%, 98%);
+    --color-foreground: hsl(232, 25%, 20%);
+    --color-surface: hsl(0, 0%, 100%);
+    
+    --color-primary: var(--color-brand-blue);
+    --color-secondary: var(--color-brand-lavender);
+    --color-accent: var(--color-brand-pink);
+
+    --color-border: hsla(232, 20%, 30%, 0.08);
+    --color-muted: hsl(210, 20%, 92%);
+    --color-muted-foreground: hsl(232, 15%, 45%);
+}   
+
+@layer base {
+    * {
+        @apply border-border/50;
+    }
+    
+    html {
+        scroll-behavior: smooth;
+        @apply bg-background text-foreground antialiased selection:bg-primary/40 selection:text-white transition-colors duration-500;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* ELITE DARK THEME OVERRIDE */
+    html.dark {
+        --color-background: var(--color-brand-obsidian);
+        --color-foreground: hsl(210, 20%, 96%);
+        --color-surface: var(--color-brand-onyx);
+        --color-primary: var(--color-brand-blue);
+        --color-secondary: var(--color-brand-lavender);
+        --color-accent: var(--color-brand-pink);
+        --color-border: hsla(210, 20%, 80%, 0.10);
+        --color-muted: hsl(232, 12%, 28%);             /* Used only for bg tints */
+        --color-muted-foreground: hsl(220, 10%, 72%);  /* HIGH CONTRAST readable gray */
+    }
+
+    body {
+        @apply font-sans;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-heading tracking-tight leading-tight text-foreground;
+    }
+
+    .font-heading {
+        @apply font-heading tracking-tight font-extrabold;
+    }
+    
+    .font-tech {
+        @apply font-tech tracking-wide font-medium uppercase text-muted-foreground;
+    }
+}
+
+/* HIGH-FIDELITY UTILITIES (COMPACT REFINEMENT) */
+@layer utilities {
+    .glass-elite {
+        @apply bg-surface/80 backdrop-blur-[30px] border border-border shadow-lg;
+    }
+
+    html.dark #sync-btn {
+       @apply text-black;
+    }
+    
+    html.dark .glass-elite {
+        background: hsla(232, 14%, 16%, 0.65);
+        border-color: hsla(210, 20%, 80%, 0.08);
+        box-shadow: 0 4px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 hsla(0, 0%, 100%, 0.06);
+    }
+
+    html.light .glass-elite {
+        background: hsla(0, 0%, 100%, 0.75);
+        border-color: hsla(232, 20%, 12%, 0.10);
+        box-shadow: 0 2px 16px -4px rgba(30, 30, 60, 0.08);
+    }
+
+    /* .btn-elite {
+        @apply px-6 py-3 rounded-xl font-semibold
+            bg-primary text-white
+            hover:bg-brand-blue-soft
+            transition-all duration-200;
+    } */
+
+    /* .btn-elite {
+        @apply px-6 py-3 rounded-xl font-medium
+            bg-primary text-white
+            hover:bg-brand-pink-mid
+            active:scale-[0.98]
+            transition-all duration-200;
+    } */
+
+    .text-gradient-elite {
+        @apply bg-clip-text text-transparent 
+            bg-gradient-to-br 
+            from-primary via-secondary to-accent;
+    }
+
+    .mesh-orb-elite {
+        @apply absolute rounded-full blur-[140px] opacity-[0.15] pointer-events-none;
+        animation: orb-pulse 20s infinite ease-in-out;
+    }
+}
+
+@keyframes orb-pulse {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+    33% { transform: translate(10%, -10%) scale(1.1); opacity: 0.25; }
+    66% { transform: translate(-10%, 15%) scale(0.9); opacity: 0.15; }
+}
+
+/* CUSTOM SCROLLBARS */
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    @apply bg-muted/20 border border-border rounded-full hover:bg-primary transition-all;
+}
+
+/* LIGHT THEME TEXTURE */
+html.light .bg-grid {
+    background-image: radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0);
+    background-size: 40px 40px;
+}
+
+html.dark .bg-grid {
+    background-image: radial-gradient(circle at 1px 1px, hsla(0, 0%, 100%, 0.03) 1px, transparent 0);
+    background-size: 60px 60px;
+}

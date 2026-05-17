@@ -1,0 +1,88 @@
+name: Deploy Swapifhy V2 to GCP Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: swapifhy
+  REGION: us-central1
+  BACKEND_SERVICE: swapifhy-backend
+  FRONTEND_SERVICE: swapifhy-frontend
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build Backend Docker image
+        run: |
+          docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.BACKEND_SERVICE }}:${{ github.sha }} ./backend
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.BACKEND_SERVICE }}:${{ github.sha }}
+
+      - name: Deploy Backend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.BACKEND_SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.BACKEND_SERVICE }}:${{ github.sha }}
+          env_vars: |
+            NODE_ENV=production
+          secrets: |
+            JWT_SECRET=JWT_SECRET:latest
+            DATABASE_URL=DATABASE_URL:latest
+
+  deploy-frontend:
+    name: Deploy Frontend
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get Backend URL
+        id: get-url
+        run: |
+          BACKEND_URL=$(gcloud run services describe ${{ env.BACKEND_SERVICE }} --region ${{ env.REGION }} --format 'value(status.url)')
+          echo "BACKEND_URL=${BACKEND_URL}" >> $GITHUB_ENV
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build Frontend Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ env.BACKEND_URL }} \
+            -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }} ./frontend-v2
+          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}
+
+      - name: Deploy Frontend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.FRONTEND_SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/swapifhy-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}
+          flags: --allow-unauthenticated

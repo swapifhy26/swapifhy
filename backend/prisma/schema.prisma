@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  name           String
+  passwordHash   String
+  bio            String?
+  hobbies        String?
+  reputation     Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  avatarUrl      String?
+  
+  // PRIVACY CONTROL (PROFESSIONAL PROTOCOL)
+  privacy        String    @default("PUBLIC") // PUBLIC, PRIVATE, FOLLOWERS_ONLY
+  
+  // PROFESSIONAL FOOTPRINT (PII PROTECTED)
+  phoneNumber    String?
+  github         String?
+  linkedin       String?
+  instagram      String?
+  otherLink      String?
+
+  skillsTeaching SkillTeaching[]
+  skillsLearning SkillLearning[]
+  
+  // Professional handshakes & follows
+  followers      Follow[] @relation("UserFollowers")
+  following      Follow[] @relation("UserFollowing")
+  
+  // A user can initiate or receive a swap proposal
+  swapsProposed  Swap[] @relation("SwapProposer")
+  swapsReceived  Swap[] @relation("SwapReceiver")
+
+  // Network Social Layer
+  posts          Post[]
+  comments       Comment[]
+  likes          Like[]
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following    User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+model Skill {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  category    String   // e.g., "Technology", "Music", "Languages"
+  
+  teachingRefs SkillTeaching[]
+  learningRefs SkillLearning[]
+}
+
+model SkillTeaching {
+  id          String   @id @default(uuid())
+  userId      String
+  skillId     String
+  level       String   // e.g., "Expert", "Intermediate"
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+}
+
+model SkillLearning {
+  id          String   @id @default(uuid())
+  userId      String
+  skillId     String
+  goal        String?  // Optional text explaining what they want to achieve
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+}
+
+// A Swap represents an accepted or pending exchange of skills between two users
+model Swap {
+  id            String   @id @default(uuid())
+  proposerId    String
+  receiverId    String
+  status        String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COMPLETED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  proposer      User     @relation("SwapProposer", fields: [proposerId], references: [id])
+  receiver      User     @relation("SwapReceiver", fields: [receiverId], references: [id])
+  
+  // CHAT HISTORY
+  messages      ChatMessage[]
+}
+
+model ChatMessage {
+  id            String   @id @default(uuid())
+  swapId        String
+  senderId      String
+  content       String   // The text of the message (or placeholder for CONTACT_SHARE)
+  type          String   @default("TEXT") // TEXT, CONTACT_SHARE, SYNC_BRIDGE
+  
+  // PII DATA (SELECTIVE SHARING)
+  details       String?
+  isRevoked     Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  
+  swap          Swap     @relation(fields: [swapId], references: [id], onDelete: Cascade)
+}
+
+model Waitlist {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+model Post {
+  id            String    @id @default(uuid())
+  userId        String
+  content       String
+  type          String    @default("UPDATE") // UPDATE, OFFER, REQUEST, ACHIEVEMENT
+  isArchived    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments      Comment[]
+  likes         Like[]
+}
+
+model Comment {
+  id            String    @id @default(uuid())
+  postId        String
+  userId        String
+  content       String
+  createdAt     DateTime  @default(now())
+  
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id            String    @id @default(uuid())
+  postId        String
+  userId        String
+  createdAt     DateTime  @default(now())
+  
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}

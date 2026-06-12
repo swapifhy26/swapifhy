@@ -1,15 +1,21 @@
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { uploadImage } from '../controllers/upload.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
+import { UPLOADS_DIR } from '../config/env';
 
 const router = Router();
+
+// Multer's destination-function does NOT create the directory, and it does not
+// exist in the production image — create it up front.
+fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 // Specialized Multer Storage Optimization
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, UPLOADS_DIR);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

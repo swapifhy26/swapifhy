@@ -11,7 +11,7 @@ export const uploadImage = (req: AuthRequest, res: Response): void => {
         // The file is already saved by multer
         // We return the public URL path
         // Note: In production, you would point this to your static domain
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:3001");
+        const API_URL = process.env.PUBLIC_API_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:3001");
         const filePath = `/uploads/${req.file.filename}`;
         
         res.status(200).json({ 

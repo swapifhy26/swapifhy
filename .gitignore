@@ -21,6 +21,9 @@ yarn-error.log*
 **/.env*
 !**/.env.example
 *.local
+# Dotless copies of env files (the **/.env* pattern does not match these)
+backend/env
+**/env.download
 
 # Local Databases
 *.db

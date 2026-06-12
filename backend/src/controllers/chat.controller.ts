@@ -107,21 +107,31 @@ export const getMessages = async (req: AuthRequest, res: Response): Promise<void
             return;
         }
 
-        const messages = await prisma.chatMessage.findMany({
-            where: { swapId },
-            orderBy: { createdAt: 'asc' }
-        });
-
-        // 2. Fetch Swap to identify context/partner
+        // 1. Fetch Swap first to verify the caller is a participant
         const swap = await prisma.swap.findUnique({
             where: { id: swapId },
             include: {
                 proposer: { select: { id: true, name: true, avatarUrl: true, bio: true } },
                 receiver: { select: { id: true, name: true, avatarUrl: true, bio: true } }
             }
-        }) as any;
+        });
 
-        const partner = swap?.proposerId === userId ? swap?.receiver : swap?.proposer;
+        if (!swap) {
+            res.status(404).json({ error: "Swap not found" });
+            return;
+        }
+
+        if (swap.proposerId !== userId && swap.receiverId !== userId) {
+            res.status(403).json({ error: "Unauthorized access to this conversation." });
+            return;
+        }
+
+        const messages = await prisma.chatMessage.findMany({
+            where: { swapId },
+            orderBy: { createdAt: 'asc' }
+        });
+
+        const partner = swap.proposerId === userId ? swap.receiver : swap.proposer;
 
         // 3. Scrubbed messages logic (PII protection)
         const scrubbedMessages = messages.map(msg => {
@@ -147,6 +157,18 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
 
         if (!senderId || !swapId) {
             res.status(400).json({ error: "Identify mission parameters" });
+            return;
+        }
+
+        const swap = await prisma.swap.findUnique({ where: { id: swapId as string } });
+
+        if (!swap) {
+            res.status(404).json({ error: "Swap not found" });
+            return;
+        }
+
+        if (swap.proposerId !== senderId && swap.receiverId !== senderId) {
+            res.status(403).json({ error: "Unauthorized access to this conversation." });
             return;
         }
 

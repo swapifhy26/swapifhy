@@ -2,12 +2,9 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/env';
 
 const prisma = new PrismaClient();
-if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET must be set in production');
-}
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_only_for_local_dev';
 
 export const joinWaitlist = async (req: Request, res: Response): Promise<void> => {
     try {

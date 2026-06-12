@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/env';
 
 // Extend the Express Request to hold our User Payload
 export interface AuthRequest extends Request {
@@ -16,10 +17,7 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     }
 
     try {
-        if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET must be set in production');
-        }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_only_for_local_dev');
+        const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded as { id: string; email: string };
         next();
     } catch (error) {

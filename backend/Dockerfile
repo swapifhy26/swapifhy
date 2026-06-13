@@ -2,6 +2,8 @@
 FROM node:20-alpine AS builder
 
 WORKDIR /app
+# Prisma needs OpenSSL present to pick the correct query-engine binary on Alpine
+RUN apk add --no-cache openssl
 COPY package*.json ./
 # Install dev dependencies to compile TypeScript and generate Prisma
 RUN npm ci
@@ -15,6 +17,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+# Prisma needs OpenSSL present at runtime to load the query engine on Alpine
+RUN apk add --no-cache openssl
 
 # Only copy over package.json to install production dependencies
 COPY package*.json ./

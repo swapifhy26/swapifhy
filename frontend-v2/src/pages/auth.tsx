@@ -2,18 +2,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowLeft, CheckCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { API_URL } from "../lib/api";
 
 export default function Auth() {
-    const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [bio, setBio] = useState("");
-    const [hobbies, setHobbies] = useState("");
-    const [teach, setTeach] = useState("");
-    const [learn, setLearn] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -27,12 +21,10 @@ export default function Auth() {
         setLoading(true);
 
         try {
-            const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-
-            const res = await fetch(`${API_URL}${endpoint}`, {
+            const res = await fetch(`${API_URL}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, name, bio, hobbies, teach, learn }),
+                body: JSON.stringify({ email, password }),
             });
 
             const data = await res.json();
@@ -119,64 +111,14 @@ export default function Auth() {
                     {/* Header */}
                     <div className="mb-6">
                         <h2 className="text-2xl font-heading font-semibold text-foreground">
-                            {isLogin ? "Welcome back" : "Create account"}
+                            Welcome back
                         </h2>
                         <p className="text-sm text-muted-foreground">
-                            {isLogin ? "Sign in to continue" : "It’s free to start"}
+                            Sign in to continue
                         </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-
-                        {/* Name */}
-                        <AnimatePresence>
-                            {!isLogin && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                >
-                                    <div className="space-y-4 mb-4">
-                                        <input
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            type="text"
-                                            placeholder="Full name"
-                                            required
-                                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
-                                        />
-                                        <textarea
-                                            value={bio}
-                                            onChange={(e) => setBio(e.target.value)}
-                                            placeholder="Bio (Optional) - What's your professional essence?"
-                                            rows={2}
-                                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40 resize-none"
-                                        />
-                                        <input
-                                            value={hobbies}
-                                            onChange={(e) => setHobbies(e.target.value)}
-                                            type="text"
-                                            placeholder="Hobbies (Optional)"
-                                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
-                                        />
-                                        <input
-                                            value={teach}
-                                            onChange={(e) => setTeach(e.target.value)}
-                                            type="text"
-                                            placeholder="Skills you can teach (comma separated)"
-                                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
-                                        />
-                                        <input
-                                            value={learn}
-                                            onChange={(e) => setLearn(e.target.value)}
-                                            type="text"
-                                            placeholder="Skills you want to learn (comma separated)"
-                                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
-                                        />
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
 
                         {/* Email */}
                         <input
@@ -231,22 +173,12 @@ export default function Auth() {
                             disabled={loading}
                             className="w-full py-3 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition"
                         >
-                            {loading ? "Loading..." : isLogin ? "Sign in" : "Create account"}
+                            {loading ? "Loading..." : "Sign in"}
                         </button>
 
-                        {/* Toggle */}
+                        {/* Limited access note (sign-up disabled during rollout) */}
                         <div className="text-center text-sm text-muted-foreground">
-                            {isLogin ? "Don't have an account?" : "Already have an account?"}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setIsLogin(!isLogin);
-                                    setError("");
-                                }}
-                                className="ml-1 text-primary"
-                            >
-                                {isLogin ? "Sign up" : "Sign in"}
-                            </button>
+                            Swapifhy is in limited access. Accounts are invite-only for now.
                         </div>
                     </form>
 

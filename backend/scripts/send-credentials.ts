@@ -46,7 +46,7 @@ async function main() {
     }
 
     const user = process.env.GMAIL_USER;
-    const pass = process.env.GMAIL_APP_PASSWORD;
+    const pass = (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, ''); // Google shows it with spaces; SMTP needs them stripped
     if (!dryRun && (!user || !pass)) {
         console.error('Set GMAIL_USER and GMAIL_APP_PASSWORD in backend/.env first.');
         process.exit(1);

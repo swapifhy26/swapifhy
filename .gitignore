@@ -25,6 +25,10 @@ yarn-error.log*
 backend/env
 **/env.download
 
+# Sensitive data exports (PII + plaintext temporary passwords)
+**/credentials.csv
+**/waitlist-export-*.csv
+
 # Local Databases
 *.db
 *.db-journal

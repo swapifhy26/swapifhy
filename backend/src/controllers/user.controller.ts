@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { AuthRequest } from '../middleware/auth.middleware';
 
 const prisma = new PrismaClient();
@@ -142,5 +143,52 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to update profile heartbeat" });
+    }
+};
+
+export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            res.status(400).json({ error: "Current and new password are required" });
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            res.status(400).json({ error: "New password must be at least 8 characters" });
+            return;
+        }
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+        if (!isValid) {
+            res.status(401).json({ error: "Current password is incorrect" });
+            return;
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { passwordHash }
+        });
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to update password" });
     }
 };

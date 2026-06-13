@@ -14,6 +14,50 @@ export default function Settings() {
     const [learnSkills, setLearnSkills] = useState<string[]>([]);
     const [saving, setSaving] = useState(false);
 
+    // Change password
+    const [showPasswordForm, setShowPasswordForm] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [pwSaving, setPwSaving] = useState(false);
+    const [pwMessage, setPwMessage] = useState("");
+    const [pwError, setPwError] = useState("");
+
+    const handleChangePassword = async () => {
+        setPwError("");
+        setPwMessage("");
+        if (newPassword.length < 8) {
+            setPwError("New password must be at least 8 characters.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPwError("New passwords do not match.");
+            return;
+        }
+        setPwSaving(true);
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            const res = await fetch(`${API_URL}/api/user/password`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setPwMessage("Password updated successfully.");
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+            } else {
+                setPwError(data.error || "Failed to update password.");
+            }
+        } catch {
+            setPwError("Connection error. Try again.");
+        } finally {
+            setPwSaving(false);
+        }
+    };
+
     React.useEffect(() => {
         const token = localStorage.getItem("swapifhy_token");
         if (token) {
@@ -149,17 +193,57 @@ export default function Settings() {
                         </h2>
                         
                         <div className="space-y-6">
-                            <button className="w-full flex items-center justify-between p-6 bg-surface/50 border border-white/5 rounded-2xl hover:bg-white/5 transition-all group text-left">
+                            <button
+                                onClick={() => setShowPasswordForm(!showPasswordForm)}
+                                className="w-full flex items-center justify-between p-6 bg-surface/50 border border-white/5 rounded-2xl hover:bg-white/5 transition-all group text-left"
+                            >
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                                         <Key className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">Update Password</h4>
-                                        <p className="text-xs text-muted-foreground mt-1">Change your password and manage active sessions</p>
+                                        <p className="text-xs text-muted-foreground mt-1">Change your account password</p>
                                     </div>
                                 </div>
                             </button>
+
+                            {showPasswordForm && (
+                                <div className="p-6 bg-surface/50 border border-white/5 rounded-2xl space-y-4">
+                                    <input
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={e => setCurrentPassword(e.target.value)}
+                                        placeholder="Current password"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                    />
+                                    <input
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={e => setNewPassword(e.target.value)}
+                                        placeholder="New password (min 8 characters)"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                    />
+                                    <input
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={e => setConfirmPassword(e.target.value)}
+                                        placeholder="Confirm new password"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                    />
+                                    {pwError && <p className="text-red-400 text-xs">{pwError}</p>}
+                                    {pwMessage && <p className="text-green-400 text-xs">{pwMessage}</p>}
+                                    <div className="flex justify-end">
+                                        <button
+                                            onClick={handleChangePassword}
+                                            disabled={pwSaving}
+                                            className="btn-gradient px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] rounded-full"
+                                        >
+                                            {pwSaving ? "UPDATING..." : "Update Password"}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 

@@ -101,7 +101,7 @@ export default function Settings() {
 
             <motion.div initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-4xl mx-auto px-6 relative z-10">
                 <div className="mb-16">
-                    <h1 className="text-4xl md:text-5xl font-heading font-black tracking-tighter text-white mb-4 uppercase italic leading-none">
+                    <h1 className="text-4xl md:text-5xl font-heading font-black tracking-tighter text-foreground mb-4 uppercase italic leading-none">
                         ACCOUNT <span className="text-gradient-elite font-tech">SETTINGS</span>
                     </h1>
                     <p className="text-muted-foreground text-sm font-medium tracking-tight uppercase opacity-60">
@@ -120,7 +120,7 @@ export default function Settings() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Your Bio</label>
-                                    <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Summarize your professional essence..." rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted/20 focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner" />
+                                    <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Summarize your professional essence..." rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner" />
                                 </div>
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Hobbies & Interests</label>

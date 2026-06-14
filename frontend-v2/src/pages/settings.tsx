@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Shield, Key, Trash2, User, AlertTriangle, X } from "lucide-react";
+import { Bell, Shield, Key, Trash2, User, AlertTriangle, X, CheckCircle2 } from "lucide-react";
 import { API_URL } from "../lib/api";
 
-// ✅ Fixed SkillTagManager inlined
+// ✅ Fixed SkillTagManager inlined (Adaptive Backgrounds & Text Colors)
 const SkillTagManager = ({ tags, onUpdate, title, color }: {
     tags: string[],
     onUpdate: (tags: string[]) => void,
@@ -31,7 +31,7 @@ const SkillTagManager = ({ tags, onUpdate, title, color }: {
             <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">
                 {title}
             </label>
-            <div className="flex flex-wrap gap-2 p-4 min-h-[120px] bg-surface border border-border rounded-2xl shadow-inner content-start transition-all focus-within:border-primary/40">
+            <div className="flex flex-wrap gap-2 p-4 min-h-[120px] bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl shadow-inner content-start transition-all focus-within:border-primary/40">
                 {tags.map((tag, idx) => (
                     <motion.span
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -73,11 +73,15 @@ export default function Settings() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [marketingEmails, setMarketingEmails] = useState(false);
 
+    // Track the FULL profile so we don't accidentally delete name/avatar on save
+    const [fullProfile, setFullProfile] = useState<any>({});
+    
     const [bio, setBio] = useState("");
     const [hobbies, setHobbies] = useState("");
     const [teachSkills, setTeachSkills] = useState<string[]>([]);
     const [learnSkills, setLearnSkills] = useState<string[]>([]);
     const [saving, setSaving] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false); 
 
     // Change password
     const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -158,10 +162,23 @@ export default function Settings() {
                 .then(res => res.json())
                 .then(data => {
                     if (data.user) {
+                        setFullProfile(data.user); 
                         setBio(data.user.bio || "");
                         setHobbies(data.user.hobbies || "");
-                        setTeachSkills(data.user.teachSkills?.map((s: any) => s.name) || []);
-                        setLearnSkills(data.user.learnSkills?.map((s: any) => s.name) || []);
+                        
+                        // Handle multiple possible backend formats
+                        const initialTeach = data.user.skillsTeaching?.map((st: any) => st.skill?.name || st.name) 
+                                          || data.user.teachSkills?.map((ts: any) => ts.name) 
+                                          || data.user.teaching 
+                                          || [];
+                        
+                        const initialLearn = data.user.skillsLearning?.map((sl: any) => sl.skill?.name || sl.name) 
+                                          || data.user.learnSkills?.map((ls: any) => ls.name) 
+                                          || data.user.learning 
+                                          || [];
+
+                        setTeachSkills(initialTeach);
+                        setLearnSkills(initialLearn);
                     }
                 })
                 .catch(console.error);
@@ -170,13 +187,30 @@ export default function Settings() {
 
     const handleSave = async () => {
         setSaving(true);
+        setSaveSuccess(false);
         try {
             const token = localStorage.getItem("swapifhy_token");
-            await fetch(`${API_URL}/api/user/profile`, {
+            const res = await fetch(`${API_URL}/api/user/profile`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ bio, hobbies, teach: teachSkills.join(","), learn: learnSkills.join(",") })
+                body: JSON.stringify({ 
+                    ...fullProfile,
+                    bio, 
+                    hobbies, 
+                    // Send both formats to ensure the backend catches it regardless of how it parses
+                    teach: teachSkills.join(","), 
+                    learn: learnSkills.join(","),
+                    teachSkills: teachSkills,
+                    learnSkills: learnSkills
+                })
             });
+            
+            if (res.ok) {
+                setSaveSuccess(true);
+                setTimeout(() => setSaveSuccess(false), 3000); 
+            } else {
+                console.error("Failed to save profile. Backend returned error.");
+            }
         } catch (err) {
             console.error(err);
         } finally {
@@ -217,7 +251,7 @@ export default function Settings() {
                             {/* Close */}
                             <button
                                 onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}
-                                className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all text-foreground"
+                                className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all text-white"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -228,18 +262,18 @@ export default function Settings() {
                             </div>
 
                             {/* Title */}
-                            <h3 className="text-xl font-heading font-black text-center text-foreground mb-3 uppercase tracking-tight">
+                            <h3 className="text-xl font-heading font-black text-center text-white mb-3 uppercase tracking-tight">
                                 Wait — Are You Sure?
                             </h3>
 
                             {/* Quote */}
-                            <div className="mb-6 px-4 py-4 rounded-2xl border border-white/5 bg-white/3 text-center">
-                                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                            <div className="mb-6 px-4 py-4 rounded-2xl border border-white/5 bg-white/5 text-center">
+                                <p className="text-sm text-white/60 italic leading-relaxed">
                                     "Every expert was once a beginner. Every skill you've built here took courage — don't let it go."
                                 </p>
                             </div>
 
-                            <p className="text-xs text-muted-foreground text-center mb-8 leading-relaxed">
+                            <p className="text-xs text-white/60 text-center mb-8 leading-relaxed">
                                 This action is <span className="text-red-400 font-bold">permanent and irreversible</span>. All your matches, conversations, and progress will be erased forever.
                             </p>
 
@@ -251,7 +285,7 @@ export default function Settings() {
                             <div className="flex flex-col gap-3">
                                 <button
                                     onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}
-                                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.3em] btn-gradient"
+                                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.3em] btn-gradient text-white"
                                 >
                                     Keep My Account
                                 </button>
@@ -278,7 +312,7 @@ export default function Settings() {
                     <h1 className="text-4xl md:text-5xl font-heading font-black tracking-tighter text-foreground mb-4 uppercase italic leading-none">
                         ACCOUNT <span className="text-gradient-elite font-tech">SETTINGS</span>
                     </h1>
-                    <p className="text-muted-foreground text-sm font-medium tracking-tight uppercase opacity-60">
+                    <p className="text-muted-foreground text-sm font-medium tracking-tight uppercase opacity-80">
                         Manage your account preferences and security settings
                     </p>
                 </div>
@@ -300,7 +334,7 @@ export default function Settings() {
                                         onChange={e => setBio(e.target.value)}
                                         placeholder="Summarize your professional essence..."
                                         rows={4}
-                                        className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner"
+                                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner"
                                     />
                                 </div>
                                 <div className="space-y-4">
@@ -310,7 +344,7 @@ export default function Settings() {
                                         onChange={e => setHobbies(e.target.value)}
                                         placeholder="What do you enjoy doing outside of work?"
                                         rows={4}
-                                        className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner"
+                                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner"
                                     />
                                 </div>
                             </div>
@@ -330,11 +364,28 @@ export default function Settings() {
                                 />
                             </div>
 
-                            <div className="pt-8 border-t border-border flex items-center justify-end">
+                            <div className="pt-8 border-t border-border flex items-center justify-between">
+                                {/* Success Message Indicator */}
+                                <div className="flex-1">
+                                    <AnimatePresence>
+                                        {saveSuccess && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, x: -10 }} 
+                                                animate={{ opacity: 1, x: 0 }} 
+                                                exit={{ opacity: 0 }} 
+                                                className="flex items-center gap-2 text-green-500"
+                                            >
+                                                <CheckCircle2 className="w-4 h-4" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Saved Successfully</span>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+
                                 <button
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="btn-gradient px-10 py-4 text-xs font-black uppercase tracking-[0.4em] rounded-full"
+                                    className="btn-gradient px-10 py-4 text-xs font-black uppercase tracking-[0.4em] rounded-full text-white"
                                 >
                                     {saving ? "SAVING..." : "Save Profile Preferences"}
                                 </button>
@@ -349,27 +400,27 @@ export default function Settings() {
                         </h2>
 
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between p-6 bg-surface/50 border border-white/5 rounded-2xl">
+                            <div className="flex items-center justify-between p-6 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl">
                                 <div>
                                     <h4 className="text-sm font-bold text-foreground">Global Push Notifications</h4>
                                     <p className="text-xs text-muted-foreground mt-1">Receive real-time alerts for new matches and messages</p>
                                 </div>
                                 <button
                                     onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-                                    className={`w-14 h-7 rounded-full p-1 transition-colors ${notificationsEnabled ? 'bg-primary' : 'bg-surface border border-white/10'}`}
+                                    className={`w-14 h-7 rounded-full p-1 transition-colors ${notificationsEnabled ? 'bg-primary' : 'bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20'}`}
                                 >
                                     <div className={`w-5 h-5 rounded-full bg-white transition-transform ${notificationsEnabled ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
                             </div>
 
-                            <div className="flex items-center justify-between p-6 bg-surface/50 border border-white/5 rounded-2xl">
+                            <div className="flex items-center justify-between p-6 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl">
                                 <div>
                                     <h4 className="text-sm font-bold text-foreground">Marketing & Updates</h4>
                                     <p className="text-xs text-muted-foreground mt-1">Receive platform updates, feature drops, and ecosystem news</p>
                                 </div>
                                 <button
                                     onClick={() => setMarketingEmails(!marketingEmails)}
-                                    className={`w-14 h-7 rounded-full p-1 transition-colors ${marketingEmails ? 'bg-primary' : 'bg-surface border border-white/10'}`}
+                                    className={`w-14 h-7 rounded-full p-1 transition-colors ${marketingEmails ? 'bg-primary' : 'bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20'}`}
                                 >
                                     <div className={`w-5 h-5 rounded-full bg-white transition-transform ${marketingEmails ? 'translate-x-7' : 'translate-x-0'}`} />
                                 </button>
@@ -386,7 +437,7 @@ export default function Settings() {
                         <div className="space-y-6">
                             <button
                                 onClick={() => setShowPasswordForm(!showPasswordForm)}
-                                className="w-full flex items-center justify-between p-6 bg-surface/50 border border-white/5 rounded-2xl hover:bg-white/5 transition-all group text-left"
+                                className="w-full flex items-center justify-between p-6 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl hover:bg-black/10 dark:hover:bg-white/10 transition-all group text-left"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
@@ -407,35 +458,35 @@ export default function Settings() {
                                         exit={{ opacity: 0, height: 0 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="p-6 bg-surface/50 border border-white/5 rounded-2xl space-y-4">
+                                        <div className="p-6 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl space-y-4">
                                             <input
                                                 type="password"
                                                 value={currentPassword}
                                                 onChange={e => setCurrentPassword(e.target.value)}
                                                 placeholder="Current password"
-                                                className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 transition-all text-sm"
                                             />
                                             <input
                                                 type="password"
                                                 value={newPassword}
                                                 onChange={e => setNewPassword(e.target.value)}
                                                 placeholder="New password (min 8 characters)"
-                                                className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 transition-all text-sm"
                                             />
                                             <input
                                                 type="password"
                                                 value={confirmPassword}
                                                 onChange={e => setConfirmPassword(e.target.value)}
                                                 placeholder="Confirm new password"
-                                                className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 transition-all text-sm"
                                             />
                                             {pwError && <p className="text-red-400 text-xs">{pwError}</p>}
-                                            {pwMessage && <p className="text-green-400 text-xs">{pwMessage}</p>}
+                                            {pwMessage && <p className="text-green-500 text-xs font-bold">{pwMessage}</p>}
                                             <div className="flex justify-end">
                                                 <button
                                                     onClick={handleChangePassword}
                                                     disabled={pwSaving}
-                                                    className="btn-gradient px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] rounded-full"
+                                                    className="btn-gradient px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] rounded-full text-white"
                                                 >
                                                     {pwSaving ? "UPDATING..." : "Update Password"}
                                                 </button>

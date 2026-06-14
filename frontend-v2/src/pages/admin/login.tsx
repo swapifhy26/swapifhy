@@ -49,7 +49,7 @@ export default function AdminLogin() {
     return (
         <>
             <Head>
-                <title>Admin Login — Swapifhy Command Center</title>
+                <title>Admin Login — Swapifhy</title>
                 <meta name="robots" content="noindex" />
             </Head>
 
@@ -86,10 +86,10 @@ export default function AdminLogin() {
 
                         <div className="text-center mb-10">
                             <h1 className="text-2xl font-black tracking-tight text-white uppercase mb-2">
-                                Command Center
+                                Admin Login
                             </h1>
                             <p className="text-sm text-white/40 font-medium">
-                                Swapifhy Admin Portal · Restricted Access
+                                Swapifhy · Restricted access
                             </p>
                         </div>
 

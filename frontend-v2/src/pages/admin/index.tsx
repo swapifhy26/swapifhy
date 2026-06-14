@@ -56,13 +56,13 @@ const FUNNEL_COLORS = ["#6366f1", "#22d3ee", "#8b5cf6", "#ec4899"];
 const FUNNEL_LABELS = ["PENDING", "ACCEPTED", "COMPLETED", "REJECTED"];
 
 const NAV_ITEMS = [
-    { id: "overview", label: "Intelligence", icon: LayoutDashboard },
-    { id: "growth", label: "Scale Metrics", icon: TrendingUp },
-    { id: "users", label: "Registry", icon: Users },
-    { id: "swaps", label: "Sync Flow", icon: Repeat2 },
-    { id: "skills", label: "Skill Clusters", icon: Star },
-    { id: "engagement", label: "Pulse", icon: Activity },
-    { id: "waitlist", label: "Ingress", icon: Mail },
+    { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "growth", label: "Growth", icon: TrendingUp },
+    { id: "users", label: "Users", icon: Users },
+    { id: "swaps", label: "Swaps", icon: Repeat2 },
+    { id: "skills", label: "Skills", icon: Star },
+    { id: "engagement", label: "Engagement", icon: Activity },
+    { id: "waitlist", label: "Waitlist", icon: Mail },
 ];
 
 // ─── ELITE COMPONENTS ──────────────────────────────────────────────────────────
@@ -91,7 +91,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                 ))}
             </div>
             <div className="mt-4 pt-3 border-t border-white/5">
-                <p className="text-[8px] text-zinc-600 font-black uppercase tracking-widest text-center">Live Telemetry Link Active</p>
+                <p className="text-[8px] text-zinc-600 font-black uppercase tracking-widest text-center">Live data</p>
             </div>
         </motion.div>
     );
@@ -142,7 +142,7 @@ function SectionHeader({ title, sub }: { title: string; sub: string }) {
                 <div className="flex gap-1">
                     {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-indigo-500/40 animate-pulse" style={{ animationDelay: `${i * 200}ms` }} />)}
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-indigo-400 italic opacity-80">Command Protocol Omega</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-indigo-400 italic opacity-80">Admin Dashboard</span>
                 <div className="flex-1 h-px bg-gradient-to-r from-indigo-500/20 to-transparent" />
             </div>
             <h2 className="text-5xl font-black tracking-[-0.03em] text-white uppercase font-heading leading-none mb-4">{title}</h2>
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                 if (!res.ok) return null;
                 return res.json();
             } catch (err) {
-                console.error("[Protocol Error] Uplink Interrupted:", err);
+                console.error("[Admin] request failed:", err);
                 return null;
             }
         },
@@ -301,8 +301,8 @@ export default function AdminDashboard() {
                         <div className="w-24 h-24 border-t-2 border-primary rounded-full relative z-10 animate-spin" />
                     </div>
                     <div className="flex flex-col items-center gap-3">
-                        <p className="text-white text-[14px] font-black uppercase tracking-[0.8em] animate-pulse">Syncing Intel Matrix</p>
-                        <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.4em] italic opacity-40">Protocol Level: EXTREME</p>
+                        <p className="text-white text-[14px] font-black uppercase tracking-[0.8em] animate-pulse">Loading dashboard</p>
+                        <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.4em] italic opacity-40">Please wait</p>
                     </div>
                 </motion.div>
             </div>
@@ -318,7 +318,7 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen bg-[#06070a] font-sans text-white selection:bg-indigo-500/30 overflow-hidden flex flex-col">
             <Head>
-                <title>Intelligence Center — Swapifhy Delta</title>
+                <title>Admin Dashboard — Swapifhy</title>
                 <meta name="robots" content="noindex" />
             </Head>
 
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
                                 <p className="text-[15px] font-black tracking-[0.1em] uppercase text-white leading-none">Swapifhy</p>
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,1)]" />
-                                    <p className="text-[9px] text-indigo-400 font-black uppercase tracking-[0.4em] opacity-80 italic">Delta V4.0</p>
+                                    <p className="text-[9px] text-indigo-400 font-black uppercase tracking-[0.4em] opacity-80 italic">Admin</p>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +351,7 @@ export default function AdminDashboard() {
 
                     <nav className="flex-1 px-8 space-y-3 overflow-y-auto custom-scrollbar pt-4">
                         <div className="px-5 mb-6">
-                            <span className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.6em]">Node Hub</span>
+                            <span className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.6em]">Menu</span>
                         </div>
                         {NAV_ITEMS.map((item) => {
                             const Icon = item.icon;
@@ -386,14 +386,14 @@ export default function AdminDashboard() {
                         >
                             <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                             <RefreshCw className={`w-4 h-4 relative z-10 transition-transform duration-1000 ${refreshing ? "animate-spin" : "group-hover:rotate-180"}`} />
-                            <span className="relative z-10">Resync Intel</span>
+                            <span className="relative z-10">Refresh</span>
                         </button>
                         <button
                             onClick={handleLogout}
                             className="w-full flex items-center justify-center gap-4 px-6 py-5 rounded-3xl text-[11px] font-black uppercase tracking-[0.4em] text-rose-500/60 hover:text-rose-400 hover:bg-rose-500/10 border border-rose-500/10 transition-all shadow-xl"
                         >
                             <LogOut className="w-4 h-4" />
-                            Disconnect
+                            Log out
                         </button>
                     </div>
                 </aside>
@@ -406,24 +406,24 @@ export default function AdminDashboard() {
                             {/* ── OVERVIEW ── */}
                             {activeTab === "overview" && (
                                 <motion.div key="overview" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-                                    <SectionHeader title="Delta Analytics" sub="Comprehensive intelligence overview of multi-node platform vitality and synchronization yields." />
+                                    <SectionHeader title="Overview" sub="A quick summary of everything happening on Swapifhy." />
                                     
                                     {overview ? (
                                         <>
                                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-16">
-                                                <KpiCard label="Global Nodes" value={overview.totalUsers} icon={Globe} color="#6366f1" sub="Verified Identities" trend="14.2%" />
-                                                <KpiCard label="Intel Yield" value={overview.totalSwaps} icon={Network} color="#22d3ee" sub="Protocol Velocity" trend="8.5%" />
-                                                <KpiCard label="Shield Log" value={overview.totalWaitlist} icon={Shield} color="#8b5cf6" sub="Ingress Buffer" trend="31.0%" />
-                                                <KpiCard label="Ledger Assets" value={overview.totalPosts} icon={FileText} color="#10b981" sub="Broadcast Packets" />
-                                                <KpiCard label="Node Resonance" value={overview.totalLikes} icon={Heart} color="#f43f5e" />
-                                                <KpiCard label="Echo Matrix" value={overview.totalComments} icon={MessageSquare} color="#f59e0b" />
-                                                <KpiCard label="Link Density" value={overview.totalFollows} icon={UserPlus} color="#3b82f6" />
-                                                <KpiCard label="Final Syncs" value={overview.swapFunnel.COMPLETED} icon={Award} color="#4ade80" sub="Closed Handshakes" />
+                                                <KpiCard label="Total Users" value={overview.totalUsers} icon={Globe} color="#6366f1" sub="Registered users" />
+                                                <KpiCard label="Total Swaps" value={overview.totalSwaps} icon={Network} color="#22d3ee" sub="Swap sessions started" />
+                                                <KpiCard label="Waitlist" value={overview.totalWaitlist} icon={Shield} color="#8b5cf6" sub="People on the waitlist" />
+                                                <KpiCard label="Total Posts" value={overview.totalPosts} icon={FileText} color="#10b981" sub="Posts created" />
+                                                <KpiCard label="Total Likes" value={overview.totalLikes} icon={Heart} color="#f43f5e" />
+                                                <KpiCard label="Total Comments" value={overview.totalComments} icon={MessageSquare} color="#f59e0b" />
+                                                <KpiCard label="Total Follows" value={overview.totalFollows} icon={UserPlus} color="#3b82f6" />
+                                                <KpiCard label="Completed Swaps" value={overview.swapFunnel.COMPLETED} icon={Award} color="#4ade80" sub="Finished swaps" />
                                             </div>
 
                                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                                                 <div className="lg:col-span-2">
-                                                    <ChartCard title="Sync Pulse Velocity" icon={Activity}>
+                                                    <ChartCard title="User & Waitlist Growth" icon={Activity}>
                                                         <div className="h-[400px] pt-8 pr-4">
                                                             <ResponsiveContainer width="100%" height="100%">
                                                                 <AreaChart data={growth}>
@@ -441,8 +441,8 @@ export default function AdminDashboard() {
                                                                     <XAxis dataKey="date" hide />
                                                                     <YAxis hide />
                                                                     <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }} />
-                                                                    <Area type="monotone" dataKey="users" name="Active Ingress" stroke="#6366f1" strokeWidth={5} fill="url(#pUsers)" dot={false} strokeLinecap="round" />
-                                                                    <Area type="monotone" dataKey="waitlist" name="Waitlist Pool" stroke="#22d3ee" strokeWidth={5} fill="url(#pWaitlist)" dot={false} strokeLinecap="round" />
+                                                                    <Area type="monotone" dataKey="users" name="New Users" stroke="#6366f1" strokeWidth={5} fill="url(#pUsers)" dot={false} strokeLinecap="round" />
+                                                                    <Area type="monotone" dataKey="waitlist" name="Waitlist Signups" stroke="#22d3ee" strokeWidth={5} fill="url(#pWaitlist)" dot={false} strokeLinecap="round" />
                                                                 </AreaChart>
                                                             </ResponsiveContainer>
                                                         </div>
@@ -450,7 +450,7 @@ export default function AdminDashboard() {
                                                 </div>
 
                                                 <div className="lg:col-span-1">
-                                                    <ChartCard title="Cycle Composition" icon={PieIcon} fullHeight>
+                                                    <ChartCard title="Swap Status Breakdown" icon={PieIcon} fullHeight>
                                                         <div className="h-[400px] flex flex-col justify-center">
                                                             <div className="h-[280px]">
                                                                 <ResponsiveContainer width="100%" height="100%">
@@ -489,18 +489,18 @@ export default function AdminDashboard() {
                             {/* ── REGISTRY ── */}
                             {activeTab === "users" && (
                                 <motion.div key="users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }}>
-                                    <SectionHeader title="Identity Registry" sub={`Distributed ledger tracking ${totalUsers.toLocaleString()} active nodes in the Swapifhy network.`} />
+                                    <SectionHeader title="Users" sub={`All ${totalUsers.toLocaleString()} registered users.`} />
                                     
                                     <div className="space-y-8">
                                         {/* List Controls */}
                                         <div className="flex flex-col xl:flex-row gap-6 items-center justify-between">
                                             <div className="relative w-full max-w-lg group">
                                                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-600 group-focus-within:text-indigo-400 transition-colors" />
-                                                <input placeholder="Synchronizing Fuzzy Search..." className="w-full bg-[#0a0b10]/60 border border-white/[0.04] rounded-3xl py-6 pl-16 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition-all shadow-inner font-medium tracking-tight" />
+                                                <input placeholder="Search users..." className="w-full bg-[#0a0b10]/60 border border-white/[0.04] rounded-3xl py-6 pl-16 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition-all shadow-inner font-medium tracking-tight" />
                                             </div>
                                             <div className="flex gap-4 w-full xl:w-auto">
-                                                <button className="flex-1 xl:flex-none px-8 py-6 bg-white/[0.02] rounded-3xl border border-white/[0.04] text-[11px] font-black uppercase tracking-[0.4em] text-zinc-500 hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center gap-3"><Filter className="w-4 h-4" /> Attributes</button>
-                                                <button className="flex-1 xl:flex-none px-10 py-6 bg-indigo-600 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] text-white shadow-2xl shadow-indigo-600/30 hover:scale-[1.03] active:scale-95 transition-all">Export Protocol</button>
+                                                <button className="flex-1 xl:flex-none px-8 py-6 bg-white/[0.02] rounded-3xl border border-white/[0.04] text-[11px] font-black uppercase tracking-[0.4em] text-zinc-500 hover:text-white hover:bg-white/[0.08] transition-all flex items-center justify-center gap-3"><Filter className="w-4 h-4" /> Filter</button>
+                                                <button className="flex-1 xl:flex-none px-10 py-6 bg-indigo-600 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] text-white shadow-2xl shadow-indigo-600/30 hover:scale-[1.03] active:scale-95 transition-all">Export</button>
                                             </div>
                                         </div>
 
@@ -508,7 +508,7 @@ export default function AdminDashboard() {
                                             <table className="w-full text-left">
                                                 <thead>
                                                     <tr className="border-b border-white/[0.04] bg-white/[0.01]">
-                                                        {["Identity Node", "Reputation", "Activity", "Sync Status", "Access"].map((h) => (
+                                                        {["User", "Reputation", "Activity", "Status", ""].map((h) => (
                                                             <th key={h} className="px-10 py-8 text-[11px] font-black uppercase tracking-[0.5em] text-zinc-600 leading-none">{h}</th>
                                                         ))}
                                                     </tr>
@@ -550,7 +550,7 @@ export default function AdminDashboard() {
                                                             <td className="px-10 py-7">
                                                                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
                                                                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                                                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Linked</span>
+                                                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Active</span>
                                                                 </div>
                                                             </td>
                                                             <td className="px-10 py-7 text-right">
@@ -566,7 +566,7 @@ export default function AdminDashboard() {
                                         <div className="flex items-center justify-between mt-12 px-8">
                                             <div className="flex items-center gap-3">
                                                 <Layers className="w-4 h-4 text-zinc-600" />
-                                                <p className="text-[11px] font-black text-zinc-600 uppercase tracking-[0.3em] italic opacity-60">Record Batch: {userPage} OF {userTotalPages}</p>
+                                                <p className="text-[11px] font-black text-zinc-600 uppercase tracking-[0.3em] italic opacity-60">Page {userPage} of {userTotalPages}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <button onClick={() => loadUsers(userPage - 1)} disabled={userPage <= 1} className="w-16 h-16 rounded-3xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/[0.06] hover:border-white/10 disabled:opacity-20 transition-all duration-500 group"><ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" /></button>
@@ -587,8 +587,8 @@ export default function AdminDashboard() {
                                         <div className="absolute inset-0 bg-indigo-500/20 blur-[50px] rounded-full group-hover:animate-pulse" />
                                         <Cpu className="w-12 h-12 text-indigo-400 relative z-10 group-hover:rotate-12 transition-transform duration-700" />
                                     </div>
-                                    <h3 className="text-[14px] font-black uppercase tracking-[0.8em] text-white/40 mb-4 ml-6 font-heading">Advanced Module Optimizing</h3>
-                                    <p className="text-zinc-600 text-[11px] font-bold uppercase tracking-widest max-w-sm italic opacity-60">The {activeTab.toUpperCase()} analytical layer is currently synchronizing with the central Delta relay. High-bandwidth sync active.</p>
+                                    <h3 className="text-[14px] font-black uppercase tracking-[0.8em] text-white/40 mb-4 ml-6 font-heading">Coming soon</h3>
+                                    <p className="text-zinc-600 text-[11px] font-bold uppercase tracking-widest max-w-sm italic opacity-60">The {activeTab.toUpperCase()} view isn't built yet.</p>
                                     <div className="mt-8 flex gap-2">
                                         {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-3 bg-indigo-500/20 rounded-full animate-bounce" style={{ animationDelay: `${i * 100}ms` }} />)}
                                     </div>
@@ -605,18 +605,11 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-green-500" />
-                        <span>System: Optimal</span>
-                    </div>
-                    <span className="opacity-30">|</span>
-                    <div className="flex items-center gap-2">
-                        <Activity className="w-2.5 h-2.5" />
-                        <span>Uplink: 142.4 Gb/s</span>
+                        <span>Connected</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-6">
-                    <span>Protocol: HTTPS/3</span>
-                    <span className="opacity-30">|</span>
-                    <span className="text-indigo-400">© 2026 Swapifhy Global Intelligence</span>
+                    <span className="text-indigo-400">© 2026 Swapifhy</span>
                 </div>
             </div>
         </div>
@@ -633,7 +626,7 @@ function LoadingSpinner() {
                     <div className="w-2 h-2 rounded-full bg-indigo-400 animate-ping" />
                 </div>
             </div>
-            <p className="text-[11px] text-zinc-600 font-bold uppercase tracking-[0.6em] animate-pulse">Establishing Delta Uplink...</p>
+            <p className="text-[11px] text-zinc-600 font-bold uppercase tracking-[0.6em] animate-pulse">Loading...</p>
         </div>
     );
 }

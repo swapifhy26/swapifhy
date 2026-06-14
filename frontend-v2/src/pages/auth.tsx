@@ -127,7 +127,7 @@ export default function Auth() {
                             type="email"
                             placeholder="Email"
                             required
-                            className="w-full bg-white border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
+                            className="w-full bg-surface text-foreground border border-border rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-primary/40"
                         />
 
                         {/* Password */}
@@ -138,7 +138,7 @@ export default function Auth() {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Password"
                                 required
-                                className="w-full bg-white border border-border rounded-lg py-3 px-4 pr-10 text-sm focus:outline-none focus:border-primary/40"
+                                className="w-full bg-surface text-foreground border border-border rounded-lg py-3 px-4 pr-10 text-sm focus:outline-none focus:border-primary/40"
                             />
                             <button
                                 type="button"

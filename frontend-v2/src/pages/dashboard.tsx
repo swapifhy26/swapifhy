@@ -167,7 +167,7 @@ export default function Dashboard() {
                             <div className="px-3 py-1 bg-primary/10 border border-primary/30 rounded-lg text-primary text-[9px] font-black uppercase tracking-[0.5em] flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> // Identity Node Operational</div>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-heading font-black tracking-tighter text-white mb-6 uppercase italic leading-none">
-                            OPERATIONAL <span className="text-gradient-elite font-tech">CONTROL CENTER</span>
+                            MY <span className="text-gradient-elite font-tech">PROFILE</span>
                         </h1>
                         <p className="text-muted text-sm max-w-xl font-medium tracking-tight leading-relaxed uppercase opacity-60">
                             Protocol Alpha V4.4 // Secure Identity Management Interface
@@ -192,7 +192,7 @@ export default function Dashboard() {
                     <div className="p-10 md:p-14 rounded-[3rem] glass-card border-border relative overflow-hidden shadow-2xl bg-gradient-to-br from-primary/5 to-transparent">
                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] rotate-12"><Zap className="w-32 h-32" /></div>
                         <h2 className="text-sm font-tech font-black mb-10 flex items-center gap-4 text-foreground uppercase tracking-[0.4em] relative z-10">
-                            <Sparkles className="text-primary w-5 h-5" /> INBOUND QUEUE & SYNC PIPELINES
+                            <Sparkles className="text-primary w-5 h-5" /> MESSAGES
                         </h2>
 
                         <div className="space-y-6 relative z-10">
@@ -222,7 +222,7 @@ export default function Dashboard() {
                             )}
                             
                             <div className="pt-6 border-t border-border flex justify-center">
-                                <button onClick={() => router.push("/matches")} className="text-[10px] font-black text-muted-foreground hover:text-primary uppercase tracking-[0.4em] transition-all">View Full Identity Matrix ✧</button>
+                                <button onClick={() => router.push("/matches")} className="text-[10px] font-black text-muted-foreground hover:text-primary uppercase tracking-[0.4em] transition-all">View More Profile ✧</button>
                             </div>
                         </div>
                     </div>
@@ -230,17 +230,17 @@ export default function Dashboard() {
                     {/* Identity Matrix Configuration */}
                     <div className="p-10 md:p-14 rounded-[3rem] glass-card border-border relative overflow-hidden shadow-2xl">
                         <h2 className="text-sm font-tech font-black mb-10 flex items-center gap-4 text-foreground uppercase tracking-[0.4em] relative z-10">
-                            <User className="text-primary w-5 h-5" /> PRIMARY IDENTITY PARAMETERS
+                            <User className="text-primary w-5 h-5" /> MY DETAILS
                         </h2>
 
                         <div className="space-y-12 relative z-10">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-4">
-                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Legal Identity Node</label>
-                                    <input value={name} onChange={e => setName(e.target.value)} placeholder="Full Name" className="w-full bg-surface border border-border rounded-2xl py-4 px-8 text-foreground placeholder:text-muted/10 focus:outline-none focus:border-primary/50 transition-all font-tech" />
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Name</label>
+                                    <input value={name} onChange={e => setName(e.target.value)} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-8 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-primary/50 transition-all font-tech shadow-inner" />
                                 </div>
                                 <div className="space-y-4">
-                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Privacy Protocol Tiers</label>
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Privacy</label>
                                     <div className="flex gap-2 p-1 bg-white/5 border border-white/10 rounded-2xl">
                                         {["PUBLIC", "FOLLOWERS_ONLY", "PRIVATE"].map((tier) => (
                                             <button 
@@ -257,24 +257,24 @@ export default function Dashboard() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-4">
-                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Bio-Signature Synthesis</label>
-                                    <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Summarize your professional essence..." rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted/20 focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner" />
+                                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">About Yourself</label>
+                                    <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Summarize your professional essence..." rows={4} className="w-full bg-white/5 border border-white/10 rounded-[2rem] py-6 px-8 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner" />
                                 </div>
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Hobbies & Interests</label>
-                                    <textarea value={hobbies} onChange={e => setHobbies(e.target.value)} placeholder="What do you enjoy doing outside of work?" rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted/20 focus:outline-none focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner" />
+                                    <textarea value={hobbies} onChange={e => setHobbies(e.target.value)} placeholder="What do you enjoy doing outside of work?" rows={4} className="w-full bg-white/5 border border-white/10 rounded-[2rem] py-6 px-8 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner" />
                                 </div>
                             </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <SkillTagManager 
-                                    title="Outbound Acquisition (Teaching)" 
+                                    title="Skills You Can Teach" 
                                     tags={teachSkills} 
                                     onUpdate={setTeachSkills} 
                                     color="bg-primary/10 border-primary/20 text-primary"
                                 />
                                 <SkillTagManager 
-                                    title="Inbound Transformation (Learning)" 
+                                    title="Skills You Want To Learn" 
                                     tags={learnSkills} 
                                     onUpdate={setLearnSkills} 
                                     color="bg-secondary/10 border-secondary/20 text-secondary"
@@ -284,7 +284,7 @@ export default function Dashboard() {
                             <div className="pt-8 border-t border-border flex items-center justify-between">
                                 <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-40 italic">// CRUD Operations Synchronized in Real-time</p>
                                 <button onClick={() => handleSave()} disabled={saving} className="btn-gradient px-14 py-5 text-xs font-black uppercase tracking-[0.4em]">
-                                    {saving ? "INITIALIZING..." : "Save Identity Signature"}
+                                    {saving ? "SAVING..." : "Save Changes"}
                                 </button>
                             </div>
                         </div>
@@ -293,30 +293,30 @@ export default function Dashboard() {
                     {/* Professional Footprint (Socials) */}
                     <div className="p-10 md:p-14 rounded-[3rem] glass-card border-border relative overflow-hidden shadow-2xl">
                         <h2 className="text-sm font-tech font-black mb-10 flex items-center gap-4 text-foreground uppercase tracking-[0.4em] relative z-10">
-                            <Globe className="text-secondary w-5 h-5" /> EXTERNAL NETWORK BRIDGES
+                            <Globe className="text-secondary w-5 h-5" /> EXTERNAL PROFILE LINKS
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">GitHub Node</label>
-                                <input value={github} onChange={e => setGithub(e.target.value)} placeholder="github.com/yourhandle" className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground placeholder:text-muted/10 focus:outline-none focus:border-primary/50 transition-all text-xs" />
+                                <input value={github} onChange={e => setGithub(e.target.value)} placeholder="github.com/yourhandle" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-primary/50 transition-all text-sm shadow-inner" />
                             </div>
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">LinkedIn Bridge</label>
-                                <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="linkedin.com/in/handle" className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground placeholder:text-muted/10 focus:outline-none focus:border-primary/50 transition-all text-xs" />
+                                <input value={linkedin} onChange={e => setLinkedin(e.target.value)} placeholder="linkedin.com/in/handle" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-primary/50 transition-all text-sm shadow-inner" />
                             </div>
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Instagram Feed</label>
-                                <input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@handle" className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground placeholder:text-muted/10 focus:outline-none focus:border-secondary/50 transition-all text-xs" />
+                                <input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@handle" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-secondary/50 transition-all text-sm shadow-inner" />
                             </div>
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Phone Signature (PII Protected)</label>
-                                <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+1 234 567 890" className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground placeholder:text-muted/10 focus:outline-none focus:border-foreground/50 transition-all text-xs" />
+                                <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+1 234 567 890" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/10 focus:border-foreground/50 transition-all text-sm shadow-inner" />
                             </div>
                         </div>
                         <div className="mt-8 pt-8 border-t border-border flex items-center justify-between relative z-10">
                             <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-40 italic">// Operational Link Bridges Active</p>
                             <button onClick={() => handleSave()} disabled={saving} className="px-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-white uppercase tracking-[0.4em] hover:bg-white/10 hover:border-secondary/40 transition-all active:scale-95 disabled:opacity-50">
-                                {saving ? "SYNCHING..." : "Synchronize Footprint"}
+                                {saving ? "SAVING..." : "Save"}
                             </button>
                         </div>
                     </div>

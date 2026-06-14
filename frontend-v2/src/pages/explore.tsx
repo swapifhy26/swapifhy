@@ -84,8 +84,10 @@ export default function Explore() {
             result = result.filter(m => 
                 m.name.toLowerCase().includes(query) || 
                 (m.bio && m.bio.toLowerCase().includes(query)) ||
-                (m.skillsTeaching && m.skillsTeaching.some((st: any) => st.skill.name.toLowerCase().includes(query))) ||
-                (m.skillsLearning && m.skillsLearning.some((sl: any) => sl.skill.name.toLowerCase().includes(query)))
+                (m.skillsTeaching && m.skillsTeaching.some((st: any) => (st.skill?.name || st.name || "").toLowerCase().includes(query))) ||
+                (m.skillsLearning && m.skillsLearning.some((sl: any) => (sl.skill?.name || sl.name || "").toLowerCase().includes(query))) ||
+                (m.teachSkills && m.teachSkills.some((ts: any) => (ts.name || "").toLowerCase().includes(query))) ||
+                (m.learnSkills && m.learnSkills.some((ls: any) => (ls.name || "").toLowerCase().includes(query)))
             );
         }
 
@@ -113,12 +115,6 @@ export default function Explore() {
             <motion.div initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-7xl mx-auto px-6 pb-32 relative z-10 pt-24">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20">
                 <div className="space-y-4">
-                    {/* <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-lg shadow-primary/10">
-                            <SwapifhyLogo className="w-8 h-8" />
-                        </div>
-                        <span className="text-[11px] font-bold text-primary tracking-widest">Intelligence Matrix</span>
-                    </div> */}
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-tight">Discover <span className="text-gradient">Users</span></h1>
                     <p className="text-muted-foreground font-medium text-lg max-w-xl leading-relaxed">
                         Discover Users and find matches for yourself in the <span className="text-foreground italic">Swapifhy Hub</span>. 
@@ -136,7 +132,7 @@ export default function Explore() {
                             placeholder="Search network for skills, interests, or keywords..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-surface/50 border border-border/50 text-foreground py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-sans placeholder:text-muted-foreground transition-all"
+                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-foreground py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-sans placeholder:text-muted-foreground transition-all shadow-inner"
                         />
                     </div>
                     
@@ -146,7 +142,7 @@ export default function Explore() {
                             <select 
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="appearance-none bg-surface/50 border border-border/50 text-foreground py-3 pl-10 pr-10 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-tech uppercase tracking-wider cursor-pointer hover:bg-surface transition-all"
+                                className="appearance-none bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-foreground py-3 pl-10 pr-10 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-tech uppercase tracking-wider cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all shadow-inner"
                             >
                                 <option value="recommendation">Recommended</option>
                                 <option value="reputation">Highest Rep</option>
@@ -160,7 +156,7 @@ export default function Explore() {
                             <select 
                                 value={filterRole}
                                 onChange={(e) => setFilterRole(e.target.value)}
-                                className="appearance-none bg-surface/50 border border-border/50 text-foreground py-3 pl-10 pr-10 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-tech uppercase tracking-wider cursor-pointer hover:bg-surface transition-all"
+                                className="appearance-none bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-foreground py-3 pl-10 pr-10 rounded-xl focus:outline-none focus:border-primary/50 text-sm font-tech uppercase tracking-wider cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all shadow-inner"
                             >
                                 <option value="all">All Domains</option>
                                 <option value="tech">Technology</option>
@@ -173,7 +169,7 @@ export default function Explore() {
             )}
 
             {loading ? <Skeleton /> : matches.length === 0 ? (
-                <div className="p-20 rounded-[3.5rem] glass-card border-white/10 text-center shadow-3xl relative overflow-hidden w-full group">
+                <div className="p-20 rounded-[3.5rem] glass-card border-black/10 dark:border-white/10 text-center shadow-3xl relative overflow-hidden w-full group">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
                     <div className="w-24 h-24 rounded-[2.5rem] bg-foreground/5 border border-border flex items-center justify-center text-muted/20 mx-auto mb-10 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-inner"><User className="w-12 h-12" /></div>
                     <h3 className="text-3xl font-heading font-black mb-4 text-foreground uppercase tracking-tight italic leading-none">Match <span className="text-primary">Pending</span></h3>
@@ -186,104 +182,118 @@ export default function Explore() {
                     <Search className="w-12 h-12 text-muted-foreground/30 mx-auto mb-6" />
                     <h3 className="text-2xl font-heading font-bold mb-2 text-foreground tracking-tight">No Matches Found</h3>
                     <p className="text-muted-foreground font-sans text-sm">We couldn't find anyone matching your current filters.</p>
-                    <button onClick={() => {setSearchQuery(""); setSortBy("recommendation");}} className="mt-6 px-6 py-2.5 rounded-xl bg-surface/50 border border-border text-foreground text-xs font-semibold tracking-wide hover:border-primary/50 hover:text-primary transition-all">Clear Filters</button>
+                    <button onClick={() => {setSearchQuery(""); setSortBy("recommendation");}} className="mt-6 px-6 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-foreground text-xs font-semibold tracking-wide hover:border-primary/50 hover:text-primary transition-all">Clear Filters</button>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
-                    {processedMatches.map((m, i) => (
-                        <motion.div 
-                            key={i} 
-                            initial={{ opacity: 0, y: 30 }} 
-                            animate={{ opacity: 1, y: 0 }} 
-                            transition={{ delay: i * 0.1 }} 
-                            className="p-10 rounded-[3.5rem] glass-elite hover:border-primary/30 transition-all group relative overflow-hidden flex flex-col h-full border hover:-translate-y-3"
-                        >
-                            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="px-5 py-2 rounded-2xl bg-primary/10 border border-primary/30 text-primary text-[9px] font-black uppercase tracking-widest flex items-center gap-2 animate-pulse shadow-lg"><Zap className="w-3.5 h-3.5" /> High Compatibility</div>
-                            </div>
+                    {processedMatches.map((m, i) => {
+                        
+                        // ✅ SAFETY FIX: Safely extract skills based on how the backend structures the JSON payload
+                        const teachTags = m.skillsTeaching?.map((st: any) => st.skill?.name || st.name) 
+                                       || m.teachSkills?.map((ts: any) => ts.name) 
+                                       || m.teaching 
+                                       || [];
+                                       
+                        const learnTags = m.skillsLearning?.map((sl: any) => sl.skill?.name || sl.name) 
+                                       || m.learnSkills?.map((ls: any) => ls.name) 
+                                       || m.learning 
+                                       || [];
 
-                             <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 border border-border text-foreground flex items-center justify-center text-4xl font-black shadow-inner mb-6 overflow-hidden relative transform group-hover:rotate-3 transition-transform">
-                                {m.avatarUrl ? (
-                                    <img src={m.avatarUrl} alt={m.name} className="w-full h-full object-cover" />
-                                ) : (
-                                    <span className="font-heading italic uppercase text-primary/40">{m.name.charAt(0)}</span>
-                                )}
-                            </div>
-
-                            {/* External Network Bridges */}
-                            <div className="flex gap-4 mb-8 opacity-40 group-hover:opacity-100 transition-opacity">
-                                {m.github && (
-                                    <a href={m.github.startsWith('http') ? m.github : `https://${m.github}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                                        <Github className="w-4 h-4" />
-                                    </a>
-                                )}
-                                {m.linkedin && (
-                                    <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                                        <Linkedin className="w-4 h-4" />
-                                    </a>
-                                )}
-                                {m.instagram && (
-                                    <a href={m.instagram.startsWith('http') ? m.instagram : `https://instagram.com/${m.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                                        <Instagram className="w-4 h-4" />
-                                    </a>
-                                )}
-                                {m.otherLink && (
-                                    <a href={m.otherLink.startsWith('http') ? m.otherLink : `https://${m.otherLink}`} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
-                                        <Globe className="w-4 h-4" />
-                                    </a>
-                                )}
-                            </div>
-                            
-                            <h3 className="text-2xl font-heading font-bold mb-2 text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{m.name}</h3>
-                            <p className="text-[14px] font-sans text-muted-foreground mb-10 line-clamp-2 min-h-[44px] leading-relaxed opacity-90">{m.bio || "Bio pending update."}</p>
-
-                            <div className="space-y-8 flex-grow">
-                                <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-primary tracking-[0.4em] uppercase opacity-40 mt-1">Obsidian Elite Grade</span>
-                                    <span className="text-[9px] font-black text-primary tracking-[0.4em] uppercase block mb-2 opacity-60 flex items-center gap-3">
-                                        <div className="w-4 h-[1px] bg-primary/40" /> Outbound Expertise
-                                    </span>
-                                    <div className="flex flex-wrap gap-2.5">
-                                        {m.teaching.length ? m.teaching.map((skill: string, j: number) => (
-                                            <span key={j} className="px-5 py-2 rounded-xl bg-primary/5 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest hover:border-primary/50 transition-all">{skill}</span>
-                                        )) : <span className="text-white/10 text-[10px] font-bold italic tracking-widest uppercase ml-4">// Zero Nodes Found</span>}
-                                    </div>
+                        return (
+                            <motion.div 
+                                key={i} 
+                                initial={{ opacity: 0, y: 30 }} 
+                                animate={{ opacity: 1, y: 0 }} 
+                                transition={{ delay: i * 0.1 }} 
+                                className="p-10 rounded-[3.5rem] glass-elite hover:border-primary/30 transition-all group relative overflow-hidden flex flex-col h-full border hover:-translate-y-3"
+                            >
+                                <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="px-5 py-2 rounded-2xl bg-primary/10 border border-primary/30 text-primary text-[9px] font-black uppercase tracking-widest flex items-center gap-2 animate-pulse shadow-lg"><Zap className="w-3.5 h-3.5" /> High Compatibility</div>
                                 </div>
-                                <div className="space-y-4">
-                                    <span className="text-[9px] font-black text-secondary tracking-[0.4em] uppercase block mb-2 opacity-60 flex items-center gap-3">
-                                         <div className="w-4 h-[1px] bg-secondary/40" /> Inbound Acquisition
-                                    </span>
-                                    <div className="flex flex-wrap gap-2.5">
-                                        {m.learning.length ? m.learning.map((skill: string, j: number) => (
-                                            <span key={j} className="px-5 py-2 rounded-xl bg-secondary/5 border border-secondary/20 text-secondary text-[10px] font-bold uppercase tracking-widest hover:border-secondary/50 transition-all">{skill}</span>
-                                        )) : <span className="text-white/10 text-[10px] font-bold italic tracking-widest uppercase ml-4">// Zero Nodes Found</span>}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                             <div className="flex gap-3 mt-10">
-                                <button 
-                                    className="flex-1 py-3.5 rounded-xl bg-surface/50 border border-border text-[12px] font-semibold tracking-wide hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-2"
-                                    onClick={() => handleFollow(m.id, m.isFollowing)}
-                                >
-                                    {m.isFollowing ? (
-                                        <>Following <div className="w-1.5 h-1.5 rounded-full bg-primary" /></>
+
+                                 <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 border border-border text-foreground flex items-center justify-center text-4xl font-black shadow-inner mb-6 overflow-hidden relative transform group-hover:rotate-3 transition-transform">
+                                    {m.avatarUrl ? (
+                                        <img src={m.avatarUrl} alt={m.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <>Follow</>
+                                        <span className="font-heading italic uppercase text-primary/40">{m.name.charAt(0)}</span>
                                     )}
-                                </button>
-                                <button 
-                                    id="sync-btn"
-                                    className="flex-[1.5] py-3.5 bg-foreground text-background text-[12px] font-bold group overflow-hidden shadow-md relative rounded-xl hover:scale-[1.02] transition-transform"
-                                    onClick={() => handleSync(m.id)}
-                                >
-                                    <span className="relative z-10 flex items-center justify-center">
-                                        Message <MessageSquare className="ml-2 w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                </button>
-                             </div>
-                        </motion.div>
-                    ))}
+                                </div>
+
+                                {/* External Network Bridges */}
+                                <div className="flex gap-4 mb-8 opacity-40 group-hover:opacity-100 transition-opacity">
+                                    {m.github && (
+                                        <a href={m.github.startsWith('http') ? m.github : `https://${m.github}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                                            <Github className="w-4 h-4 text-foreground" />
+                                        </a>
+                                    )}
+                                    {m.linkedin && (
+                                        <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://${m.linkedin}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                                            <Linkedin className="w-4 h-4 text-foreground" />
+                                        </a>
+                                    )}
+                                    {m.instagram && (
+                                        <a href={m.instagram.startsWith('http') ? m.instagram : `https://instagram.com/${m.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                                            <Instagram className="w-4 h-4 text-foreground" />
+                                        </a>
+                                    )}
+                                    {m.otherLink && (
+                                        <a href={m.otherLink.startsWith('http') ? m.otherLink : `https://${m.otherLink}`} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+                                            <Globe className="w-4 h-4 text-foreground" />
+                                        </a>
+                                    )}
+                                </div>
+                                
+                                <h3 className="text-2xl font-heading font-bold mb-2 text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{m.name}</h3>
+                                <p className="text-[14px] font-sans text-muted-foreground mb-10 line-clamp-2 min-h-[44px] leading-relaxed opacity-90">{m.bio || "Bio pending update."}</p>
+
+                                <div className="space-y-8 flex-grow">
+                                    <div className="space-y-4">
+                                        <span className="text-[10px] font-black text-primary tracking-[0.4em] uppercase opacity-40 mt-1">Obsidian Elite Grade</span>
+                                        <span className="text-[9px] font-black text-primary tracking-[0.4em] uppercase block mb-2 opacity-60 flex items-center gap-3">
+                                            <div className="w-4 h-[1px] bg-primary/40" /> Outbound Expertise
+                                        </span>
+                                        <div className="flex flex-wrap gap-2.5">
+                                            {teachTags.length > 0 ? teachTags.map((skill: string, j: number) => (
+                                                <span key={j} className="px-5 py-2 rounded-xl bg-primary/5 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest hover:border-primary/50 transition-all">{skill}</span>
+                                            )) : <span className="text-foreground/30 text-[10px] font-bold italic tracking-widest uppercase ml-4">// Zero Nodes Found</span>}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <span className="text-[9px] font-black text-secondary tracking-[0.4em] uppercase block mb-2 opacity-60 flex items-center gap-3">
+                                             <div className="w-4 h-[1px] bg-secondary/40" /> Inbound Acquisition
+                                        </span>
+                                        <div className="flex flex-wrap gap-2.5">
+                                            {learnTags.length > 0 ? learnTags.map((skill: string, j: number) => (
+                                                <span key={j} className="px-5 py-2 rounded-xl bg-secondary/5 border border-secondary/20 text-secondary text-[10px] font-bold uppercase tracking-widest hover:border-secondary/50 transition-all">{skill}</span>
+                                            )) : <span className="text-foreground/30 text-[10px] font-bold italic tracking-widest uppercase ml-4">// Zero Nodes Found</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                 <div className="flex gap-3 mt-10">
+                                    <button 
+                                        className="flex-1 py-3.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-foreground text-[12px] font-semibold tracking-wide hover:bg-black/10 dark:hover:bg-white/10 hover:text-primary transition-all flex items-center justify-center gap-2"
+                                        onClick={() => handleFollow(m.id, m.isFollowing)}
+                                    >
+                                        {m.isFollowing ? (
+                                            <>Following <div className="w-1.5 h-1.5 rounded-full bg-primary" /></>
+                                        ) : (
+                                            <>Follow</>
+                                        )}
+                                    </button>
+                                    <button 
+                                        id="sync-btn"
+                                        className="flex-[1.5] py-3.5 bg-foreground text-background text-[12px] font-bold group overflow-hidden shadow-md relative rounded-xl hover:scale-[1.02] transition-transform"
+                                        onClick={() => handleSync(m.id)}
+                                    >
+                                        <span className="relative z-10 flex items-center justify-center">
+                                            Message <MessageSquare className="ml-2 w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                    </button>
+                                 </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
             )}
             {activeSwapId && (

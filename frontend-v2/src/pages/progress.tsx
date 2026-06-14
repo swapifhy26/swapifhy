@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingUp, BookOpen, Users, Star, Award, Clock, ArrowUpRight, CheckCircle2, Zap, MessageSquare } from "lucide-react";
@@ -12,7 +13,7 @@ export default function Progress() {
         avgRating: 4.9
     });
 
-        const [learningSkills, setLearningSkills] = useState<any[]>([]);
+    const [learningSkills, setLearningSkills] = useState<any[]>([]);
     const [teachingSkills, setTeachingSkills] = useState<any[]>([]);
 
     useEffect(() => {
@@ -49,6 +50,7 @@ export default function Progress() {
                 .catch(console.error);
         }
     }, []);
+
     const badges = [
         { id: 1, name: "Early Bird", icon: <Zap className="w-5 h-5" />, color: "bg-amber-500" },
         { id: 2, name: "Top Mentor", icon: <Award className="w-5 h-5" />, color: "bg-primary" },
@@ -157,7 +159,7 @@ export default function Progress() {
                             exit={{ opacity: 0, y: -20 }}
                             className="grid grid-cols-1 md:grid-cols-2 gap-8"
                         >
-                            {learningSkills.map((skill) => (
+                            {learningSkills.length > 0 ? learningSkills.map((skill) => (
                                 <div key={skill.id} className="glass-elite p-8 rounded-[2.5rem] group hover:border-primary/30 transition-all flex flex-col">
                                     <div className="flex justify-between items-start mb-8">
                                         <div>
@@ -209,7 +211,20 @@ export default function Progress() {
                                         Book Next Session <ArrowUpRight className="w-4 h-4" />
                                     </button>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="col-span-full glass-elite p-12 rounded-[2.5rem] flex flex-col items-center justify-center text-center border border-primary/20">
+                                    <div className="w-20 h-20 rounded-[2rem] bg-primary/10 text-primary flex items-center justify-center mb-6">
+                                        <BookOpen className="w-10 h-10" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-foreground mb-3">Ready to start learning?</h3>
+                                    <p className="text-muted-foreground max-w-md italic mb-8">
+                                        &quot;The beautiful thing about learning is that no one can take it away from you.&quot; — B.B. King
+                                    </p>
+                                    <Link href="/explore" className="px-8 py-4 rounded-2xl bg-primary text-white font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md">
+                                        Find a Mentor
+                                    </Link>
+                                </div>
+                            )}
                         </motion.div>
                     )}
 
@@ -221,7 +236,7 @@ export default function Progress() {
                             exit={{ opacity: 0, y: -20 }}
                             className="grid grid-cols-1 md:grid-cols-2 gap-8"
                         >
-                            {teachingSkills.map((skill) => (
+                            {teachingSkills.length > 0 ? teachingSkills.map((skill) => (
                                 <div key={skill.id} className="glass-elite p-8 rounded-[2.5rem] group hover:border-secondary/30 transition-all flex flex-col">
                                     <div className="flex justify-between items-start mb-8">
                                         <div>
@@ -253,7 +268,7 @@ export default function Progress() {
                                         <div className="absolute top-0 left-0 w-1 h-full bg-secondary" />
                                         <MessageSquare className="absolute right-4 top-4 w-12 h-12 text-secondary/10 -rotate-12" />
                                         <p className="text-sm font-medium italic text-muted-foreground leading-relaxed relative z-10">
-                                            "{skill.testimonial}"
+                                            &quot;{skill.testimonial}&quot;
                                         </p>
                                     </div>
 
@@ -261,7 +276,20 @@ export default function Progress() {
                                         Update Progress <CheckCircle2 className="w-4 h-4" />
                                     </button>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="col-span-full glass-elite p-12 rounded-[2.5rem] flex flex-col items-center justify-center text-center border border-secondary/20">
+                                    <div className="w-20 h-20 rounded-[2rem] bg-secondary/10 text-secondary flex items-center justify-center mb-6">
+                                        <Users className="w-10 h-10" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-foreground mb-3">Share your knowledge!</h3>
+                                    <p className="text-muted-foreground max-w-md italic mb-8">
+                                        &quot;In learning you will teach, and in teaching you will learn.&quot; — Phil Collins
+                                    </p>
+                                    <Link href="/explore" className="px-8 py-4 rounded-2xl bg-secondary text-white font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md">
+                                        Find a Student
+                                    </Link>
+                                </div>
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>

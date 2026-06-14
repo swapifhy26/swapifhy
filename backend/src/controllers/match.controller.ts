@@ -12,9 +12,6 @@ export const getExplore = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Fetch profiles based on privacy protocol:
-        // 1. PUBLIC profiles
-        // 2. Profiles the user specifically follows (FOLLOWERS_ONLY)
         const users = await prisma.user.findMany({
             where: {
                 id: { not: userId },
@@ -26,13 +23,12 @@ export const getExplore = async (req: AuthRequest, res: Response): Promise<void>
             include: {
                 skillsTeaching: { include: { skill: true } },
                 skillsLearning: { include: { skill: true } },
-                followers: { where: { followerId: userId } } // Check if current user is following
+                followers: { where: { followerId: userId } }
             },
             take: 50,
             orderBy: { createdAt: 'desc' }
         });
 
-        // Map to standard high-fidelity data structure
         const formattedUsers = users.map((user: any) => ({
             id: user.id,
             name: user.name,
@@ -47,6 +43,8 @@ export const getExplore = async (req: AuthRequest, res: Response): Promise<void>
             isFollowing: user.followers.length > 0,
             teaching: user.skillsTeaching.map((st: any) => st.skill.name),
             learning: user.skillsLearning.map((sl: any) => sl.skill.name),
+            teachingCategories: user.skillsTeaching.map((st: any) => st.skill.category),
+            learningCategories: user.skillsLearning.map((sl: any) => sl.skill.category),
             matchScore: 0,
             isPerfectMatch: false
         }));
@@ -66,7 +64,6 @@ export const getMatches = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Fetch the current user to understand what they are offering and looking for
         const currentUser = await prisma.user.findUnique({
             where: { id: userId },
             include: {
@@ -82,18 +79,15 @@ export const getMatches = async (req: AuthRequest, res: Response): Promise<void>
 
         const teachingSkillIds = currentUser.skillsTeaching.map(s => s.skillId);
         const learningSkillIds = currentUser.skillsLearning.map(s => s.skillId);
-
         const emptySkills = teachingSkillIds.length === 0 && learningSkillIds.length === 0;
 
         const matches = await prisma.user.findMany({
             where: {
                 id: { not: userId },
-                // Privacy Filter
                 OR: [
                     { privacy: "PUBLIC" },
                     { followers: { some: { followerId: userId } } }
                 ],
-                // Synergy Filter
                 ...(emptySkills ? {} : {
                     OR: [
                         { skillsTeaching: { some: { skillId: { in: learningSkillIds } } } },
@@ -109,18 +103,12 @@ export const getMatches = async (req: AuthRequest, res: Response): Promise<void>
             take: 20
         });
 
-        // Format the output
         const formattedMatches = matches.map((user: any) => {
-            // Calculate a rudimentary "Match Score"
             let score = 0;
             const theirTeachingIds = user.skillsTeaching.map((s: any) => s.skillId);
             const theirLearningIds = user.skillsLearning.map((s: any) => s.skillId);
-
-            // They can teach what we want to learn
             const canTeachUs = theirTeachingIds.filter((id: any) => learningSkillIds.includes(id)).length;
-            // They want to learn what we can teach
             const wantsToLearnFromUs = theirLearningIds.filter((id: any) => teachingSkillIds.includes(id)).length;
-
             score = (canTeachUs * 10) + (wantsToLearnFromUs * 10);
 
             return {
@@ -137,17 +125,69 @@ export const getMatches = async (req: AuthRequest, res: Response): Promise<void>
                 isFollowing: user.followers.length > 0,
                 teaching: user.skillsTeaching.map((st: any) => st.skill.name),
                 learning: user.skillsLearning.map((sl: any) => sl.skill.name),
+                teachingCategories: user.skillsTeaching.map((st: any) => st.skill.category),
+                learningCategories: user.skillsLearning.map((sl: any) => sl.skill.category),
                 matchScore: score,
                 isPerfectMatch: canTeachUs > 0 && wantsToLearnFromUs > 0
             };
         });
 
-        // Sort by match score recursively
         formattedMatches.sort((a, b) => b.matchScore - a.matchScore);
-
         res.status(200).json({ matches: formattedMatches });
     } catch (error) {
         console.error("Match Error:", error);
         res.status(500).json({ error: "Failed to fetch matches" });
+    }
+};
+
+// ✅ NEW — returns every user except the requester, no privacy filter, no take() limit
+export const getAllUsers = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        const users = await prisma.user.findMany({
+            where: {
+                id: { not: userId }
+                // ✅ No privacy filter — show everyone
+                // ✅ No take() limit — show all 422 users
+            },
+            include: {
+                skillsTeaching: { include: { skill: true } },
+                skillsLearning: { include: { skill: true } },
+                followers: { where: { followerId: userId } }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const formatted = users.map((user: any) => ({
+            id: user.id,
+            name: user.name,
+            bio: user.bio,
+            hobbies: user.hobbies,
+            avatarUrl: user.avatarUrl,
+            github: user.github,
+            linkedin: user.linkedin,
+            instagram: user.instagram,
+            otherLink: user.otherLink,
+            reputation: user.reputation,
+            createdAt: user.createdAt,
+            privacy: user.privacy,
+            isFollowing: user.followers.length > 0,
+            // ✅ Consistent field names the frontend expects
+            teaching: user.skillsTeaching.map((st: any) => st.skill.name),
+            learning: user.skillsLearning.map((sl: any) => sl.skill.name),
+            // ✅ Categories for domain filter
+            teachingCategories: user.skillsTeaching.map((st: any) => st.skill.category),
+            learningCategories: user.skillsLearning.map((sl: any) => sl.skill.category),
+        }));
+
+        res.status(200).json({ matches: formatted });
+    } catch (error) {
+        console.error("getAllUsers Error:", error);
+        res.status(500).json({ error: "Failed to fetch all users" });
     }
 };

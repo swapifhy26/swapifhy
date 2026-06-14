@@ -287,13 +287,13 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                         if (!value) return null;
 
                         return (
-                            
-                                key={key}
-                                href={getSafeHref(href)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-indigo-500/40 hover:bg-white/[0.05] transition-all group/item"
-                            >
+    
+                                  key={key}
+                                  href={getSafeHref(href)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-indigo-500/40 hover:bg-white/[0.05] transition-all group/item"
+    >
                                 <div className="flex items-center gap-3 overflow-hidden">
                                     <div className="w-8 h-8 rounded-lg bg-indigo-500/5 flex items-center justify-center group-hover/item:scale-110 transition-transform">
                                         {icon}

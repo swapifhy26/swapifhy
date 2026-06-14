@@ -12,16 +12,43 @@ export default function Progress() {
         avgRating: 4.9
     });
 
-    const [learningSkills, setLearningSkills] = useState([
-        { id: 1, name: "Advanced React", partner: "Sarah Chen", progress: 65, sessions: 8, nextMilestone: "Custom Hooks Mastery", feedback: "Great progress on state management!" },
-        { id: 2, name: "UI/UX Design", partner: "Marcus Miller", progress: 40, sessions: 4, nextMilestone: "Auto Layout & Components", feedback: "Strong eye for detail." }
-    ]);
+        const [learningSkills, setLearningSkills] = useState<any[]>([]);
+    const [teachingSkills, setTeachingSkills] = useState<any[]>([]);
 
-    const [teachingSkills, setTeachingSkills] = useState([
-        { id: 3, name: "Python for Data", student: "Leo Zhang", progress: 85, sessions: 12, rating: 5.0, testimonial: "The best mentor I've had. Very clear explanations." },
-        { id: 4, name: "Public Speaking", student: "Emma Watson", progress: 20, sessions: 2, rating: 4.8, testimonial: "Really helped me with my confidence." }
-    ]);
-
+    useEffect(() => {
+        const token = localStorage.getItem("swapifhy_token");
+        if (token) {
+            fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.user) {
+                        // Optional: You can map reputation to swaps, or leave the static stats
+                        setStats(prev => ({ ...prev, totalSwaps: data.user.reputation || 0 }));
+                        
+                        setLearningSkills(data.user.learnSkills?.map((s: any, i: number) => ({
+                            id: i, 
+                            name: s.name, 
+                            partner: "Pending Match", 
+                            progress: 0, 
+                            sessions: 0, 
+                            nextMilestone: "Find a mentor", 
+                            feedback: "Ready to start."
+                        })) || []);
+                        
+                        setTeachingSkills(data.user.teachSkills?.map((s: any, i: number) => ({
+                            id: i, 
+                            name: s.name, 
+                            student: "Pending Student", 
+                            progress: 0, 
+                            sessions: 0, 
+                            rating: 0, 
+                            testimonial: "Ready to teach."
+                        })) || []);
+                    }
+                })
+                .catch(console.error);
+        }
+    }, []);
     const badges = [
         { id: 1, name: "Early Bird", icon: <Zap className="w-5 h-5" />, color: "bg-amber-500" },
         { id: 2, name: "Top Mentor", icon: <Award className="w-5 h-5" />, color: "bg-primary" },

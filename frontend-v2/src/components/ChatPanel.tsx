@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    X, Send, Shield, Zap, Trash2, Github, Linkedin, Instagram,
+    X, Send, Shield, Trash2, Github, Linkedin, Instagram,
     Phone, Mail, Link as LinkIcon, User, Plus, ExternalLink,
     MoreVertical, Lock, Maximize2, Minimize2, CheckCircle,
-    Activity, Share2, Copy, Flag, Bell, BellOff, LogOut, Check
+    Activity, Copy, Flag, Bell, BellOff, LogOut, Check
 } from "lucide-react";
 import { SyncBridgeModal } from "./SyncBridgeModal";
 import { API_URL } from "../lib/api";
@@ -35,6 +35,12 @@ const cleanJargon = (text: string) => {
         .replace(/Contact Coordinates Shared/gi, "Contact info shared");
 };
 
+const getSafeHref = (href: string | undefined): string => {
+    if (!href) return "#";
+    if (href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return href;
+    return `https://${href}`;
+};
+
 export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState("");
@@ -49,7 +55,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
     const scrollRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // ── Close menu on outside click ──
+    // Close menu on outside click
     useEffect(() => {
         const handler = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -86,7 +92,6 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
         } catch (err) { console.error(err); }
     }, []);
 
-    // ── Heartbeat — tells server this user is online ──
     const sendHeartbeat = useCallback(async () => {
         try {
             const token = localStorage.getItem("swapifhy_token");
@@ -104,7 +109,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
         sendHeartbeat();
 
         const msgInterval = setInterval(fetchData, 3000);
-        const heartbeatInterval = setInterval(sendHeartbeat, 25000); // every 25s
+        const heartbeatInterval = setInterval(sendHeartbeat, 25000);
 
         return () => {
             clearInterval(msgInterval);
@@ -154,7 +159,6 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    // ── Three-dot menu actions ──
     const menuActions = [
         {
             icon: muted ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />,
@@ -163,7 +167,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
             color: "text-zinc-300"
         },
         {
-            icon: <Maximize2 className="w-4 h-4" />,
+            icon: isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />,
             label: isExpanded ? "Collapse Chat" : "Expand Chat",
             onClick: () => { setIsExpanded(e => !e); setShowMenu(false); },
             color: "text-zinc-300"
@@ -181,7 +185,10 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
             icon: <Flag className="w-4 h-4" />,
             label: "Report User",
             onClick: () => {
-                window.open(`mailto:support@swapifhy.com?subject=Report: ${partner?.name}&body=Reporting user ID: ${partner?.id}`, "_blank");
+                window.open(
+                    `mailto:support@swapifhy.com?subject=Report: ${partner?.name}&body=Reporting user ID: ${partner?.id}`,
+                    "_blank"
+                );
                 setShowMenu(false);
             },
             color: "text-red-400"
@@ -207,24 +214,30 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
 
         let details: any = {};
         try {
-            details = typeof msg.details === 'string' ? JSON.parse(msg.details) : (msg.details || {});
+            details = typeof msg.details === 'string'
+                ? JSON.parse(msg.details)
+                : (msg.details || {});
         } catch { /* malformed */ }
 
         const keys = Object.keys(details).filter(k => details[k]);
 
-        if (keys.length === 0) return (
-            <div className="p-4 rounded-xl bg-slate-900/10 border border-white/5 flex items-center gap-3 opacity-40">
-                <Shield className="w-3.5 h-3.5 text-zinc-500" />
-                <p className="text-[11px] text-zinc-500 italic">No contact details provided.</p>
-            </div>
-        );
+        if (keys.length === 0) {
+            return (
+                <div className="p-4 rounded-xl bg-slate-900/10 border border-white/5 flex items-center gap-3 opacity-40">
+                    <Shield className="w-3.5 h-3.5 text-zinc-500" />
+                    <p className="text-[11px] text-zinc-500 italic">No contact details provided.</p>
+                </div>
+            );
+        }
 
         return (
             <div className="p-6 rounded-2xl border shadow-2xl bg-slate-950/40 backdrop-blur-xl border-indigo-500/20 relative overflow-hidden">
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2.5">
                         <CheckCircle className="w-3.5 h-3.5 text-indigo-400" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Verified Contact Info</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">
+                            Verified Contact Info
+                        </p>
                     </div>
                     {msg.senderId === currentUserId && (
                         <button
@@ -236,6 +249,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                         </button>
                     )}
                 </div>
+
                 <div className="grid gap-2">
                     {keys.map(key => {
                         let icon = <LinkIcon className="w-3.5 h-3.5 text-indigo-400" />;
@@ -243,19 +257,39 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                         let value = details[key];
                         let href = value;
 
-                        if (key === 'email') { icon = <Mail className="w-3.5 h-3.5 text-indigo-400" />; label = "Email"; href = `mailto:${value}`; }
-                        else if (key === 'phone') { icon = <Phone className="w-3.5 h-3.5 text-indigo-400" />; label = "Phone"; href = `tel:${value}`; }
-                        else if (key === 'github') { icon = <Github className="w-3.5 h-3.5 text-indigo-400" />; label = "GitHub"; href = value.startsWith('http') ? value : `https://github.com/${value}`; }
-                        else if (key === 'linkedin') { icon = <Linkedin className="w-3.5 h-3.5 text-indigo-400" />; label = "LinkedIn"; href = value.startsWith('http') ? value : `https://linkedin.com/in/${value}`; }
-                        else if (key === 'instagram') { icon = <Instagram className="w-3.5 h-3.5 text-indigo-400" />; label = "Instagram"; href = value.startsWith('http') ? value : `https://instagram.com/${value}`; }
-                        else if (key === 'custom') { icon = <Activity className="w-3.5 h-3.5 text-rose-400" />; label = details[key]?.label || "Link"; value = details[key]?.url; href = value; }
+                        if (key === 'email') {
+                            icon = <Mail className="w-3.5 h-3.5 text-indigo-400" />;
+                            label = "Email";
+                            href = `mailto:${value}`;
+                        } else if (key === 'phone') {
+                            icon = <Phone className="w-3.5 h-3.5 text-indigo-400" />;
+                            label = "Phone";
+                            href = `tel:${value}`;
+                        } else if (key === 'github') {
+                            icon = <Github className="w-3.5 h-3.5 text-indigo-400" />;
+                            label = "GitHub";
+                            href = value.startsWith('http') ? value : `https://github.com/${value}`;
+                        } else if (key === 'linkedin') {
+                            icon = <Linkedin className="w-3.5 h-3.5 text-indigo-400" />;
+                            label = "LinkedIn";
+                            href = value.startsWith('http') ? value : `https://linkedin.com/in/${value}`;
+                        } else if (key === 'instagram') {
+                            icon = <Instagram className="w-3.5 h-3.5 text-indigo-400" />;
+                            label = "Instagram";
+                            href = value.startsWith('http') ? value : `https://instagram.com/${value}`;
+                        } else if (key === 'custom') {
+                            icon = <Activity className="w-3.5 h-3.5 text-rose-400" />;
+                            label = details[key]?.label || "Link";
+                            value = details[key]?.url;
+                            href = value;
+                        }
 
                         if (!value) return null;
 
                         return (
                             
                                 key={key}
-                                href={href?.startsWith('http') || href?.startsWith('mailto') || href?.startsWith('tel') ? href : `https://${href}`}
+                                href={getSafeHref(href)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-indigo-500/40 hover:bg-white/[0.05] transition-all group/item"
@@ -265,8 +299,12 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                                         {icon}
                                     </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mb-0.5">{label}</p>
-                                        <p className="text-[12px] text-white/90 truncate font-medium">{value}</p>
+                                        <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mb-0.5">
+                                            {label}
+                                        </p>
+                                        <p className="text-[12px] text-white/90 truncate font-medium">
+                                            {value}
+                                        </p>
                                     </div>
                                 </div>
                                 <ExternalLink className="w-3 h-3 text-zinc-700 group-hover/item:text-indigo-400 transition-colors" />
@@ -293,35 +331,50 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                         <div className="flex items-center gap-4">
                             <div className="relative">
                                 {partner?.avatarUrl ? (
-                                    <img src={partner.avatarUrl} alt={partner.name} className="w-12 h-12 rounded-2xl border border-white/10 object-cover" />
+                                    <img
+                                        src={partner.avatarUrl}
+                                        alt={partner.name}
+                                        className="w-12 h-12 rounded-2xl border border-white/10 object-cover"
+                                    />
                                 ) : (
                                     <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                                         <User className="w-6 h-6" />
                                     </div>
                                 )}
-                                {/* ✅ Real online/offline dot */}
+                                {/* Real online/offline indicator */}
                                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-slate-950 rounded-full flex items-center justify-center border-2 border-slate-950">
-                                    <div className={`w-2.5 h-2.5 rounded-full transition-colors ${isOnline ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse" : "bg-red-500/70"}`} />
+                                    <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-500 ${
+                                        isOnline
+                                            ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"
+                                            : "bg-red-500/70"
+                                    }`} />
                                 </div>
                             </div>
                             <div>
-                                <h4 className="text-[15px] font-black text-white tracking-tight font-heading">{partner?.name || "Connecting..."}</h4>
-                                <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${isOnline ? "text-green-400" : "text-red-400/60"}`}>
+                                <h4 className="text-[15px] font-black text-white tracking-tight font-heading">
+                                    {partner?.name || "Connecting..."}
+                                </h4>
+                                <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${
+                                    isOnline ? "text-green-400" : "text-red-400/60"
+                                }`}>
                                     {isOnline ? "● Online" : "● Offline"}
                                 </p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                            {/* Expand/collapse — desktop only */}
+                            {/* Expand/collapse desktop only */}
                             <button
                                 onClick={() => setIsExpanded(e => !e)}
                                 className="p-2.5 hover:bg-white/5 rounded-xl text-zinc-500 hover:text-white transition-all hidden lg:flex"
                             >
-                                {isExpanded ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+                                {isExpanded
+                                    ? <Minimize2 className="w-5 h-5" />
+                                    : <Maximize2 className="w-5 h-5" />
+                                }
                             </button>
 
-                            {/* ✅ Three-dot menu */}
+                            {/* Three-dot menu */}
                             <div className="relative" ref={menuRef}>
                                 <button
                                     onClick={() => setShowMenu(m => !m)}
@@ -354,21 +407,31 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                                 </AnimatePresence>
                             </div>
 
-                            <button onClick={onClose} className="p-2.5 hover:bg-white/5 rounded-xl text-zinc-500 hover:text-white transition-all">
+                            <button
+                                onClick={onClose}
+                                className="p-2.5 hover:bg-white/5 rounded-xl text-zinc-500 hover:text-white transition-all"
+                            >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
                     </div>
 
                     {/* ── MESSAGES ── */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" ref={scrollRef}>
+                    <div
+                        className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar"
+                        ref={scrollRef}
+                    >
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center p-12 opacity-50">
                                 <div className="w-16 h-16 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 flex items-center justify-center mb-6">
                                     <Lock className="w-7 h-7 text-indigo-400" />
                                 </div>
-                                <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-white/50 mb-3">Encrypted Channel</h5>
-                                <p className="text-[12px] text-zinc-500 max-w-[200px] leading-relaxed">All messages are private between you and {partner?.name || "your partner"}.</p>
+                                <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-white/50 mb-3">
+                                    Encrypted Channel
+                                </h5>
+                                <p className="text-[12px] text-zinc-500 max-w-[200px] leading-relaxed">
+                                    All messages are private between you and {partner?.name || "your partner"}.
+                                </p>
                             </div>
                         ) : (
                             messages.map((msg, idx) => (
@@ -395,7 +458,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                                                         : "bg-[#0B0F1A]/80 text-white border border-white/[0.06] rounded-tl-sm backdrop-blur-2xl"
                                                 }`}>
                                                     {cleanJargon(msg.content)}
-                                                    {/* Copy button on hover */}
+                                                    {/* Copy on hover */}
                                                     <button
                                                         onClick={() => copyMessage(msg.content, msg.id)}
                                                         className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-slate-700"
@@ -409,7 +472,8 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                                             ) : (
                                                 <VerifiedNodeChip msg={msg} />
                                             )}
-                                            {/* Timestamp */}
+
+                                            {/* Timestamp on hover */}
                                             <div className={`flex items-center gap-2 px-1 opacity-0 group-hover:opacity-100 transition-all ${msg.senderId === currentUserId ? "flex-row-reverse" : ""}`}>
                                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
                                                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -430,13 +494,13 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                                 Notifications muted
                             </div>
                         )}
-                        <div className="flex items-center gap-3 bg-white/[0.02] p-2 pr-3 rounded-[1.75rem] border border-white/[0.06] focus-within:border-indigo-500/50 transition-all group/input">
+                        <div className="flex items-center gap-3 bg-white/[0.02] p-2 pr-3 rounded-[1.75rem] border border-white/[0.06] focus-within:border-indigo-500/50 transition-all">
                             <button
                                 onClick={() => setIsBridgeModalOpen(true)}
-                                className="p-3.5 bg-white/5 hover:bg-indigo-500/10 rounded-2xl border border-white/5 text-zinc-500 hover:text-indigo-400 transition-all"
+                                className="p-3.5 bg-white/5 hover:bg-indigo-500/10 rounded-2xl border border-white/5 text-zinc-500 hover:text-indigo-400 transition-all group/plus"
                                 title="Share Contact Info"
                             >
-                                <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+                                <Plus className="w-5 h-5 group-hover/plus:rotate-90 transition-transform" />
                             </button>
 
                             <input

@@ -5,7 +5,8 @@ import {
     Users, Repeat2, FileText, Heart, MessageSquare, UserPlus, Mail,
     LayoutDashboard, RefreshCw, LogOut, TrendingUp, Activity,
     ChevronLeft, ChevronRight, Award, Star, Shield, Lock, Search, Filter,
-    BarChart3, PieChart as PieIcon, Layers, Zap, Globe, Cpu, Radio, Network
+    BarChart3, PieChart as PieIcon, Layers, Zap, Globe, Cpu, Radio, Network,
+    MoreVertical, ArrowRight
 } from "lucide-react";
 import {
     AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip,

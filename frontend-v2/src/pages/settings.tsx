@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Zap, Bell, Shield, Key, Trash2, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bell, Shield, Key, Trash2, User, AlertTriangle, X } from "lucide-react";
 import { SkillTagManager } from "../components/SkillTagManager";
 import { API_URL } from "../lib/api";
 
@@ -22,6 +22,11 @@ export default function Settings() {
     const [pwSaving, setPwSaving] = useState(false);
     const [pwMessage, setPwMessage] = useState("");
     const [pwError, setPwError] = useState("");
+
+    // Delete account modal
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState("");
 
     const handleChangePassword = async () => {
         setPwError("");
@@ -55,6 +60,29 @@ export default function Settings() {
             setPwError("Connection error. Try again.");
         } finally {
             setPwSaving(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        setDeleting(true);
+        setDeleteError("");
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            const res = await fetch(`${API_URL}/api/user/account`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                localStorage.removeItem("swapifhy_token");
+                window.location.href = "/";
+            } else {
+                const data = await res.json();
+                setDeleteError(data.error || "Failed to delete account.");
+            }
+        } catch {
+            setDeleteError("Connection error. Try again.");
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -99,6 +127,82 @@ export default function Settings() {
                 <div className="mesh-orb orb-pink opacity-5 bottom-[-10%] right-[-10%]" />
             </div>
 
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {showDeleteModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-6"
+                        style={{ backdropFilter: "blur(16px)", backgroundColor: "rgba(0,0,0,0.6)" }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: "spring", damping: 20 }}
+                            className="relative w-full max-w-md rounded-[2.5rem] p-10 border border-red-500/20 shadow-2xl"
+                            style={{
+                                background: "rgba(20, 10, 10, 0.85)",
+                                backdropFilter: "blur(32px)",
+                                boxShadow: "0 0 80px rgba(239,68,68,0.15), 0 25px 50px rgba(0,0,0,0.5)"
+                            }}
+                        >
+                            {/* Close button */}
+                            <button
+                                onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}
+                                className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all text-foreground"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+
+                            {/* Icon */}
+                            <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
+                                <AlertTriangle className="w-8 h-8 text-red-400" />
+                            </div>
+
+                            {/* Title */}
+                            <h3 className="text-xl font-heading font-black text-center text-foreground mb-3 uppercase tracking-tight">
+                                Wait — Are You Sure?
+                            </h3>
+
+                            {/* Motivational quote */}
+                            <div className="mb-6 px-4 py-4 rounded-2xl border border-white/5 bg-white/3 text-center">
+                                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                                    "Every expert was once a beginner. Every skill you've built here took courage — don't let it go."
+                                </p>
+                            </div>
+
+                            <p className="text-xs text-muted-foreground text-center mb-8 leading-relaxed">
+                                This action is <span className="text-red-400 font-bold">permanent and irreversible</span>. All your matches, conversations, and progress will be erased forever.
+                            </p>
+
+                            {deleteError && (
+                                <p className="text-red-400 text-xs text-center mb-4">{deleteError}</p>
+                            )}
+
+                            {/* Actions */}
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    onClick={() => { setShowDeleteModal(false); setDeleteError(""); }}
+                                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.3em] btn-gradient"
+                                >
+                                    Keep My Account
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    disabled={deleting}
+                                    className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.3em] bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
+                                >
+                                    {deleting ? "Deleting..." : "Yes, Delete Forever"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <motion.div initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-4xl mx-auto px-6 relative z-10">
                 <div className="mb-16">
                     <h1 className="text-4xl md:text-5xl font-heading font-black tracking-tighter text-foreground mb-4 uppercase italic leading-none">
@@ -120,11 +224,23 @@ export default function Settings() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Your Bio</label>
-                                    <textarea value={bio} onChange={e => setBio(e.target.value)} placeholder="Summarize your professional essence..." rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner" />
+                                    <textarea
+                                        value={bio}
+                                        onChange={e => setBio(e.target.value)}
+                                        placeholder="Summarize your professional essence..."
+                                        rows={4}
+                                        className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all resize-none font-medium text-base shadow-inner"
+                                    />
                                 </div>
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] ml-2">Hobbies & Interests</label>
-                                    <textarea value={hobbies} onChange={e => setHobbies(e.target.value)} placeholder="What do you enjoy doing outside of work?" rows={4} className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted/20 focus:outline-none focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner" />
+                                    <textarea
+                                        value={hobbies}
+                                        onChange={e => setHobbies(e.target.value)}
+                                        placeholder="What do you enjoy doing outside of work?"
+                                        rows={4}
+                                        className="w-full bg-surface border border-border rounded-[2rem] py-6 px-8 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-secondary/50 transition-all resize-none font-medium text-base shadow-inner"
+                                    />
                                 </div>
                             </div>
                             
@@ -215,21 +331,21 @@ export default function Settings() {
                                         value={currentPassword}
                                         onChange={e => setCurrentPassword(e.target.value)}
                                         placeholder="Current password"
-                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
                                     />
                                     <input
                                         type="password"
                                         value={newPassword}
                                         onChange={e => setNewPassword(e.target.value)}
                                         placeholder="New password (min 8 characters)"
-                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
                                     />
                                     <input
                                         type="password"
                                         value={confirmPassword}
                                         onChange={e => setConfirmPassword(e.target.value)}
                                         placeholder="Confirm new password"
-                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted/30 focus:outline-none focus:border-primary/50 transition-all text-sm"
+                                        className="w-full bg-surface border border-border rounded-xl py-3 px-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-all text-sm"
                                     />
                                     {pwError && <p className="text-red-400 text-xs">{pwError}</p>}
                                     {pwMessage && <p className="text-green-400 text-xs">{pwMessage}</p>}
@@ -255,7 +371,10 @@ export default function Settings() {
                         <p className="text-xs text-muted-foreground mb-6 max-w-lg">
                             Deleting your account is irreversible. All your data, matches, and conversations will be permanently removed from the platform.
                         </p>
-                        <button className="px-8 py-3 rounded-xl bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)]">
+                        <button
+                            onClick={() => setShowDeleteModal(true)}
+                            className="px-8 py-3 rounded-xl bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] border border-red-500/20 hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.4)]"
+                        >
                             Delete Account
                         </button>
                     </div>

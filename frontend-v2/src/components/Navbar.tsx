@@ -153,7 +153,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                             </AnimatePresence>
                         </div>
                     ) : (
-                        <Link href="/auth" className=="ml-2 px-6 py-2.5 rounded-full bg-primary text-white font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm tracking-tight shadow-md lg:shadow-xl">
+                        <Link href="/auth" className="ml-2 px-6 py-2.5 rounded-full bg-primary text-white font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm tracking-tight shadow-md lg:shadow-xl">
                             Log In
                         </Link>
                     )}

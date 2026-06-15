@@ -47,6 +47,14 @@ router.get('/overview', async (req: Request, res: Response) => {
         const statusMap: Record<string, number> = {};
         swapStatuses.forEach((s) => { statusMap[s.status] = s._count.status; });
 
+        // Users active in the last 5 minutes (approximates "online now").
+        // Defensive: returns 0 if the lastActiveAt column isn't present yet.
+        let activeNow = 0;
+        try {
+            const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
+            activeNow = await prisma.user.count({ where: { lastActiveAt: { gte: fiveMinAgo } } });
+        } catch { activeNow = 0; }
+
         res.json({
             totalUsers,
             totalSwaps,
@@ -55,6 +63,7 @@ router.get('/overview', async (req: Request, res: Response) => {
             totalComments,
             totalFollows,
             totalWaitlist,
+            activeNow,
             swapFunnel: {
                 PENDING: statusMap['PENDING'] || 0,
                 ACCEPTED: statusMap['ACCEPTED'] || 0,

@@ -11,7 +11,14 @@ CREATE TABLE "User" (
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
+-- CreateTable
+CREATE TABLE "SystemSettings" (
+    "id" TEXT NOT NULL DEFAULT 'global_config',
+    "maintenanceMode" BOOLEAN NOT NULL DEFAULT FALSE,
+    "allowRegistrations" BOOLEAN NOT NULL DEFAULT TRUE,
 
+    CONSTRAINT "SystemSettings_pkey" PRIMARY KEY ("id")
+);
 -- CreateTable
 CREATE TABLE "Skill" (
     "id" TEXT NOT NULL,

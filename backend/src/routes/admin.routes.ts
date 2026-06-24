@@ -318,4 +318,61 @@ router.delete("/waitlist/:idOrEmail", async (req, res) => {
     }
 });
 
+// ── 13. FETCH PLATFORM CONFIGURATION RULES ──
+router.get("/settings", async (req, res) => {
+    try {
+        let settings = await prisma.systemSettings.findFirst();
+        
+        // Auto-initialize with standard configurations if the settings document doesn't exist yet
+        if (!settings) {
+            settings = await prisma.systemSettings.create({
+                data: { id: "global_config", maintenanceMode: false, allowRegistrations: true }
+            });
+        }
+        
+        res.status(200).json({
+            maintenanceMode: settings.maintenanceMode,
+            allowRegistrations: settings.allowRegistrations
+        });
+    } catch (error) {
+        console.error("Admin Settings Fetch Error:", error);
+        res.status(500).json({ error: "Failed to parse platform engine rule settings." });
+    }
+});
+
+// ── 14. PATCH / UPDATE PLATFORM CONFIGURATION RULES ──
+router.put("/settings", async (req, res) => {
+    try {
+        const { maintenanceMode, allowRegistrations } = req.body;
+
+        let settings = await prisma.systemSettings.findFirst();
+
+        if (!settings) {
+            settings = await prisma.systemSettings.create({
+                data: {
+                    id: "global_config",
+                    maintenanceMode: maintenanceMode ?? false,
+                    allowRegistrations: allowRegistrations ?? true
+                }
+            });
+        } else {
+            settings = await prisma.systemSettings.update({
+                where: { id: settings.id },
+                data: {
+                    ...(maintenanceMode !== undefined && { maintenanceMode }),
+                    ...(allowRegistrations !== undefined && { allowRegistrations })
+                }
+            });
+        }
+
+        res.status(200).json({
+            maintenanceMode: settings.maintenanceMode,
+            allowRegistrations: settings.allowRegistrations
+        });
+    } catch (error) {
+        console.error("Admin Settings Update Error:", error);
+        res.status(500).json({ error: "Failed to save rewritten system rules configuration." });
+    }
+});
+
 module.exports = router;

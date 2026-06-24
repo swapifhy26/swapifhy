@@ -34,7 +34,7 @@ export default function MatchMatrix() {
             .then(([matchData, chatData]) => {
                 if (matchData.matches) setMatches(matchData.matches);
                 if (chatData.conversations) setConversations(chatData.conversations);
-                setLoading(false);
+                loading && setLoading(false);
             })
             .catch((err) => {
                 console.error("[MatchMatrix] System Failure:", err);
@@ -54,6 +54,7 @@ export default function MatchMatrix() {
                 body: JSON.stringify({ followingId })
             });
 
+            // Optimistic UI Update
             setMatches(prev => prev.map(m => m.id === followingId ? { ...m, isFollowing: !isCurrentlyFollowing } : m));
         } catch (err) { console.error(err); }
     };
@@ -88,7 +89,7 @@ export default function MatchMatrix() {
                         </div>
                         <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-none flex items-center gap-3">
                             Your 
-                            <span className="text-emerald-500 dark:text-emerald-400 font-extrabold tracking-wide inline-block [text-shadow:_0_1px_0_#047857,_0_2px_0_#047857,_0_3px_0_#047857,_0_4px_0_#065f46,_0_5px_0_#065f46,_0_6px_8px_rgba(0,0,0,0.4)] dark:[text-shadow:_0_1px_0_#047857,_0_2px_0_#047857,_0_3px_0_#047857,_0_4px_0_#065f46,_0_5px_0_#065f46,_0_6px_8px_rgba(0,0,0,0.6)] py-1 px-2">
+                            <span className="text-emerald-400 font-extrabold tracking-wide inline-block [text-shadow:_0_1px_0_#047857,_0_2px_0_#047857,_0_3px_0_#047857,_0_4px_0_#065f46,_0_5px_0_#065f46,_0_6px_8px_rgba(0,0,0,0.6)] py-1 px-2">
                                 Matches
                             </span>
                         </h1>
@@ -168,31 +169,14 @@ export default function MatchMatrix() {
                         <div className="space-y-4">
                             {conversations.length > 0 ? (
                                 conversations.map((conv, idx) => (
-                                    <motion.div 
-                                        onClick={() => setActiveSwapId(conv.swapId)} 
-                                        initial={{ opacity: 0, x: 20 }} 
-                                        animate={{ opacity: 1, x: 0 }} 
-                                        transition={{ delay: idx * 0.1 }} 
-                                        key={idx} 
-                                        className="p-5 rounded-[2rem] bg-white/60 dark:bg-gradient-to-br dark:from-neutral-900/70 dark:via-neutral-900/30 dark:to-neutral-950/20 backdrop-blur-xl border border-slate-200/60 dark:border-white/5 border-t-white dark:border-t-white/10 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,0.8)] dark:shadow-[0_4px_24px_-3px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.1)] hover:shadow-[0_15px_35px_-5px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_12px_32px_-4px_rgba(16,185,129,0.2)] hover:border-emerald-500/40 dark:hover:border-pink-500/30 hover:-translate-y-1 hover:scale-[1.01] hover:bg-white/90 dark:hover:bg-gradient-to-br dark:hover:from-emerald-500/5 dark:hover:to-pink-500/5 transition-all duration-300 cursor-pointer group"
-                                    >
+                                    <motion.div onClick={() => setActiveSwapId(conv.swapId)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} key={idx} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-secondary/40 transition-all cursor-pointer group">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-surface/80 border border-slate-200 dark:border-border overflow-hidden p-0.5 shadow-inner group-hover:border-emerald-500/20 transition-colors">
-                                                {conv.partnerAvatar ? (
-                                                    <img src={conv.partnerAvatar} alt="" className="w-full h-full object-cover rounded-xl" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center font-black text-xs bg-gradient-to-br from-emerald-500/10 to-pink-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl">
-                                                        {conv.partnerName?.charAt(0) || "U"}
-                                                    </div>
-                                                )}
+                                            <div className="w-12 h-12 rounded-xl bg-surface border border-border overflow-hidden">
+                                                {conv.partnerAvatar ? <img src={conv.partnerAvatar} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center font-black text-xs bg-secondary/10 text-secondary">{conv.partnerName?.charAt(0) || "U"}</div>}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h4 className="text-[13px] font-bold text-foreground tracking-tight truncate mb-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                                    {conv.partnerName}
-                                                </h4>
-                                                <p className="text-[12px] text-muted-foreground truncate opacity-80 group-hover:opacity-100 transition-opacity">
-                                                    {conv.lastMessage}
-                                                </p>
+                                                <h4 className="text-[13px] font-bold text-foreground tracking-tight truncate mb-0.5">{conv.partnerName}</h4>
+                                                <p className="text-[12px] text-muted-foreground truncate opacity-80">{conv.lastMessage}</p>
                                             </div>
                                         </div>
                                     </motion.div>

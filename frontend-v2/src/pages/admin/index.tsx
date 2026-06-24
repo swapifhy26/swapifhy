@@ -224,6 +224,26 @@ export default function AdminDashboard() {
     }, [apiFetch]);
     const loadEngagement = useCallback(async () => { const d = await apiFetch("/api/admin/engagement"); if (d) setEngagement(d); }, [apiFetch]);
     const loadWaitlist = useCallback(async () => { const d = await apiFetch("/api/admin/waitlist"); if (d) setWaitlist(d); }, [apiFetch]);
+    
+    // Live Platform Config Sync Pipelines
+    const loadSettings = useCallback(async () => { 
+        const d = await apiFetch("/api/admin/settings"); 
+        if (d) { 
+            setMaintenanceMode(!!d.maintenanceMode); 
+            setAllowRegistrations(!!d.allowRegistrations); 
+        } 
+    }, [apiFetch]);
+
+    const handleSaveSettings = async () => {
+        const d = await apiFetch("/api/admin/settings", {
+            method: "PUT",
+            body: JSON.stringify({ maintenanceMode, allowRegistrations })
+        });
+        if (d) {
+            setSettingsSaved(true);
+            setTimeout(() => setSettingsSaved(false), 3000);
+        }
+    };
 
     useEffect(() => {
         if (!adminKey) return;
@@ -237,7 +257,8 @@ export default function AdminDashboard() {
         if (activeTab === "users" && users.length === 0) loadUsers(1);
         if (activeTab === "activity" && !engagement) loadEngagement();
         if (activeTab === "waitlist" && !waitlist) loadWaitlist();
-    }, [activeTab, adminKey]);
+        if (activeTab === "settings") loadSettings();
+    }, [activeTab, adminKey, skills, users.length, engagement, waitlist, loadSkills, loadUsers, loadEngagement, loadWaitlist, loadSettings]);
 
     const handleRefresh = async () => {
         setRefreshing(true);
@@ -247,6 +268,7 @@ export default function AdminDashboard() {
             activeTab === "users" ? loadUsers(userPage, userSearch) : Promise.resolve(),
             activeTab === "activity" ? loadEngagement() : Promise.resolve(),
             activeTab === "waitlist" ? loadWaitlist() : Promise.resolve(),
+            activeTab === "settings" ? loadSettings() : Promise.resolve(),
         ]);
         setRefreshing(false);
     };
@@ -768,12 +790,12 @@ export default function AdminDashboard() {
                             {/* Save */}
                             <div className="flex items-center justify-between">
                                 {settingsSaved && (
-                                    <span className="flex items-center gap-2 text-sm text-emerald-500 font-medium">
+                                    <span className="flex items-center gap-2 text-sm text-emerald-500 font-medium animate-fade-in">
                                         <CheckCircle2 className="w-4 h-4" /> Settings saved
                                     </span>
                                 )}
                                 <div className="ml-auto">
-                                    <button onClick={() => { setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 3000); }}
+                                    <button onClick={handleSaveSettings}
                                         className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors shadow-sm">
                                         <Save className="w-4 h-4" /> Save Settings
                                     </button>

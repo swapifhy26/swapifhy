@@ -182,10 +182,10 @@ export default function AdminDashboard() {
     const [editPost, setEditPost] = useState<TopPost | null>(null);
     const [showAddWaitlist, setShowAddWaitlist] = useState(false);
 
-    // Settings state
+    // Settings state (Renamed allowRegistrations to allowNewRegistrations to match backend)
     const [settingsSaved, setSettingsSaved] = useState(false);
     const [maintenanceMode, setMaintenanceMode] = useState(false);
-    const [allowRegistrations, setAllowRegistrations] = useState(true);
+    const [allowNewRegistrations, setAllowNewRegistrations] = useState(true);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -230,14 +230,14 @@ export default function AdminDashboard() {
         const d = await apiFetch("/api/admin/settings"); 
         if (d) { 
             setMaintenanceMode(!!d.maintenanceMode); 
-            setAllowRegistrations(!!d.allowRegistrations); 
+            setAllowNewRegistrations(!!d.allowNewRegistrations); 
         } 
     }, [apiFetch]);
 
     const handleSaveSettings = async () => {
         const d = await apiFetch("/api/admin/settings", {
             method: "PUT",
-            body: JSON.stringify({ maintenanceMode, allowRegistrations })
+            body: JSON.stringify({ maintenanceMode, allowNewRegistrations })
         });
         if (d) {
             setSettingsSaved(true);
@@ -712,9 +712,9 @@ export default function AdminDashboard() {
                                         <p className={`text-sm font-medium ${text}`}>Allow New Registrations</p>
                                         <p className={`text-xs ${subtext}`}>When disabled, new users cannot sign up</p>
                                     </div>
-                                    <button onClick={() => setAllowRegistrations(r => !r)}
-                                        className={`w-12 h-6 rounded-full transition-colors relative ${allowRegistrations ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"}`}>
-                                        <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform shadow ${allowRegistrations ? "translate-x-6" : "translate-x-0.5"}`} />
+                                    <button onClick={() => setAllowNewRegistrations(r => !r)}
+                                        className={`w-12 h-6 rounded-full transition-colors relative ${allowNewRegistrations ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-700"}`}>
+                                        <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform shadow ${allowNewRegistrations ? "translate-x-6" : "translate-x-0.5"}`} />
                                     </button>
                                 </div>
                                 <div className="flex items-center justify-between py-4">

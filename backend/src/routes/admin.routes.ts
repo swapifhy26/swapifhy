@@ -1,12 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const { PrismaClient } = require("@prisma/client");
+// 📂 src/routes/admin.routes.ts
+import { Router, Request, Response, NextFunction } from 'express';
+import { PrismaClient } from '@prisma/client';
 
+const router = Router();
 const prisma = new PrismaClient();
 
 // ── ADMIN SECURITY MIDDLEWARE ──
 // Verifies the incoming "x-admin-key" against the secret environment variable
-const verifyAdminKey = (req, res, next) => {
+const verifyAdminKey = (req: Request, res: Response, next: NextFunction) => {
     const adminKey = req.headers["x-admin-key"];
     const systemAdminKey = process.env.ADMIN_SECRET_KEY;
 
@@ -20,7 +21,7 @@ const verifyAdminKey = (req, res, next) => {
 router.use(verifyAdminKey);
 
 // ── 1. OVERVIEW METRICS ──
-router.get("/overview", async (req, res) => {
+router.get("/overview", async (req: Request, res: Response) => {
     try {
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
@@ -52,7 +53,7 @@ router.get("/overview", async (req, res) => {
         });
 
         // Map database response directly onto frontend key expectations
-        const swapFunnel = { PENDING: 0, ACCEPTED: 0, REJECTED: 0, COMPLETED: 0 };
+        const swapFunnel: Record<string, number> = { PENDING: 0, ACCEPTED: 0, REJECTED: 0, COMPLETED: 0 };
         swapStatuses.forEach(item => {
             if (swapFunnel.hasOwnProperty(item.status)) {
                 swapFunnel[item.status] = item._count._all;
@@ -77,7 +78,7 @@ router.get("/overview", async (req, res) => {
 });
 
 // ── 2. GROWTH CHART DATA (LAST 30 DAYS) ──
-router.get("/growth", async (req, res) => {
+router.get("/growth", async (req: Request, res: Response) => {
     try {
         // Generates an incremental timeline cross-referencing daily account creations
         const chartData = await prisma.$queryRaw`
@@ -100,7 +101,7 @@ router.get("/growth", async (req, res) => {
 });
 
 // ── 3. SKILL METRICS ──
-router.get("/skills", async (req, res) => {
+router.get("/skills", async (req: Request, res: Response) => {
     try {
         const topTaught = await prisma.skill.findMany({
             where: { type: "TEACH" },
@@ -127,7 +128,7 @@ router.get("/skills", async (req, res) => {
 });
 
 // ── 4. ENGAGEMENT LOGS (TOP POSTS) ──
-router.get("/engagement", async (req, res) => {
+router.get("/engagement", async (req: Request, res: Response) => {
     try {
         const topPosts = await prisma.post.findMany({
             take: 10,
@@ -158,17 +159,17 @@ router.get("/engagement", async (req, res) => {
 });
 
 // ── 5. USER MANAGEMENT LAYER WITH PAGINATION & SEARCH ──
-router.get("/users", async (req, res) => {
+router.get("/users", async (req: Request, res: Response) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 15;
-        const search = req.query.search || "";
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 15;
+        const search = (req.query.search as string) || "";
         const skip = (page - 1) * limit;
 
         const whereCondition = search ? {
             OR: [
-                { name: { contains: search, mode: "insensitive" } },
-                { email: { contains: search, mode: "insensitive" } }
+                { name: { contains: search, mode: "insensitive" as const } },
+                { email: { contains: search, mode: "insensitive" as const } }
             ]
         } : {};
 
@@ -213,7 +214,7 @@ router.get("/users", async (req, res) => {
 });
 
 // ── 6. BAN / UNBAN WORKFLOWS ──
-router.put("/users/:id/ban", async (req, res) => {
+router.put("/users/:id/ban", async (req: Request, res: Response) => {
     const { id } = req.params;
     const { banned } = req.body;
 
@@ -234,7 +235,7 @@ router.put("/users/:id/ban", async (req, res) => {
 });
 
 // ── 7. PERMANENT USER DELETION ──
-router.delete("/users/:id", async (req, res) => {
+router.delete("/users/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         await prisma.user.delete({ where: { id } });
@@ -246,7 +247,7 @@ router.delete("/users/:id", async (req, res) => {
 });
 
 // ── 8. UPDATE ACTIVE CONTENT POSTS ──
-router.put("/posts/:id", async (req, res) => {
+router.put("/posts/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const { content } = req.body;
 
@@ -263,7 +264,7 @@ router.put("/posts/:id", async (req, res) => {
 });
 
 // ── 9. DELETE CONTENT POSTS ──
-router.delete("/posts/:id", async (req, res) => {
+router.delete("/posts/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         await prisma.post.delete({ where: { id } });
@@ -275,7 +276,7 @@ router.delete("/posts/:id", async (req, res) => {
 });
 
 // ── 10. WAITLIST ROSTER GET ──
-router.get("/waitlist", async (req, res) => {
+router.get("/waitlist", async (req: Request, res: Response) => {
     try {
         const [total, recent] = await Promise.all([
             prisma.waitlist.count(),
@@ -292,7 +293,7 @@ router.get("/waitlist", async (req, res) => {
 });
 
 // ── 11. WAITLIST ROSTER ADD ──
-router.post("/waitlist", async (req, res) => {
+router.post("/waitlist", async (req: Request, res: Response) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: "A valid email property sequence must be configured." });
 
@@ -306,7 +307,7 @@ router.post("/waitlist", async (req, res) => {
 });
 
 // ── 12. WAITLIST ROSTER DELETION ──
-router.delete("/waitlist/:idOrEmail", async (req, res) => {
+router.delete("/waitlist/:idOrEmail", async (req: Request, res: Response) => {
     const { idOrEmail } = req.params;
     try {
         const identification = idOrEmail.includes("@") ? { email: idOrEmail } : { id: idOrEmail };
@@ -319,20 +320,20 @@ router.delete("/waitlist/:idOrEmail", async (req, res) => {
 });
 
 // ── 13. FETCH PLATFORM CONFIGURATION RULES ──
-router.get("/settings", async (req, res) => {
+router.get("/settings", async (req: Request, res: Response) => {
     try {
-        let settings = await prisma.systemSettings.findFirst();
+        // ✨ Fixed: Aligned to prisma.settings to match auth.routes.ts
+        let settings = await prisma.settings.findFirst();
         
-        // Auto-initialize with standard configurations if the settings document doesn't exist yet
         if (!settings) {
-            settings = await prisma.systemSettings.create({
-                data: { id: "global_config", maintenanceMode: false, allowRegistrations: true }
+            settings = await prisma.settings.create({
+                data: { maintenanceMode: false, allowNewRegistrations: true }
             });
         }
         
         res.status(200).json({
             maintenanceMode: settings.maintenanceMode,
-            allowRegistrations: settings.allowRegistrations
+            allowNewRegistrations: settings.allowNewRegistrations
         });
     } catch (error) {
         console.error("Admin Settings Fetch Error:", error);
@@ -341,33 +342,33 @@ router.get("/settings", async (req, res) => {
 });
 
 // ── 14. PATCH / UPDATE PLATFORM CONFIGURATION RULES ──
-router.put("/settings", async (req, res) => {
+router.put("/settings", async (req: Request, res: Response) => {
     try {
-        const { maintenanceMode, allowRegistrations } = req.body;
+        const { maintenanceMode, allowNewRegistrations } = req.body;
 
-        let settings = await prisma.systemSettings.findFirst();
+        // ✨ Fixed: Aligned to prisma.settings and allowNewRegistrations to match auth.routes.ts
+        let settings = await prisma.settings.findFirst();
 
         if (!settings) {
-            settings = await prisma.systemSettings.create({
+            settings = await prisma.settings.create({
                 data: {
-                    id: "global_config",
                     maintenanceMode: maintenanceMode ?? false,
-                    allowRegistrations: allowRegistrations ?? true
+                    allowNewRegistrations: allowNewRegistrations ?? true
                 }
             });
         } else {
-            settings = await prisma.systemSettings.update({
+            settings = await prisma.settings.update({
                 where: { id: settings.id },
                 data: {
                     ...(maintenanceMode !== undefined && { maintenanceMode }),
-                    ...(allowRegistrations !== undefined && { allowRegistrations })
+                    ...(allowNewRegistrations !== undefined && { allowNewRegistrations })
                 }
             });
         }
 
         res.status(200).json({
             maintenanceMode: settings.maintenanceMode,
-            allowRegistrations: settings.allowRegistrations
+            allowNewRegistrations: settings.allowNewRegistrations
         });
     } catch (error) {
         console.error("Admin Settings Update Error:", error);
@@ -375,4 +376,4 @@ router.put("/settings", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

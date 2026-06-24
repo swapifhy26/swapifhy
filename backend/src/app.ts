@@ -17,7 +17,11 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerDocument } from './swagger';
 import { UPLOADS_DIR } from './config/env';
 
+// Import PrismaClient to check platform states
+import { PrismaClient } from '@prisma/client';
+
 const app = express();
+const prisma = new PrismaClient();
 
 // Render/Cloud Run sit behind one proxy hop; required for express-rate-limit
 // to see real client IPs instead of the proxy's.
@@ -61,6 +65,48 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Swagger API Documentation Endpoint
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// ── SYSTEM ARCHITECTURE CONTROL INTERCEPTOR ──
+// Checks database toggles before executing public routing pipelines
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    // 1. Bypass filters for admin control vectors, health configurations, and API documentation
+    if (
+        req.path.startsWith('/api/admin') || 
+        req.path === '/api/health' || 
+        req.path.startsWith('/api/docs')
+    ) {
+        return next();
+    }
+
+    try {
+        const settings = await prisma.systemSettings.findFirst();
+
+        if (settings) {
+            // 2. Enforce Maintenance Mode Barrier
+            if (settings.maintenanceMode) {
+                return res.status(503).json({
+                    error: 'Service Unavailable',
+                    message: 'Swapifhy is currently undergoing scheduled backend updates. Please try again shortly.'
+                });
+            }
+
+            // 3. Enforce Registration Lock Barrier
+            // Intercepts account creation pipeline targets (covers common naming standards)
+            const isRegisterRoute = req.path === '/api/auth/register' || req.path === '/api/auth/signup';
+            if (!settings.allowRegistrations && req.method === 'POST' && isRegisterRoute) {
+                return res.status(403).json({
+                    error: 'Registration Locked',
+                    message: 'Public registration pipelines are temporarily frozen. Please join the waitlist.'
+                });
+            }
+        }
+    } catch (error) {
+        // Fall-safe trace log context so database hiccups don't crash core user traffic handling completely
+        console.error('System settings validation verification failure:', error);
+    }
+
+    next();
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);

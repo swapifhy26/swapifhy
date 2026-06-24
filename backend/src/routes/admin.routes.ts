@@ -1,26 +1,30 @@
-import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+const express = require("express");
+const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
 
-const router = Router();
 const prisma = new PrismaClient();
 
-// ─── ADMIN KEY GUARD ─────────────────────────────────────────────────────────
-const adminGuard = (req: Request, res: Response, next: () => void): void => {
-    const key = req.headers['x-admin-key'];
-    const secret = process.env.ADMIN_SECRET;
-    if (!secret || key !== secret) {
-        res.status(401).json({ error: 'Unauthorized. Invalid or missing admin key.' });
-        return;
+// ── ADMIN SECURITY MIDDLEWARE ──
+// Verifies the incoming "x-admin-key" against the secret environment variable
+const verifyAdminKey = (req, res, next) => {
+    const adminKey = req.headers["x-admin-key"];
+    const systemAdminKey = process.env.ADMIN_SECRET_KEY;
+
+    if (!adminKey || adminKey !== systemAdminKey) {
+        return res.status(401).json({ error: "Unauthorized: Invalid or missing admin key." });
     }
     next();
 };
 
-router.use(adminGuard as any);
+// Protect all sub-routes defined below with the admin key check
+router.use(verifyAdminKey);
 
-// ─── GET /api/admin/overview ──────────────────────────────────────────────────
-// Core KPI counters: total users, swaps, posts, likes, comments, follows, waitlist
-router.get('/overview', async (req: Request, res: Response) => {
+// ── 1. OVERVIEW METRICS ──
+router.get("/overview", async (req, res) => {
     try {
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+        // Fetch all cumulative metric counters concurrently
         const [
             totalUsers,
             totalSwaps,
@@ -29,6 +33,7 @@ router.get('/overview', async (req: Request, res: Response) => {
             totalComments,
             totalFollows,
             totalWaitlist,
+            activeNow
         ] = await Promise.all([
             prisma.user.count(),
             prisma.swap.count(),
@@ -37,25 +42,24 @@ router.get('/overview', async (req: Request, res: Response) => {
             prisma.comment.count(),
             prisma.follow.count(),
             prisma.waitlist.count(),
+            prisma.user.count({ where: { lastActiveAt: { gte: fiveMinutesAgo } } })
         ]);
 
+        // Gather all categorical values for the funnel chart
         const swapStatuses = await prisma.swap.groupBy({
-            by: ['status'],
-            _count: { status: true },
+            by: ["status"],
+            _count: { _all: true }
         });
 
-        const statusMap: Record<string, number> = {};
-        swapStatuses.forEach((s) => { statusMap[s.status] = s._count.status; });
+        // Map database response directly onto frontend key expectations
+        const swapFunnel = { PENDING: 0, ACCEPTED: 0, REJECTED: 0, COMPLETED: 0 };
+        swapStatuses.forEach(item => {
+            if (swapFunnel.hasOwnProperty(item.status)) {
+                swapFunnel[item.status] = item._count._all;
+            }
+        });
 
-        // Users active in the last 5 minutes (approximates "online now").
-        // Defensive: returns 0 if the lastActiveAt column isn't present yet.
-        let activeNow = 0;
-        try {
-            const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
-            activeNow = await prisma.user.count({ where: { lastActiveAt: { gte: fiveMinAgo } } });
-        } catch { activeNow = 0; }
-
-        res.json({
+        res.status(200).json({
             totalUsers,
             totalSwaps,
             totalPosts,
@@ -64,264 +68,254 @@ router.get('/overview', async (req: Request, res: Response) => {
             totalFollows,
             totalWaitlist,
             activeNow,
-            swapFunnel: {
-                PENDING: statusMap['PENDING'] || 0,
-                ACCEPTED: statusMap['ACCEPTED'] || 0,
-                REJECTED: statusMap['REJECTED'] || 0,
-                COMPLETED: statusMap['COMPLETED'] || 0,
-            },
+            swapFunnel
         });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch overview' });
+    } catch (error) {
+        console.error("Admin Overview Fetch Error:", error);
+        res.status(500).json({ error: "Failed to assemble operational system overview statistics." });
     }
 });
 
-// ─── GET /api/admin/growth ────────────────────────────────────────────────────
-// Daily new user registrations for the last 30 days
-router.get('/growth', async (req: Request, res: Response) => {
+// ── 2. GROWTH CHART DATA (LAST 30 DAYS) ──
+router.get("/growth", async (req, res) => {
     try {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        // Generates an incremental timeline cross-referencing daily account creations
+        const chartData = await prisma.$queryRaw`
+            SELECT 
+                TO_CHAR(DATE_TRUNC('day', generated_date), 'YYYY-MM-DD') AS date,
+                COALESCE(COUNT(DISTINCT u.id), 0)::int AS users,
+                COALESCE(COUNT(DISTINCT w.id), 0)::int AS waitlist
+            FROM 
+                GENERATE_SERIES(CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE, '1 day') AS generated_date
+            LEFT JOIN "User" u ON DATE_TRUNC('day', u."createdAt") = DATE_TRUNC('day', generated_date)
+            LEFT JOIN "Waitlist" w ON DATE_TRUNC('day', w."createdAt") = DATE_TRUNC('day', generated_date)
+            GROUP BY generated_date
+            ORDER BY generated_date ASC;
+        `;
+        res.status(200).json({ chartData });
+    } catch (error) {
+        console.error("Admin Growth Fetch Error:", error);
+        res.status(500).json({ error: "Failed to query historical platform data trends." });
+    }
+});
 
-        const users = await prisma.user.findMany({
-            where: { createdAt: { gte: thirtyDaysAgo } },
-            select: { createdAt: true },
-            orderBy: { createdAt: 'asc' },
+// ── 3. SKILL METRICS ──
+router.get("/skills", async (req, res) => {
+    try {
+        const topTaught = await prisma.skill.findMany({
+            where: { type: "TEACH" },
+            take: 5,
+            orderBy: { usersCount: "desc" },
+            select: { skill: true, category: true, usersCount: true }
         });
 
-        const waitlistEntries = await prisma.waitlist.findMany({
-            where: { createdAt: { gte: thirtyDaysAgo } },
-            select: { createdAt: true },
-            orderBy: { createdAt: 'asc' },
+        const topWanted = await prisma.skill.findMany({
+            where: { type: "LEARN" },
+            take: 5,
+            orderBy: { usersCount: "desc" },
+            select: { skill: true, category: true, usersCount: true }
         });
 
-        // Build daily buckets
-        const userDays: Record<string, number> = {};
-        const waitlistDays: Record<string, number> = {};
+        res.status(200).json({
+            topTaught: topTaught.map(s => ({ skill: s.skill, category: s.category, count: s.usersCount })),
+            topWanted: topWanted.map(s => ({ skill: s.skill, category: s.category, count: s.usersCount }))
+        });
+    } catch (error) {
+        console.error("Admin Skills Fetch Error:", error);
+        res.status(500).json({ error: "Failed to parse system catalog skill data metrics." });
+    }
+});
 
-        for (let i = 0; i < 30; i++) {
-            const d = new Date(thirtyDaysAgo);
-            d.setDate(d.getDate() + i);
-            const key = d.toISOString().slice(0, 10);
-            userDays[key] = 0;
-            waitlistDays[key] = 0;
-        }
-
-        users.forEach((u) => {
-            const key = u.createdAt.toISOString().slice(0, 10);
-            if (userDays[key] !== undefined) userDays[key]++;
+// ── 4. ENGAGEMENT LOGS (TOP POSTS) ──
+router.get("/engagement", async (req, res) => {
+    try {
+        const topPosts = await prisma.post.findMany({
+            take: 10,
+            orderBy: [
+                { likesCount: "desc" },
+                { commentsCount: "desc" }
+            ],
+            include: { author: { select: { name: true, id: true } } }
         });
 
-        waitlistEntries.forEach((w) => {
-            const key = w.createdAt.toISOString().slice(0, 10);
-            if (waitlistDays[key] !== undefined) waitlistDays[key]++;
-        });
-
-        const chartData = Object.keys(userDays).map((date) => ({
-            date,
-            users: userDays[date],
-            waitlist: waitlistDays[date],
+        const formattedPosts = topPosts.map(p => ({
+            id: p.id,
+            preview: p.content.slice(0, 100),
+            content: p.content,
+            author: p.author.name,
+            userId: p.author.id,
+            type: p.type || "text",
+            likes: p.likesCount,
+            comments: p.commentsCount,
+            createdAt: p.createdAt.toISOString()
         }));
 
-        res.json({ chartData });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch growth data' });
+        res.status(200).json({ topPosts: formattedPosts });
+    } catch (error) {
+        console.error("Admin Engagement Fetch Error:", error);
+        res.status(500).json({ error: "Failed to safely slice community engagement logs." });
     }
 });
 
-// ─── GET /api/admin/skills ────────────────────────────────────────────────────
-// Top 10 most-taught and most-wanted skills
-router.get('/skills', async (req: Request, res: Response) => {
+// ── 5. USER MANAGEMENT LAYER WITH PAGINATION & SEARCH ──
+router.get("/users", async (req, res) => {
     try {
-        const topTaught = await prisma.skillTeaching.groupBy({
-            by: ['skillId'],
-            _count: { skillId: true },
-            orderBy: { _count: { skillId: 'desc' } },
-            take: 10,
-        });
-
-        const topWanted = await prisma.skillLearning.groupBy({
-            by: ['skillId'],
-            _count: { skillId: true },
-            orderBy: { _count: { skillId: 'desc' } },
-            take: 10,
-        });
-
-        const taughtIds = topTaught.map((t) => t.skillId);
-        const wantedIds = topWanted.map((t) => t.skillId);
-        const allIds = [...new Set([...taughtIds, ...wantedIds])];
-
-        const skills = await prisma.skill.findMany({
-            where: { id: { in: allIds } },
-            select: { id: true, name: true, category: true },
-        });
-
-        const skillMap: Record<string, { name: string; category: string }> = {};
-        skills.forEach((s) => { skillMap[s.id] = { name: s.name, category: s.category }; });
-
-        res.json({
-            topTaught: topTaught.map((t) => ({
-                skill: skillMap[t.skillId]?.name ?? t.skillId,
-                category: skillMap[t.skillId]?.category ?? '',
-                count: t._count.skillId,
-            })),
-            topWanted: topWanted.map((t) => ({
-                skill: skillMap[t.skillId]?.name ?? t.skillId,
-                category: skillMap[t.skillId]?.category ?? '',
-                count: t._count.skillId,
-            })),
-        });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch skills data' });
-    }
-});
-
-// ─── GET /api/admin/users ─────────────────────────────────────────────────────
-// Paginated user table with reputation, swap count, post count
-router.get('/users', async (req: Request, res: Response) => {
-    try {
-        const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 20;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 15;
+        const search = req.query.search || "";
         const skip = (page - 1) * limit;
+
+        const whereCondition = search ? {
+            OR: [
+                { name: { contains: search, mode: "insensitive" } },
+                { email: { contains: search, mode: "insensitive" } }
+            ]
+        } : {};
 
         const [users, total] = await Promise.all([
             prisma.user.findMany({
+                where: whereCondition,
                 skip,
                 take: limit,
-                orderBy: { createdAt: 'desc' },
+                orderBy: { createdAt: "desc" },
                 select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    reputation: true,
-                    createdAt: true,
-                    avatarUrl: true,
-                    _count: {
-                        select: {
-                            posts: true,
-                            swapsProposed: true,
-                            swapsReceived: true,
-                            followers: true,
-                        },
-                    },
-                },
+                    id: true, name: true, email: true, reputation: true,
+                    createdAt: true, avatarUrl: true, isBanned: true,
+                    _count: { select: { swaps: true, posts: true, followers: true } }
+                }
             }),
-            prisma.user.count(),
+            prisma.user.count({ where: whereCondition })
         ]);
 
-        res.json({
-            users: users.map((u) => ({
-                ...u,
-                swapCount: u._count.swapsProposed + u._count.swapsReceived,
-                postCount: u._count.posts,
-                followerCount: u._count.followers,
-            })),
+        const formattedUsers = users.map(u => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            reputation: u.reputation,
+            createdAt: u.createdAt.toISOString(),
+            avatarUrl: u.avatarUrl,
+            isBanned: u.isBanned || false,
+            swapCount: u._count.swaps,
+            postCount: u._count.posts,
+            followerCount: u._count.followers
+        }));
+
+        res.status(200).json({
+            users: formattedUsers,
             total,
             page,
-            totalPages: Math.ceil(total / limit),
+            totalPages: Math.ceil(total / limit)
         });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch users' });
+    } catch (error) {
+        console.error("Admin Users Query Error:", error);
+        res.status(500).json({ error: "Failed to isolate filtered user directory." });
     }
 });
 
-// ─── GET /api/admin/engagement ────────────────────────────────────────────────
-// Top 10 most-liked posts + posts per day for 14 days
-router.get('/engagement', async (req: Request, res: Response) => {
+// ── 6. BAN / UNBAN WORKFLOWS ──
+router.put("/users/:id/ban", async (req, res) => {
+    const { id } = req.params;
+    const { banned } = req.body;
+
     try {
-        const fourteenDaysAgo = new Date();
-        fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-
-        const [rawTopPosts, recentPosts] = await Promise.all([
-            prisma.post.findMany({
-                take: 50,
-                select: {
-                    id: true,
-                    content: true,
-                    type: true,
-                    createdAt: true,
-                    user: { select: { name: true } },
-                    _count: { select: { likes: true, comments: true } },
-                },
-                orderBy: { createdAt: 'desc' },
-            }),
-            prisma.post.findMany({
-                where: { createdAt: { gte: fourteenDaysAgo } },
-                select: { createdAt: true },
-            }),
-        ]);
-
-        const dayMap: Record<string, number> = {};
-        for (let i = 0; i < 14; i++) {
-            const d = new Date(fourteenDaysAgo);
-            d.setDate(d.getDate() + i);
-            dayMap[d.toISOString().slice(0, 10)] = 0;
-        }
-        recentPosts.forEach((p) => {
-            const key = p.createdAt.toISOString().slice(0, 10);
-            if (dayMap[key] !== undefined) dayMap[key]++;
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { isBanned: banned }
         });
-
-        // Sort in memory by likes count (avoids orderByRelation preview feature requirement)
-        const topPosts = [...rawTopPosts].sort((a, b) => b._count.likes - a._count.likes).slice(0, 10);
-
-        res.json({
-            topPosts: topPosts.map((p) => ({
-                id: p.id,
-                preview: p.content.slice(0, 120),
-                author: p.user.name,
-                type: p.type,
-                likes: p._count.likes,
-                comments: p._count.comments,
-                createdAt: p.createdAt,
-            })),
-            postsByDay: Object.entries(dayMap).map(([date, count]) => ({ date, count })),
+        res.status(200).json({ 
+            message: "User account status flag successfully overridden.", 
+            userId: updatedUser.id, 
+            isBanned: updatedUser.isBanned 
         });
-
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch engagement data' });
+    } catch (error) {
+        console.error("Admin User Ban Mod Error:", error);
+        res.status(500).json({ error: "Failed to apply suspension update criteria." });
     }
 });
 
-// ─── GET /api/admin/waitlist ──────────────────────────────────────────────────
-// Waitlist count + recent 20 emails + growth by day for 30 days
-router.get('/waitlist', async (req: Request, res: Response) => {
+// ── 7. PERMANENT USER DELETION ──
+router.delete("/users/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        await prisma.user.delete({ where: { id } });
+        res.status(200).json({ success: true, message: "User records fully dropped from database context." });
+    } catch (error) {
+        console.error("Admin User Purge Error:", error);
+        res.status(500).json({ error: "Failed to remove the requested user reference records." });
+    }
+});
 
-        const [total, recent, byDay] = await Promise.all([
+// ── 8. UPDATE ACTIVE CONTENT POSTS ──
+router.put("/posts/:id", async (req, res) => {
+    const { id } = req.params;
+    const { content } = req.body;
+
+    try {
+        const updatedPost = await prisma.post.update({
+            where: { id },
+            data: { content }
+        });
+        res.status(200).json({ success: true, postId: updatedPost.id });
+    } catch (error) {
+        console.error("Admin Post Edit Error:", error);
+        res.status(500).json({ error: "Failed to overwrite resource database file strings." });
+    }
+});
+
+// ── 9. DELETE CONTENT POSTS ──
+router.delete("/posts/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        await prisma.post.delete({ where: { id } });
+        res.status(200).json({ success: true, message: "Post drop complete." });
+    } catch (error) {
+        console.error("Admin Post Deletion Error:", error);
+        res.status(500).json({ error: "Failed to clear specified post payload entry." });
+    }
+});
+
+// ── 10. WAITLIST ROSTER GET ──
+router.get("/waitlist", async (req, res) => {
+    try {
+        const [total, recent] = await Promise.all([
             prisma.waitlist.count(),
             prisma.waitlist.findMany({
-                orderBy: { createdAt: 'desc' },
-                take: 25,
-                select: { email: true, createdAt: true },
-            }),
-            prisma.waitlist.findMany({
-                where: { createdAt: { gte: thirtyDaysAgo } },
-                select: { createdAt: true },
-            }),
+                take: 15,
+                orderBy: { createdAt: "desc" }
+            })
         ]);
-
-        const dayMap: Record<string, number> = {};
-        for (let i = 0; i < 30; i++) {
-            const d = new Date(thirtyDaysAgo);
-            d.setDate(d.getDate() + i);
-            dayMap[d.toISOString().slice(0, 10)] = 0;
-        }
-        byDay.forEach((w) => {
-            const key = w.createdAt.toISOString().slice(0, 10);
-            if (dayMap[key] !== undefined) dayMap[key]++;
-        });
-
-        res.json({
-            total,
-            recent,
-            chartData: Object.entries(dayMap).map(([date, count]) => ({ date, count })),
-        });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch waitlist data' });
+        res.status(200).json({ total, recent });
+    } catch (error) {
+        console.error("Admin Waitlist Fetch Error:", error);
+        res.status(500).json({ error: "Failed to fetch waitlist state values." });
     }
 });
 
-export default router;
+// ── 11. WAITLIST ROSTER ADD ──
+router.post("/waitlist", async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: "A valid email property sequence must be configured." });
+
+    try {
+        const entry = await prisma.waitlist.create({ data: { email } });
+        res.status(201).json(entry);
+    } catch (error) {
+        console.error("Admin Waitlist Add Error:", error);
+        res.status(500).json({ error: "Failed to insert requested entity pointer to waitlist database table." });
+    }
+});
+
+// ── 12. WAITLIST ROSTER DELETION ──
+router.delete("/waitlist/:idOrEmail", async (req, res) => {
+    const { idOrEmail } = req.params;
+    try {
+        const identification = idOrEmail.includes("@") ? { email: idOrEmail } : { id: idOrEmail };
+        await prisma.waitlist.delete({ where: identification });
+        res.status(200).json({ success: true, message: "Roster index cleaned." });
+    } catch (error) {
+        console.error("Admin Waitlist Clear Error:", error);
+        res.status(500).json({ error: "Failed to delete target item from registry." });
+    }
+});
+
+module.exports = router;

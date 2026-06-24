@@ -34,7 +34,7 @@ export default function MatchMatrix() {
             .then(([matchData, chatData]) => {
                 if (matchData.matches) setMatches(matchData.matches);
                 if (chatData.conversations) setConversations(chatData.conversations);
-                setLoading(false);
+                loading && setLoading(false);
             })
             .catch((err) => {
                 console.error("[MatchMatrix] System Failure:", err);
@@ -45,7 +45,7 @@ export default function MatchMatrix() {
     const handleFollow = async (followingId: string, isCurrentlyFollowing: boolean) => {
         try {
             const token = localStorage.getItem("swapifhy_token");
-                const method = isCurrentlyFollowing ? "DELETE" : "POST";
+            const method = isCurrentlyFollowing ? "DELETE" : "POST";
             const endpoint = isCurrentlyFollowing ? "/api/follow/sever" : "/api/follow/sync";
             
             await fetch(`${API_URL}${endpoint}`, {
@@ -62,7 +62,7 @@ export default function MatchMatrix() {
     const handleSync = async (receiverId: string) => {
         try {
             const token = localStorage.getItem("swapifhy_token");
-                const res = await fetch(`${API_URL}/api/chat/sync`, {
+            const res = await fetch(`${API_URL}/api/chat/sync`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ receiverId })
@@ -87,8 +87,11 @@ export default function MatchMatrix() {
                             <span className="px-3 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-[8px] font-black uppercase tracking-[0.4em]">Connected</span>
                             <span className="text-muted-foreground text-[8px] font-black uppercase tracking-[0.4em] opacity-40">// System Operational</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-none">
-                            Your <span className="text-gradient">Matches</span>
+                        <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-none flex items-center gap-3">
+                            Your 
+                            <span className="text-emerald-400 font-extrabold tracking-wide inline-block [text-shadow:_0_1px_0_#047857,_0_2px_0_#047857,_0_3px_0_#047857,_0_4px_0_#065f46,_0_5px_0_#065f46,_0_6px_8px_rgba(0,0,0,0.6)] py-1 px-2">
+                                Matches
+                            </span>
                         </h1>
                     </div>
                 </div>
@@ -104,12 +107,18 @@ export default function MatchMatrix() {
 
                         {loading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
-                                {[...Array(4)].map((_, i) => <div key={i} className="h-64 rounded-[3rem] glass-elite" />)}
+                                {[...Array(4)].map((_, i) => <div key={i} className="h-64 rounded-[3rem] bg-white/5 backdrop-blur-md" />)}
                             </div>
                         ) : matches.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {matches.map((m, i) => (
-                                    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} key={i} className="p-10 rounded-[3rem] glass-elite hover:border-primary/30 transition-all group flex flex-col">
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.98 }} 
+                                        animate={{ opacity: 1, scale: 1 }} 
+                                        transition={{ delay: i * 0.05 }} 
+                                        key={i} 
+                                        className="p-10 rounded-[3rem] bg-gradient-to-br from-emerald-500/10 via-background/40 to-pink-500/10 backdrop-blur-xl border border-emerald-500/20 dark:border-pink-500/20 hover:border-emerald-400/40 transition-all duration-300 group flex flex-col shadow-xl"
+                                    >
                                         <div className="flex items-start justify-between mb-8">
                                             <div className="w-20 h-20 rounded-[1.5rem] bg-surface border border-border overflow-hidden p-0.5">
                                                 {m.avatarUrl ? <img src={m.avatarUrl} alt="" className="w-full h-full object-cover rounded-[1.3rem]" /> : <div className="w-full h-full flex items-center justify-center font-black text-xl italic text-primary/40 bg-primary/5">{m.name?.charAt(0) || "U"}</div>}
@@ -136,7 +145,7 @@ export default function MatchMatrix() {
                                             </button>
                                             <button 
                                                 onClick={() => handleSync(m.id)} 
-                                                className="flex-[1.5] py-3.5 rounded-xl bg-foreground text-background text-[12px] font-bold group overflow-hidden shadow-md relative hover:scale-[1.02] transition-transform"
+                                                className="flex-[1.5] py-3.5 rounded-xl bg-emerald-500 text-slate-950 dark:bg-white dark:text-slate-950 text-[12px] font-extrabold group overflow-hidden shadow-lg shadow-emerald-500/20 dark:shadow-white/10 relative hover:scale-[1.02] hover:bg-emerald-400 dark:hover:bg-slate-100 transition-all"
                                             >
                                                 <span className="relative z-10 flex items-center justify-center">
                                                     Message <MessageSquare className="ml-2 w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -160,7 +169,7 @@ export default function MatchMatrix() {
                         <div className="space-y-4">
                             {conversations.length > 0 ? (
                                 conversations.map((conv, idx) => (
-                                    <motion.div onClick={() => setActiveSwapId(conv.swapId)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} key={idx} className="p-6 rounded-[2rem] glass-elite hover:border-secondary/40 transition-all cursor-pointer group">
+                                    <motion.div onClick={() => setActiveSwapId(conv.swapId)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} key={idx} className="p-6 rounded-[2rem] bg-white/5 border border-white/10 hover:border-secondary/40 transition-all cursor-pointer group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-xl bg-surface border border-border overflow-hidden">
                                                 {conv.partnerAvatar ? <img src={conv.partnerAvatar} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center font-black text-xs bg-secondary/10 text-secondary">{conv.partnerName?.charAt(0) || "U"}</div>}

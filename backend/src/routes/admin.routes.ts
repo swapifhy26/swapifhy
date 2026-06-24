@@ -6,7 +6,6 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // ── ADMIN SECURITY MIDDLEWARE ──
-// Verifies the incoming "x-admin-key" against the secret environment variable
 const verifyAdminKey = (req: Request, res: Response, next: NextFunction) => {
     const adminKey = req.headers["x-admin-key"];
     const systemAdminKey = process.env.ADMIN_SECRET_KEY;
@@ -17,7 +16,6 @@ const verifyAdminKey = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
-// Protect all sub-routes defined below with the admin key check
 router.use(verifyAdminKey);
 
 // ── 1. OVERVIEW METRICS ──
@@ -25,34 +23,21 @@ router.get("/overview", async (req: Request, res: Response) => {
     try {
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
-        // Fetch all cumulative metric counters concurrently
         const [
-            totalUsers,
-            totalSwaps,
-            totalPosts,
-            totalLikes,
-            totalComments,
-            totalFollows,
-            totalWaitlist,
-            activeNow
+            totalUsers, totalSwaps, totalPosts, totalLikes,
+            totalComments, totalFollows, totalWaitlist, activeNow
         ] = await Promise.all([
-            prisma.user.count(),
-            prisma.swap.count(),
-            prisma.post.count(),
-            prisma.like.count(),
-            prisma.comment.count(),
-            prisma.follow.count(),
+            prisma.user.count(), prisma.swap.count(), prisma.post.count(),
+            prisma.like.count(), prisma.comment.count(), prisma.follow.count(),
             prisma.waitlist.count(),
             prisma.user.count({ where: { lastActiveAt: { gte: fiveMinutesAgo } } })
         ]);
 
-        // Gather all categorical values for the funnel chart
         const swapStatuses = await prisma.swap.groupBy({
             by: ["status"],
             _count: { _all: true }
         });
 
-        // Map database response directly onto frontend key expectations
         const swapFunnel: Record<string, number> = { PENDING: 0, ACCEPTED: 0, REJECTED: 0, COMPLETED: 0 };
         swapStatuses.forEach(item => {
             if (swapFunnel.hasOwnProperty(item.status)) {
@@ -61,15 +46,8 @@ router.get("/overview", async (req: Request, res: Response) => {
         });
 
         res.status(200).json({
-            totalUsers,
-            totalSwaps,
-            totalPosts,
-            totalLikes,
-            totalComments,
-            totalFollows,
-            totalWaitlist,
-            activeNow,
-            swapFunnel
+            totalUsers, totalSwaps, totalPosts, totalLikes,
+            totalComments, totalFollows, totalWaitlist, activeNow, swapFunnel
         });
     } catch (error) {
         console.error("Admin Overview Fetch Error:", error);
@@ -80,7 +58,6 @@ router.get("/overview", async (req: Request, res: Response) => {
 // ── 2. GROWTH CHART DATA (LAST 30 DAYS) ──
 router.get("/growth", async (req: Request, res: Response) => {
     try {
-        // Generates an incremental timeline cross-referencing daily account creations
         const chartData = await prisma.$queryRaw`
             SELECT 
                 TO_CHAR(DATE_TRUNC('day', generated_date), 'YYYY-MM-DD') AS date,
@@ -175,9 +152,7 @@ router.get("/users", async (req: Request, res: Response) => {
 
         const [users, total] = await Promise.all([
             prisma.user.findMany({
-                where: whereCondition,
-                skip,
-                take: limit,
+                where: whereCondition, skip, take: limit,
                 orderBy: { createdAt: "desc" },
                 select: {
                     id: true, name: true, email: true, reputation: true,
@@ -189,24 +164,13 @@ router.get("/users", async (req: Request, res: Response) => {
         ]);
 
         const formattedUsers = users.map(u => ({
-            id: u.id,
-            name: u.name,
-            email: u.email,
-            reputation: u.reputation,
-            createdAt: u.createdAt.toISOString(),
-            avatarUrl: u.avatarUrl,
-            isBanned: u.isBanned || false,
-            swapCount: u._count.swaps,
-            postCount: u._count.posts,
-            followerCount: u._count.followers
+            id: u.id, name: u.name, email: u.email, reputation: u.reputation,
+            createdAt: u.createdAt.toISOString(), avatarUrl: u.avatarUrl,
+            isBanned: u.isBanned || false, swapCount: u._count.swaps,
+            postCount: u._count.posts, followerCount: u._count.followers
         }));
 
-        res.status(200).json({
-            users: formattedUsers,
-            total,
-            page,
-            totalPages: Math.ceil(total / limit)
-        });
+        res.status(200).json({ users: formattedUsers, total, page, totalPages: Math.ceil(total / limit) });
     } catch (error) {
         console.error("Admin Users Query Error:", error);
         res.status(500).json({ error: "Failed to isolate filtered user directory." });
@@ -220,14 +184,9 @@ router.put("/users/:id/ban", async (req: Request, res: Response) => {
 
     try {
         const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { isBanned: banned }
+            where: { id }, data: { isBanned: banned }
         });
-        res.status(200).json({ 
-            message: "User account status flag successfully overridden.", 
-            userId: updatedUser.id, 
-            isBanned: updatedUser.isBanned 
-        });
+        res.status(200).json({ message: "User account status flag successfully overridden.", userId: updatedUser.id, isBanned: updatedUser.isBanned });
     } catch (error) {
         console.error("Admin User Ban Mod Error:", error);
         res.status(500).json({ error: "Failed to apply suspension update criteria." });
@@ -253,8 +212,7 @@ router.put("/posts/:id", async (req: Request, res: Response) => {
 
     try {
         const updatedPost = await prisma.post.update({
-            where: { id },
-            data: { content }
+            where: { id }, data: { content }
         });
         res.status(200).json({ success: true, postId: updatedPost.id });
     } catch (error) {
@@ -263,7 +221,22 @@ router.put("/posts/:id", async (req: Request, res: Response) => {
     }
 });
 
-// ── 9. DELETE CONTENT POSTS ──
+// ── 9. CLEAR ALL CONTENT POSTS ──
+router.delete("/posts/all", async (req: Request, res: Response) => {
+    try {
+        const deleteResult = await prisma.post.deleteMany();
+        res.status(200).json({ 
+            success: true, 
+            message: "All platform posts have been permanently removed.",
+            count: deleteResult.count 
+        });
+    } catch (error) {
+        console.error("Admin Clear All Posts Error:", error);
+        res.status(500).json({ error: "Failed to purge the community post database table." });
+    }
+});
+
+// ── 10. DELETE SINGLE CONTENT POSTS ──
 router.delete("/posts/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
@@ -275,15 +248,12 @@ router.delete("/posts/:id", async (req: Request, res: Response) => {
     }
 });
 
-// ── 10. WAITLIST ROSTER GET ──
+// ── 11. WAITLIST ROSTER GET ──
 router.get("/waitlist", async (req: Request, res: Response) => {
     try {
         const [total, recent] = await Promise.all([
             prisma.waitlist.count(),
-            prisma.waitlist.findMany({
-                take: 15,
-                orderBy: { createdAt: "desc" }
-            })
+            prisma.waitlist.findMany({ take: 15, orderBy: { createdAt: "desc" } })
         ]);
         res.status(200).json({ total, recent });
     } catch (error) {
@@ -292,7 +262,7 @@ router.get("/waitlist", async (req: Request, res: Response) => {
     }
 });
 
-// ── 11. WAITLIST ROSTER ADD ──
+// ── 12. WAITLIST ROSTER ADD ──
 router.post("/waitlist", async (req: Request, res: Response) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: "A valid email property sequence must be configured." });
@@ -306,7 +276,7 @@ router.post("/waitlist", async (req: Request, res: Response) => {
     }
 });
 
-// ── 12. WAITLIST ROSTER DELETION ──
+// ── 13. WAITLIST ROSTER DELETION ──
 router.delete("/waitlist/:idOrEmail", async (req: Request, res: Response) => {
     const { idOrEmail } = req.params;
     try {
@@ -319,10 +289,9 @@ router.delete("/waitlist/:idOrEmail", async (req: Request, res: Response) => {
     }
 });
 
-// ── 13. FETCH PLATFORM CONFIGURATION RULES ──
+// ── 14. FETCH PLATFORM CONFIGURATION RULES ──
 router.get("/settings", async (req: Request, res: Response) => {
     try {
-        // ✨ Fixed: Aligned to prisma.settings to match auth.routes.ts
         let settings = await prisma.settings.findFirst();
         
         if (!settings) {
@@ -341,12 +310,10 @@ router.get("/settings", async (req: Request, res: Response) => {
     }
 });
 
-// ── 14. PATCH / UPDATE PLATFORM CONFIGURATION RULES ──
+// ── 15. PATCH / UPDATE PLATFORM CONFIGURATION RULES ──
 router.put("/settings", async (req: Request, res: Response) => {
     try {
         const { maintenanceMode, allowNewRegistrations } = req.body;
-
-        // ✨ Fixed: Aligned to prisma.settings and allowNewRegistrations to match auth.routes.ts
         let settings = await prisma.settings.findFirst();
 
         if (!settings) {

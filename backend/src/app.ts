@@ -1,3 +1,4 @@
+// 📂 src/app.ts
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
@@ -79,7 +80,8 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
     }
 
     try {
-        const settings = await prisma.systemSettings.findFirst();
+        // ✨ FIXED: Aligned model query to prisma.settings
+        const settings = await prisma.settings.findFirst();
 
         if (settings) {
             // 2. Enforce Maintenance Mode Barrier
@@ -93,7 +95,9 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
             // 3. Enforce Registration Lock Barrier
             // Intercepts account creation pipeline targets (covers common naming standards)
             const isRegisterRoute = req.path === '/api/auth/register' || req.path === '/api/auth/signup';
-            if (!settings.allowRegistrations && req.method === 'POST' && isRegisterRoute) {
+            
+            // ✨ FIXED: Aligned field constraint to allowNewRegistrations
+            if (!settings.allowNewRegistrations && req.method === 'POST' && isRegisterRoute) {
                 return res.status(403).json({
                     error: 'Registration Locked',
                     message: 'Public registration pipelines are temporarily frozen. Please join the waitlist.'

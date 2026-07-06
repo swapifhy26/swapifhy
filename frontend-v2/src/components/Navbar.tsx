@@ -77,7 +77,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
         <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${scrolled ? "bg-surface/80 backdrop-blur-2xl border-b border-border py-4 shadow-xl" : "bg-transparent py-8"}`}>
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-[1.02] group">
-                    <img src="https://www.swapifhy.com/assets/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" className="h-[22px] w-auto drop-shadow-sm dark:brightness-125 transition-transform duration-500 group-hover:rotate-6" />
+                    <img src="frontend-v2/public/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" className="h-[22px] w-auto drop-shadow-sm dark:brightness-125 transition-transform duration-500 group-hover:rotate-6" />
                     <span className="hidden lg:block text-lg font-heading font-medium tracking-[-0.02em] text-foreground">Swapifhy</span>
                 </Link>
 

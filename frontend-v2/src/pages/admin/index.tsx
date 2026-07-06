@@ -399,7 +399,7 @@ export default function AdminDashboard() {
             {/* SIDEBAR */}
             <aside className={`w-64 shrink-0 border-r flex flex-col min-h-screen sticky top-0 ${sidebar}`}>
                 <div className={`px-6 py-6 flex items-center gap-3 border-b ${dark ? "border-gray-800" : "border-gray-100"}`}>
-                    <img src="/images/features/swapifhy-logo-DPxPDdg-.png" alt="logo" className="w-8 h-8 object-contain" />
+                    <img src="frontend-v2/public/images/features/swapifhy-logo-DPxPDdg-.png" alt="logo" className="w-8 h-8 object-contain" />
                     <div>
                         <p className={`font-bold leading-none ${text}`}>Swapifhy</p>
                         <p className={`text-xs mt-1 ${subtext}`}>Admin</p>

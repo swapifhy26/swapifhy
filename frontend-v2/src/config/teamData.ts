@@ -20,9 +20,23 @@ export const teamData = [
         level: 0,
         image: "/images/team_members/falak.jpg",
         linkedin: "https://www.linkedin.com/in/falak-yadav-a61199241/",
+        xSocial: "",
         color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
         text: "#000",
         description: "Chief Technology Officer focused on building high-bandwidth exchange protocols and scalable tech architecture."
+    },
+    {
+        name: "Soha Wasti",
+        role: "Chief Marketing Officer",
+        department: "Marketing",
+        avatar: "SW",
+        level: 1,
+        image: "/images/team_members/soha.png",
+        linkedin: "https://www.linkedin.com/in/soha-wasti-a325442a9/",
+        xSocial: "",
+        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
+        text: "#000",
+        description: "Leading the marketing strategy and growth engine for Swapifhy — building brand awareness, driving user acquisition, and creating localized trust across the ecosystem."
     },
     {
         name: "Naira M",
@@ -38,24 +52,11 @@ export const teamData = [
         description: "Driving growth-led ecosystems and scaling meaningful human connection movements."
     },
     {
-        name: "Aditi S.",
-        role: "Marketing Head",
-        department: "Marketing",
-        avatar: "AD",
-        level: 1,
-        image: "/images/team_members/aditi.jpg",
-        linkedin: "https://www.linkedin.com/in/aditie21/",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Focused on thoughtful marketing practice and narrative strategy for the Swapifhy mission."
-    },
-    {
         name: "Aditya Raj Tiwari",
         role: "Core Tech Lead & Architect",
         department: "Tech",
         avatar: "AT",
-        level: 1.5,
+        level: 1,
         image: "/images/team_members/aditya_raj.jpg",
         linkedin: "https://www.linkedin.com/in/aditya-raj-tiwari-36a3b5293/",
         xSocial: "",
@@ -68,26 +69,13 @@ export const teamData = [
         role: "Chief of Staff & Partnerships",
         department: "Management",
         avatar: "IS",
-        level: 2,
+        level: 1.5,
         image: "/images/team_members/ishani.jpeg",
         linkedin: "https://www.linkedin.com/in/ishani-sharma-724271320/",
         xSocial: "",
         color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
         text: "#000",
         description: "Specializing in partnerships, financial accessibility, and operational impact. Shaping the organizational backbone of the protocol."
-    },
-    {
-        name: "Syed Azmaan",
-        role: "Strategic Partnerships & Hiring Architect",
-        department: "Management",
-        avatar: "SA",
-        level: 2,
-        image: "/images/team_members/syed.jpeg",
-        linkedin: "https://www.linkedin.com/in/syed-azmaan-ali-madni-99642b230/",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Shaping the network through high-impact partnerships and strategic talent acquisition for the collective."
     },
     {
         name: "Eva Y",
@@ -129,32 +117,6 @@ export const teamData = [
         description: "Full-stack builder dedicated to crafting elegant code and seamless UX. Shaping the digital interaction layer."
     },
     {
-        name: "Aksh Tiwari",
-        role: "Web Developer",
-        department: "Tech",
-        avatar: "AT",
-        level: 2.5,
-        image: "",
-        linkedin: "https://www.linkedin.com/in/akshtiwariweb/",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "UI specialist focusing on web architecture and cloud-based exchange nodes. Shaping the visual scalability of the Hub."
-    },
-    {
-        name: "Hansika Mulani",
-        role: "Creative Strategist",
-        department: "Marketing",
-        avatar: "HM",
-        level: 3.5,
-        image: "/images/team_members/hansika.jpeg",
-        linkedin: "https://www.linkedin.com/in/hansika-mulani-534844389/",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Creative individual bridging people together through strategy and expression. Shaping the aesthetic protocol of Swapifhy."
-    },
-    {
         name: "Nandini Y",
         role: "Content Writer",
         department: "Marketing",
@@ -168,19 +130,6 @@ export const teamData = [
         description: "Crafting narratives focused on psychology, neuroscience, and expression. Shaping the intellectual voice of the Swapifhy protocol."
     },
     {
-        name: "Shreeti M.",
-        role: "Content Writer",
-        department: "Marketing",
-        avatar: "SM",
-        level: 3.5,
-        image: "/images/team_members/shreeti.jpeg",
-        linkedin: "https://www.linkedin.com/in/shreeti-mohapatra/",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Inspiring action and connection through thoughtful written narratives. Shaping the storytelling nodes of the collective."
-    },
-    {
         name: "Pragati Singh",
         role: "Growth Intern",
         department: "Growth",
@@ -192,31 +141,5 @@ export const teamData = [
         color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
         text: "#000",
         description: "Exploration node contributing to creative growth through content and connection. Shaping the future network."
-    },
-    {
-        name: "Khyati",
-        role: "Growth Intern",
-        department: "Growth",
-        avatar: "KH",
-        level: 5,
-        image: "/images/team_members/khyati.jpeg",
-        linkedin: "",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Focusing on community building and academic excellence node. Contribution in progress."
-    },
-    {
-        name: "Harima",
-        role: "Growth Intern",
-        department: "Growth",
-        avatar: "HA",
-        level: 5,
-        image: "/images/team_members/harima.jpeg",
-        linkedin: "",
-        xSocial: "",
-        color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",
-        text: "#000",
-        description: "Contributing to growth strategy with curiosity and impact-driven ideas. Developing the collective bridge."
     }
 ];

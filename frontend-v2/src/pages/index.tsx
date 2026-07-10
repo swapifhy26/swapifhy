@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Sparkles, Quote, Zap, Code, Shield, Users, Globe, ArrowRight, Mail, Star, Heart, CheckCircle, Info, Linkedin, Instagram, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { Sparkles, Quote, Zap, Code, Shield, Users, Globe, ArrowRight, Mail, Star, Heart, CheckCircle, Info, Linkedin, Instagram, ExternalLink, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { teamData } from "../config/teamData";
 
 // ── Swapifhy Glow Card ──
@@ -71,9 +71,139 @@ const GlowCard = ({ children, className }: { children: React.ReactNode; classNam
     );
 };
 
+// ── Policy Content ──
+// DRAFT PLACEHOLDER COPY. Replace with your own reviewed Privacy & Cookie policies
+// before this goes live — this text is a reasonable starting point, not legal advice.
+const privacyPolicySections = [
+    {
+        heading: "What We Collect",
+        body: "When you create a Swapifhy account, we collect basic profile details such as your name, email address, the skills you list, and messages you send to other users. We may also collect basic device and usage data to keep the platform running smoothly.",
+    },
+    {
+        heading: "How We Use It",
+        body: "We use your information to match you with relevant skill-swap partners, operate your account, respond to support requests, and improve the platform. We do not sell your personal information to third parties.",
+    },
+    {
+        heading: "Minors on the Platform",
+        body: "Swapifhy is open to users of all ages. Users aged 12–17 should have parental or guardian awareness and consent before using the platform. Parents and guardians are encouraged to stay involved and review activity for younger users.",
+    },
+    {
+        heading: "Data Sharing",
+        body: "Your profile information (name, listed skills, description) is visible to other Swapifhy users so that matching can happen. We don't share your private messages or contact details with third parties except where required by law.",
+    },
+    {
+        heading: "Your Choices",
+        body: "You can update or delete your profile information at any time from your account settings. To request full removal of your account and data, contact us at swapifhy.official@gmail.com.",
+    },
+    {
+        heading: "Updates to This Policy",
+        body: "We may update this Privacy Policy as Swapifhy evolves. Continued use of the platform after changes means you accept the updated version.",
+    },
+];
+
+const cookiePolicySections = [
+    {
+        heading: "What Are Cookies",
+        body: "Cookies are small text files stored on your device that help websites remember information about your visit, like your sign-in state and preferences.",
+    },
+    {
+        heading: "How Swapifhy Uses Cookies",
+        body: "We use essential cookies to keep you signed in and to make the platform function correctly. We may also use basic analytics cookies to understand how people use Swapifhy so we can improve it.",
+    },
+    {
+        heading: "Third-Party Cookies",
+        body: "Some features, like embedded content or analytics tools, may set their own cookies. We don't control these directly, but we choose providers that respect user privacy.",
+    },
+    {
+        heading: "Managing Cookies",
+        body: "Most browsers let you block or delete cookies through their settings. Disabling essential cookies may affect your ability to sign in or use certain features of Swapifhy.",
+    },
+    {
+        heading: "Updates to This Policy",
+        body: "We may update this Cookie Policy from time to time. Continued use of Swapifhy after changes means you accept the updated version.",
+    },
+];
+
+// ── Glossy Policy Modal ──
+const PolicyModal = ({
+    isOpen,
+    onClose,
+    title,
+    sections,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    sections: { heading: string; body: string }[];
+}) => (
+    <AnimatePresence>
+        {isOpen && (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-10"
+            >
+                {/* Backdrop */}
+                <motion.div
+                    onClick={onClose}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/70 backdrop-blur-md"
+                />
+
+                {/* Glossy panel */}
+                <motion.div
+                    initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 16, scale: 0.97 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="relative z-10 w-full max-w-2xl max-h-[80vh] rounded-[2.5rem] glass-elite border border-border shadow-2xl overflow-hidden"
+                >
+                    {/* Glossy accents */}
+                    <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-accent z-20" />
+                    <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-primary/20 blur-[100px] pointer-events-none" />
+                    <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-secondary/20 blur-[100px] pointer-events-none" />
+
+                    <div className="relative z-10 flex flex-col max-h-[80vh]">
+                        <div className="flex items-center justify-between px-8 md:px-10 pt-9 pb-6 border-b border-border shrink-0">
+                            <h3 className="text-2xl md:text-3xl font-heading font-black uppercase tracking-tight text-foreground">
+                                {title}
+                            </h3>
+                            <button
+                                onClick={onClose}
+                                aria-label="Close"
+                                className="w-10 h-10 rounded-xl bg-foreground/5 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-all shrink-0"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        <div className="px-8 md:px-10 py-8 overflow-y-auto space-y-7">
+                            {sections.map((s, i) => (
+                                <div key={i}>
+                                    <h4 className="text-sm font-sans font-bold text-primary uppercase tracking-[0.15em] mb-2">
+                                        {s.heading}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground font-sans leading-relaxed">
+                                        {s.body}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </motion.div>
+            </motion.div>
+        )}
+    </AnimatePresence>
+);
+
 export default function Home() {
     const [email, setEmail] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [activeModal, setActiveModal] = useState<"privacy" | "cookie" | null>(null);
     const router = useRouter();
 
     const handleWaitlist = async (e: React.FormEvent) => {
@@ -554,13 +684,34 @@ export default function Home() {
                             &copy; {new Date().getFullYear()} Swapifhy, Inc. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6 text-xs text-muted-foreground font-sans">
-                            <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Cookie Policy</a>
+                            <button onClick={() => setActiveModal("privacy")} className="hover:text-foreground transition-colors">Privacy Policy</button>
+                            <a
+                                href="https://docs.google.com/document/d/1Uf0Hi_jALhHCsqFYGgMLaId8E3Yn-igFSsdQ5QeCd9U/edit?usp=sharing"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-foreground transition-colors"
+                            >
+                                Terms of Service
+                            </a>
+                            <button onClick={() => setActiveModal("cookie")} className="hover:text-foreground transition-colors">Cookie Policy</button>
                         </div>
                     </div>
                 </div>
             </footer>
+
+            {/* POLICY MODALS */}
+            <PolicyModal
+                isOpen={activeModal === "privacy"}
+                onClose={() => setActiveModal(null)}
+                title="Privacy Policy"
+                sections={privacyPolicySections}
+            />
+            <PolicyModal
+                isOpen={activeModal === "cookie"}
+                onClose={() => setActiveModal(null)}
+                title="Cookie Policy"
+                sections={cookiePolicySections}
+            />
         </div>
     );
 }

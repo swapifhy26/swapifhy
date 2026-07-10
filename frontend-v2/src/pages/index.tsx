@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Sparkles, Quote, Zap, Code, Shield, Users, Globe, ArrowRight, Mail, Star, Heart, CheckCircle, Info, Linkedin, ExternalLink } from "lucide-react";
+import { Sparkles, Quote, Zap, Code, Shield, Users, Globe, ArrowRight, Mail, Star, Heart, CheckCircle, Info, Linkedin, Instagram, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { teamData } from "../config/teamData";
 
@@ -508,30 +508,43 @@ export default function Home() {
                                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Press Kit</a>
                             </div>
                             <div className="flex flex-col gap-5 col-span-2 sm:col-span-1 mt-6 sm:mt-0">
-                                <h4 className="font-sans font-semibold text-foreground text-xs uppercase tracking-[0.2em] mb-2 opacity-50">Connect</h4>
-                                <div className="flex flex-col gap-4">
-                                    <a href="#" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group">
-                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.489h2.039L6.486 3.24H4.298l13.311 17.403z" /></svg>
-                                        </div>
-                                        <span className="font-sans">X (Twitter)</span>
-                                    </a>
-                                    <a href="#" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group">
-                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                                            <Linkedin className="w-3.5 h-3.5" />
-                                        </div>
-                                        <span className="font-sans">LinkedIn</span>
-                                    </a>
-                                    <a href="#" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group">
-                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                                            <Mail className="w-3.5 h-3.5" />
-                                        </div>
-                                        <span className="font-sans">Contact Us</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <h4 className="font-sans font-semibold text-foreground text-xs uppercase tracking-[0.2em] mb-2 opacity-50">Connect</h4>
+    <div className="flex flex-col gap-4">
+        
+            href="https://www.instagram.com/swapifhy/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        >
+            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                <Instagram className="w-3.5 h-3.5" />
+            </div>
+            <span className="font-sans">Instagram</span>
+        </a>
+        
+            href="https://www.linkedin.com/company/swapifhy/posts/?feedView=all"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        >
+            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                <Linkedin className="w-3.5 h-3.5" />
+            </div>
+            <span className="font-sans">LinkedIn</span>
+        </a>
+        
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=swapifhy.official@gmail.com"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        >
+            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                <Mail className="w-3.5 h-3.5" />
+            </div>
+            <span className="font-sans">Contact Us</span>
+        </a>
+    </div>
+</div>
 
                     {/* Footer Bottom Bar */}
                     <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">

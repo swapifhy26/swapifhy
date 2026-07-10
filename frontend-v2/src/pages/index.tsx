@@ -508,43 +508,45 @@ export default function Home() {
                                 <a href="#" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Press Kit</a>
                             </div>
                             <div className="flex flex-col gap-5 col-span-2 sm:col-span-1 mt-6 sm:mt-0">
-    <h4 className="font-sans font-semibold text-foreground text-xs uppercase tracking-[0.2em] mb-2 opacity-50">Connect</h4>
-    <div className="flex flex-col gap-4">
-        
-            href="https://www.instagram.com/swapifhy/"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-        >
-            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                <Instagram className="w-3.5 h-3.5" />
-            </div>
-            <span className="font-sans">Instagram</span>
-        </a>
-        
-            href="https://www.linkedin.com/company/swapifhy/posts/?feedView=all"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-        >
-            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                <Linkedin className="w-3.5 h-3.5" />
-            </div>
-            <span className="font-sans">LinkedIn</span>
-        </a>
-        
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=swapifhy.official@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
-        >
-            <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
-                <Mail className="w-3.5 h-3.5" />
-            </div>
-            <span className="font-sans">Contact Us</span>
-        </a>
-    </div>
-</div>
+                                <h4 className="font-sans font-semibold text-foreground text-xs uppercase tracking-[0.2em] mb-2 opacity-50">Connect</h4>
+                                <div className="flex flex-col gap-4">
+                                    <a
+                                        href="https://www.instagram.com/swapifhy/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                                    >
+                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                                            <Instagram className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="font-sans">Instagram</span>
+                                    </a>
+                                    <a
+                                        href="https://www.linkedin.com/company/swapifhy/posts/?feedView=all"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                                    >
+                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                                            <Linkedin className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="font-sans">LinkedIn</span>
+                                    </a>
+                                    <a
+                                        href="https://mail.google.com/mail/?view=cm&fs=1&to=swapifhy.official@gmail.com"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                                    >
+                                        <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center border border-border group-hover:bg-foreground/10 transition-all">
+                                            <Mail className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="font-sans">Contact Us</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Footer Bottom Bar */}
                     <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">

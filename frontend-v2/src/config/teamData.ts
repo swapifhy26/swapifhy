@@ -31,7 +31,7 @@ export const teamData = [
         department: "Marketing",
         avatar: "SW",
         level: 1,
-        image: "/images/team_members/soha.png",
+        image: "/images/team_members/soha.jpeg",
         linkedin: "https://www.linkedin.com/in/soha-wasti-a325442a9/",
         xSocial: "",
         color: "linear-gradient(135deg, #8EB9FF, #D6C4FF)",

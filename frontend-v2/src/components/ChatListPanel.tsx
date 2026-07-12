@@ -46,7 +46,8 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
             });
             const data = await res.json();
             if (data.conversations) {
-                setConversations(data.conversations);
+                // 🚧 TEMP: force everyone online until heartbeat deploy is fixed
+                setConversations(data.conversations.map((c: Conversation) => ({ ...c, isOnline: true })));
             }
         } catch (err) {
             console.error("Failed to fetch conversations", err);

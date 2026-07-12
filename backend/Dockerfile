@@ -18,7 +18,7 @@ ENV NODE_ENV=production
 RUN apk add --no-cache openssl
 # Only copy over package.json to install production dependencies
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm ci
 # Copy Prisma schema and regenerate client for production
 COPY prisma ./prisma
 RUN npx prisma generate

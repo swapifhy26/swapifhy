@@ -8,7 +8,7 @@ interface Conversation {
     partnerId: string;
     partnerName: string;
     partnerAvatar?: string;
-    partnerIsOnline?: boolean;
+    isOnline?: boolean;
     lastMessage: string;
     status: string;
     updatedAt: string;
@@ -61,15 +61,15 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
         return () => clearInterval(interval);
     }, []);
 
-    const onlineCount = conversations.filter(c => c.partnerIsOnline).length;
-    const offlineCount = conversations.filter(c => !c.partnerIsOnline).length;
+    const onlineCount = conversations.filter(c => c.isOnline).length;
+    const offlineCount = conversations.filter(c => !c.isOnline).length;
 
     const filteredConversations = conversations.filter(c => {
         const matchesSearch = c.partnerName.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesFilter =
             filter === "ALL" ? true :
-            filter === "ONLINE" ? c.partnerIsOnline :
-            !c.partnerIsOnline;
+            filter === "ONLINE" ? c.isOnline :
+            !c.isOnline;
         return matchesSearch && matchesFilter;
     });
 
@@ -202,7 +202,7 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
                                             )}
                                             {/* Online/offline dot */}
                                             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-slate-950 rounded-full flex items-center justify-center border-2 border-slate-950">
-                                                {conv.partnerIsOnline ? (
+                                                {conv.isOnline ? (
                                                     <div className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.7)] animate-pulse" />
                                                 ) : (
                                                     <div className="w-2 h-2 bg-zinc-600 rounded-full" />
@@ -216,7 +216,7 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
                                                     <h5 className="text-[14px] font-bold text-white group-hover:text-primary transition-colors truncate">
                                                         {conv.partnerName}
                                                     </h5>
-                                                    {conv.partnerIsOnline && (
+                                                    {conv.isOnline && (
                                                         <span className="text-[8px] font-black text-green-400 uppercase tracking-widest shrink-0">online</span>
                                                     )}
                                                 </div>

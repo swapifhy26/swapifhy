@@ -23,7 +23,7 @@ RUN apk add --no-cache openssl
 
 # Only copy over package.json to install production dependencies
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # Copy Prisma schema and regenerate client for production
 COPY prisma ./prisma

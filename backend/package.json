@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --noEmitOnError false"
     "start": "node dist/main.js",
     "dev": "tsx watch src/main.ts"
   },

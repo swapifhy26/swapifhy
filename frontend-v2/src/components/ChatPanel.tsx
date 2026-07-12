@@ -172,7 +172,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
             if (data.messages) setMessages(data.messages);
             if (data.partner) {
                 setPartner(data.partner);
-                setIsOnline(data.partner.isOnline ?? false);
+                setIsOnline(true); // 🚧 TEMP: force online until heartbeat deploy is fixed
             }
         } catch (err) { console.error(err); }
     }, [swapId]);

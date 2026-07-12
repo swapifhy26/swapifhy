@@ -1,14 +1,11 @@
-// 📂 src/controllers/chat.controller.ts
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { sendMessageNotification } from '../services/email.service';
 
 const prisma = new PrismaClient();
 
-// ── In-memory presence store ──
-const onlineUsers = new Map<string, number>();
-const ONLINE_THRESHOLD_MS = 60000; // 60s
+// ── In-memory presence store (resets on server restart, fine for MVP) ──
+const onlineUsers = new Map<string, number>(); // userId → last heartbeat timestamp
 
 export const heartbeat = async (req: AuthRequest, res: Response): Promise<void> => {
     const userId = req.user?.id;
@@ -18,13 +15,13 @@ export const heartbeat = async (req: AuthRequest, res: Response): Promise<void> 
 };
 
 export const getPresence = async (req: AuthRequest, res: Response): Promise<void> => {
-    const { userIds } = req.body;
+    const { userIds } = req.body; // array of userIds to check
     if (!Array.isArray(userIds)) { res.status(400).json({ error: "userIds required" }); return; }
     const now = Date.now();
     const presence: Record<string, boolean> = {};
     userIds.forEach((id: string) => {
         const last = onlineUsers.get(id);
-        presence[id] = last !== undefined && (now - last) < ONLINE_THRESHOLD_MS;
+        presence[id] = last !== undefined && (now - last) < 35000; // 35s threshold
     });
     res.status(200).json({ presence });
 };
@@ -83,7 +80,7 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
         const formattedConversations = swaps.map(s => {
             const partner = s.proposerId === userId ? s.receiver : s.proposer;
             const last = onlineUsers.get(partner.id);
-            const isOnline = last !== undefined && (now - last) < ONLINE_THRESHOLD_MS;
+            const isOnline = last !== undefined && (now - last) < 35000;
             return {
                 swapId: s.id,
                 partnerId: partner.id,
@@ -129,12 +126,13 @@ export const getMessages = async (req: AuthRequest, res: Response): Promise<void
         const partner = swap.proposerId === userId ? swap.receiver : swap.proposer;
         const now = Date.now();
         const last = onlineUsers.get(partner.id);
-        const isOnline = last !== undefined && (now - last) < ONLINE_THRESHOLD_MS;
+        const isOnline = last !== undefined && (now - last) < 35000;
 
         const scrubbedMessages = messages.map(msg => {
             if (msg.isRevoked) {
                 return { ...msg, details: null, content: "Contact info removed." };
             }
+            // ✅ Parse details if it's a JSON string
             let parsedDetails = msg.details;
             try {
                 if (typeof msg.details === 'string') parsedDetails = JSON.parse(msg.details);
@@ -154,13 +152,7 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
         const { swapId, content, type, details } = req.body;
         if (!senderId || !swapId) { res.status(400).json({ error: "Missing parameters" }); return; }
 
-        const swap = await prisma.swap.findUnique({
-            where: { id: swapId },
-            include: {
-                proposer: { select: { id: true, name: true, email: true } },
-                receiver: { select: { id: true, name: true, email: true } }
-            }
-        });
+        const swap = await prisma.swap.findUnique({ where: { id: swapId } });
         if (!swap) { res.status(404).json({ error: "Swap not found" }); return; }
         if (swap.proposerId !== senderId && swap.receiverId !== senderId) {
             res.status(403).json({ error: "Unauthorized" }); return;
@@ -172,28 +164,12 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
                 senderId,
                 content: content || (type === "CONTACT_SHARE" ? "Contact info shared" : "Link shared"),
                 type: type || "TEXT",
+                // ✅ Always store details as JSON string
                 details: details ? JSON.stringify(details) : undefined
             }
         });
 
         await prisma.swap.update({ where: { id: swapId }, data: { updatedAt: new Date() } });
-
-        // ── Email notification: send on every TEXT message ──
-        if (type === "TEXT" && content?.trim()) {
-            const sender  = swap.proposerId === senderId ? swap.proposer : swap.receiver;
-            const partner = swap.proposerId === senderId ? swap.receiver : swap.proposer;
-
-            if (partner.email) {
-                // Fire-and-forget — never blocks the response
-                sendMessageNotification({
-                    recipientEmail: partner.email,
-                    recipientName:  partner.name,
-                    senderName:     sender.name,
-                    messageContent: content,
-                }).catch(() => {});
-            }
-        }
-
         res.status(201).json({ message });
     } catch (error) {
         res.status(500).json({ error: "Failed to send message" });
@@ -213,6 +189,7 @@ export const revokeMessage = async (req: AuthRequest, res: Response): Promise<vo
 
         await prisma.chatMessage.update({
             where: { id: messageId },
+            // ✅ Use null not undefined — Prisma requires null to clear a field
             data: { isRevoked: true, details: null }
         });
 

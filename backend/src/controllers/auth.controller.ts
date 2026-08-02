@@ -27,6 +27,17 @@ export const joinWaitlist = async (req: Request, res: Response): Promise<void> =
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
+        // ── ENFORCE ADMINISTRATIVE REGISTRATION LOCK ──
+        // Checks the system configuration table before allowing database footprint writes
+        const settings = await prisma.systemSettings.findFirst();
+        if (settings && !settings.allowRegistrations) {
+            res.status(403).json({ 
+                error: "Registration Locked", 
+                message: "Public registration pipelines are temporarily frozen. Please join the waitlist." 
+            });
+            return;
+        }
+
         const { email, name, password, bio, hobbies, teach, learn } = req.body;
 
         if (!email || !name || !password) {

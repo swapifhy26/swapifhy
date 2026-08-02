@@ -12,6 +12,8 @@ export default function MatchMatrix() {
     const [loading, setLoading] = useState(true);
     const [activeSwapId, setActiveSwapId] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<string>("");
+    const [needsSkills, setNeedsSkills] = useState(false);
+    const [bannerDismissed, setBannerDismissed] = useState(false);
     const router = useRouter();
     const hasFetched = useRef(false);
 
@@ -29,11 +31,15 @@ export default function MatchMatrix() {
 
         const fetchMatches = fetch(`${API_URL}/api/match/sync-matrix`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchConvs = fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
+        const fetchProfile = fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
 
-        Promise.all([fetchMatches, fetchConvs])
-            .then(([matchData, chatData]) => {
+        Promise.all([fetchMatches, fetchConvs, fetchProfile])
+            .then(([matchData, chatData, profData]) => {
                 if (matchData.matches) setMatches(matchData.matches);
                 if (chatData.conversations) setConversations(chatData.conversations);
+                const t = profData?.user?.teachSkills?.length || 0;
+                const l = profData?.user?.learnSkills?.length || 0;
+                setNeedsSkills(t === 0 && l === 0);
                 setLoading(false);
             })
             .catch((err) => {
@@ -92,6 +98,19 @@ export default function MatchMatrix() {
                         </h1>
                     </div>
                 </div>
+
+                {needsSkills && !bannerDismissed && (
+                    <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-primary/5 border border-primary/20">
+                        <div className="flex items-center gap-3">
+                            <Sparkles className="w-5 h-5 text-primary shrink-0" />
+                            <p className="text-sm text-foreground">Add your skills so we can match you with the right people to swap with.</p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                            <button onClick={() => router.push("/onboarding")} className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-medium hover:opacity-90 transition">Add my skills</button>
+                            <button onClick={() => setBannerDismissed(true)} className="p-2 text-muted-foreground hover:text-foreground transition" aria-label="Dismiss">✕</button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
                     {/* Potential Synergy Nodes */}

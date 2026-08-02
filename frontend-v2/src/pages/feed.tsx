@@ -30,7 +30,14 @@ export default function SwapFeed() {
         setLoading(true);
         const token = localStorage.getItem("swapifhy_token");
         if (!token) { router.push("/auth"); return; }
-        
+
+        // Users with no skills must finish onboarding first (so matching has data).
+        try {
+            const prof = await (await fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } })).json();
+            const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
+            if (!hasSkills) { router.replace("/onboarding"); return; }
+        } catch { /* if the check fails, don't block the feed */ }
+
         const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
         setActiveUser(user);
 

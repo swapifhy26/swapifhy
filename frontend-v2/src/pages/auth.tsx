@@ -32,7 +32,15 @@ export default function Auth() {
             if (res.ok) {
                 localStorage.setItem("swapifhy_token", data.token);
                 localStorage.setItem("swapifhy_user", JSON.stringify(data.user));
-                router.push("/feed");
+                // Send users with no skills through onboarding so matching has data to work with.
+                try {
+                    const profRes = await fetch(`${API_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${data.token}` } });
+                    const prof = await profRes.json();
+                    const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
+                    router.push(hasSkills ? "/feed" : "/onboarding");
+                } catch {
+                    router.push("/feed");
+                }
             } else {
                 setError(data.error || "Something went wrong");
             }

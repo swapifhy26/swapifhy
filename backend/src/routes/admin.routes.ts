@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 // ── ADMIN SECURITY MIDDLEWARE ──
 const verifyAdminKey = (req: Request, res: Response, next: NextFunction) => {
     const adminKey = req.headers["x-admin-key"];
-    const systemAdminKey = process.env.ADMIN_SECRET_KEY;
+    const systemAdminKey = process.env.ADMIN_SECRET;
 
     if (!adminKey || adminKey !== systemAdminKey) {
         return res.status(401).json({ error: "Unauthorized: Invalid or missing admin key." });

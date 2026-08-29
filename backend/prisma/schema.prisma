@@ -181,3 +181,12 @@ model SystemSettings {
   maintenanceEndTime DateTime?
   maintenanceRemark  String?
 }
+
+
+model Inquiry {
+  id        String   @id @default(uuid())
+  email     String
+  subject   String?
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+}

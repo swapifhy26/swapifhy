@@ -428,4 +428,48 @@ router.put("/settings", async (req: Request, res: Response) => {
     }
 });
 
+
+// "?"? GET ALL INQUIRIES "?"?
+router.get("/inquiries", async (req: Request, res: Response) => {
+    try {
+        const inquiries = await prisma.inquiry.findMany({
+            orderBy: { createdAt: "desc" }
+        });
+        res.status(200).json(inquiries);
+    } catch (error) {
+        console.error("Admin Inquiries Fetch Error:", error);
+        res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+});
+
+// "?"? MARK INQUIRY AS READ "?"?
+router.put("/inquiries/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { isRead } = req.body;
+        const inquiry = await prisma.inquiry.update({
+            where: { id },
+            data: { isRead }
+        });
+        res.status(200).json(inquiry);
+    } catch (error) {
+        console.error("Admin Inquiries Update Error:", error);
+        res.status(500).json({ error: "Failed to update inquiry" });
+    }
+});
+
+// "?"? DELETE INQUIRY "?"?
+router.delete("/inquiries/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await prisma.inquiry.delete({
+            where: { id }
+        });
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Admin Inquiries Delete Error:", error);
+        res.status(500).json({ error: "Failed to delete inquiry" });
+    }
+});
+
 export default router;

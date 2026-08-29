@@ -163,6 +163,7 @@ export default function AdminDashboard() {
     const router = useRouter();
     const [adminKey, setAdminKey] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("overview");
+    const [inquiries, setInquiries] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [dark, setDark] = useState(false);

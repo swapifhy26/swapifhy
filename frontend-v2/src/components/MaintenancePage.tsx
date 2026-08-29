@@ -40,7 +40,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
     }, [endTime]);
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden font-sans text-foreground selection:bg-primary/40 selection:text-white">
+        <div className="min-h-[100dvh] w-full bg-background flex flex-col items-center justify-center relative overflow-hidden font-sans text-foreground selection:bg-primary/40 selection:text-white">
             <Head>
                 <title>We'll be right back! | Swapifhy</title>
             </Head>
@@ -55,7 +55,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                         y: [0, -30, 0]
                     }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px]" 
+                    className="absolute top-[-10%] left-[-10%] w-[80%] md:w-[50%] h-[50%] rounded-full bg-primary/20 blur-[60px] md:blur-[120px] mix-blend-screen" 
                 />
                 <motion.div 
                     animate={{ 
@@ -65,7 +65,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                         y: [0, 40, 0]
                     }}
                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/20 blur-[120px]" 
+                    className="absolute bottom-[-10%] right-[-10%] w-[80%] md:w-[50%] h-[50%] rounded-full bg-secondary/20 blur-[60px] md:blur-[120px] mix-blend-screen" 
                 />
                 <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
             </div>
@@ -74,14 +74,14 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="relative z-10 flex flex-col items-center justify-center p-8 text-center max-w-2xl mx-auto w-full"
+                className="relative z-10 flex flex-col items-center justify-center p-4 md:p-8 text-center max-w-2xl mx-auto w-full h-full overflow-y-auto overflow-x-hidden"
             >
                 {/* Logo */}
                 <motion.div 
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-                    className="mb-20"
+                    className="mb-10 md:mb-20"
                 >
                     <img 
                         src="/images/features/swapifhy-logo-DPxPDdg-.png" 
@@ -91,7 +91,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                 </motion.div>
 
                 {/* Animated Graphic - INTERLOCKING GEARS */}
-                <div className="relative mb-16 flex items-center justify-center h-48 w-48">
+                <div className="relative mb-12 md:mb-16 flex items-center justify-center h-40 w-40 md:h-48 md:w-48 scale-90 md:scale-100">
                     <motion.div 
                         animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }}
                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -155,7 +155,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-4xl md:text-5xl font-black font-heading mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-secondary pb-2"
+                    className="text-3xl md:text-5xl font-black font-heading mb-4 md:mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-secondary pb-2 px-4"
                 >
                     We're getting a glow-up!
                 </motion.h1>
@@ -164,7 +164,7 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-lg md:text-xl text-muted-foreground/90 mb-12 max-w-lg leading-relaxed whitespace-pre-wrap"
+                    className="text-base md:text-xl text-muted-foreground/90 mb-8 md:mb-12 max-w-lg leading-relaxed whitespace-pre-wrap px-4"
                 >
                     {remark || "Swapifhy is currently undergoing some awesome upgrades. We're polishing the gears and adding new features. We'll be back online before you know it!"}
                 </motion.p>

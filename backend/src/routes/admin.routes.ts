@@ -377,7 +377,9 @@ router.get("/settings", async (req: Request, res: Response) => {
 
         res.status(200).json({
             maintenanceMode:      settings.maintenanceMode,
-            allowRegistrations: settings.allowRegistrations
+            allowRegistrations: settings.allowRegistrations,
+            maintenanceEndTime: settings.maintenanceEndTime,
+            maintenanceRemark: settings.maintenanceRemark
         });
     } catch (error) {
         console.error("Admin Settings Fetch Error:", error);
@@ -389,7 +391,7 @@ router.get("/settings", async (req: Request, res: Response) => {
 // FIX: was prisma.settings → prisma.systemSettings
 router.put("/settings", async (req: Request, res: Response) => {
     try {
-        const { maintenanceMode, allowRegistrations } = req.body;
+        const { maintenanceMode, allowRegistrations, maintenanceEndTime, maintenanceRemark } = req.body;
 
         let settings = await prisma.systemSettings.findFirst();
 
@@ -412,7 +414,9 @@ router.put("/settings", async (req: Request, res: Response) => {
 
         res.status(200).json({
             maintenanceMode:      settings.maintenanceMode,
-            allowRegistrations: settings.allowRegistrations
+            allowRegistrations: settings.allowRegistrations,
+            maintenanceEndTime: settings.maintenanceEndTime,
+            maintenanceRemark: settings.maintenanceRemark
         });
     } catch (error) {
         console.error("Admin Settings Update Error:", error);

@@ -175,7 +175,9 @@ model Like {
 
 // ── 13. SYSTEM PLATFORM CONFIGURATIONS ──
 model SystemSettings {
-  id                 String  @id @default("global_config")
-  maintenanceMode    Boolean @default(false)
-  allowRegistrations Boolean @default(true)
+  id                 String    @id @default("global_config")
+  maintenanceMode    Boolean   @default(false)
+  allowRegistrations Boolean   @default(true)
+  maintenanceEndTime DateTime?
+  maintenanceRemark  String?
 }

@@ -66,7 +66,9 @@ app.get('/api/health', async (req: Request, res: Response) => {
         res.json({ 
             status: 'ok', 
             message: 'Swapifhy MVP API is running locally (TypeScript)',
-            maintenanceMode: settings?.maintenanceMode || false 
+            maintenanceMode: settings?.maintenanceMode || false,
+            maintenanceEndTime: settings?.maintenanceEndTime || null,
+            maintenanceRemark: settings?.maintenanceRemark || null
         });
     } catch (e) {
         res.json({ status: 'ok', message: 'Swapifhy MVP API is running locally (TypeScript)', maintenanceMode: false });

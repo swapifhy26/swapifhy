@@ -185,6 +185,9 @@ export default function AdminDashboard() {
     // Settings state (Renamed allowRegistrations to allowNewRegistrations to match backend)
     const [settingsSaved, setSettingsSaved] = useState(false);
     const [maintenanceMode, setMaintenanceMode] = useState(false);
+    const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+    const [maintenanceMinutes, setMaintenanceMinutes] = useState("");
+    const [maintenanceRemark, setMaintenanceRemark] = useState("");
     const [allowNewRegistrations, setAllowNewRegistrations] = useState(true);
 
     useEffect(() => {
@@ -233,6 +236,44 @@ export default function AdminDashboard() {
             setAllowNewRegistrations(!!d.allowNewRegistrations); 
         } 
     }, [apiFetch]);
+
+    const handleMaintenanceToggle = async (turnOn: boolean) => {
+        if (!turnOn) {
+            // Turning off immediately
+            const res = await apiFetch("/api/admin/settings", {
+                method: "PUT",
+                body: JSON.stringify({ maintenanceMode: false, maintenanceEndTime: null, maintenanceRemark: null })
+            });
+            if (res) {
+                setMaintenanceMode(false);
+            }
+        } else {
+            // Turning on -> open modal
+            setShowMaintenanceModal(true);
+        }
+    };
+
+    const confirmMaintenance = async () => {
+        let endTime = null;
+        if (maintenanceMinutes && !isNaN(Number(maintenanceMinutes))) {
+            endTime = new Date(Date.now() + Number(maintenanceMinutes) * 60000).toISOString();
+        }
+        
+        const res = await apiFetch("/api/admin/settings", {
+            method: "PUT",
+            body: JSON.stringify({ 
+                maintenanceMode: true, 
+                maintenanceEndTime: endTime, 
+                maintenanceRemark: maintenanceRemark 
+            })
+        });
+        if (res) {
+            setMaintenanceMode(true);
+            setShowMaintenanceModal(false);
+            setMaintenanceMinutes("");
+            setMaintenanceRemark("");
+        }
+    };
 
     const handleSaveSettings = async () => {
         const d = await apiFetch("/api/admin/settings", {

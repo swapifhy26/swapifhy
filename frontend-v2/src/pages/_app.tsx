@@ -9,6 +9,8 @@ import { useState } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
     const [isMaintenance, setIsMaintenance] = useState(false);
+    const [maintenanceRemark, setMaintenanceRemark] = useState("");
+    const [maintenanceEndTime, setMaintenanceEndTime] = useState<string | null>(null);
     const router = useRouter();
     const isAdminRoute = router.pathname.startsWith('/admin');
 
@@ -19,6 +21,8 @@ export default function App({ Component, pageProps }: AppProps) {
                 const data = await res.json();
                 if (data.maintenanceMode) {
                     setIsMaintenance(true);
+                    setMaintenanceRemark(data.maintenanceRemark || "");
+                    setMaintenanceEndTime(data.maintenanceEndTime || null);
                 } else {
                     setIsMaintenance(false);
                 }
@@ -52,7 +56,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     
     if (isMaintenance && !isAdminRoute) {
-        return <MaintenancePage />;
+        return <MaintenancePage remark={maintenanceRemark} endTime={maintenanceEndTime} />;
     }
 
     return (

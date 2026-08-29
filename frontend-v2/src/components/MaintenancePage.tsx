@@ -1,9 +1,40 @@
-import React from "react";
-import { Settings, Sparkles, Clock } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Settings, Sparkles, Clock, Hammer } from "lucide-react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 
-export default function MaintenancePage() {
+export default function MaintenancePage({ remark, endTime }: { remark?: string, endTime?: string | null }) {
+    const [timeLeft, setTimeLeft] = useState<string>("");
+
+    useEffect(() => {
+        if (!endTime) return;
+        const target = new Date(endTime).getTime();
+        
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const diff = target - now;
+            if (diff <= 0) {
+                setTimeLeft("00:00:00");
+                // The backend will automatically disable it on next health check
+                return;
+            }
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            // Format HH:MM:SS
+            setTimeLeft(
+                (h > 0 ? h.toString().padStart(2, '0') + ':' : '') +
+                m.toString().padStart(2, '0') + ':' +
+                s.toString().padStart(2, '0')
+            );
+        };
+        
+        updateTimer();
+        const interval = setInterval(updateTimer, 1000);
+        return () => clearInterval(interval);
+    }, [endTime]);
+
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden font-sans text-foreground selection:bg-primary/40 selection:text-white">
             <Head>
@@ -32,8 +63,6 @@ export default function MaintenancePage() {
                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                     className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/20 blur-[120px]" 
                 />
-                
-                {/* Floating particles */}
                 <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
             </div>
 
@@ -59,8 +88,6 @@ export default function MaintenancePage() {
 
                 {/* Animated Graphic - INTERLOCKING GEARS */}
                 <div className="relative mb-16 flex items-center justify-center h-48 w-48">
-                    
-                    {/* Deep Glowing Aura */}
                     <motion.div 
                         animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }}
                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -103,7 +130,6 @@ export default function MaintenancePage() {
                         </div>
                     </div>
 
-                    {/* Floating Sparkles */}
                     <motion.div
                         animate={{ y: [0, -15, 0], opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
                         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
@@ -119,10 +145,8 @@ export default function MaintenancePage() {
                     >
                         <Sparkles className="w-5 h-5 text-primary drop-shadow-[0_0_8px_rgba(91,196,192,0.8)]" />
                     </motion.div>
-
                 </div>
 
-                {/* Friendly Content */}
                 <motion.h1 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -136,9 +160,9 @@ export default function MaintenancePage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-lg md:text-xl text-muted-foreground/90 mb-12 max-w-lg leading-relaxed"
+                    className="text-lg md:text-xl text-muted-foreground/90 mb-12 max-w-lg leading-relaxed whitespace-pre-wrap"
                 >
-                    Swapifhy is currently undergoing some awesome upgrades. We're polishing the gears and adding new features. We'll be back online before you know it!
+                    {remark || "Swapifhy is currently undergoing some awesome upgrades. We're polishing the gears and adding new features. We'll be back online before you know it!"}
                 </motion.p>
 
                 {/* Status Indicator */}
@@ -154,7 +178,9 @@ export default function MaintenancePage() {
                     </div>
                     <div className="text-left">
                         <h3 className="text-sm font-bold text-foreground">Estimated Wait Time</h3>
-                        <p className="text-xs font-medium text-muted-foreground">Just a few moments...</p>
+                        <p className="text-xs font-medium text-muted-foreground font-mono text-lg">
+                            {endTime && timeLeft ? timeLeft : "Just a few moments..."}
+                        </p>
                     </div>
                 </motion.div>
             </motion.div>

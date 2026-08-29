@@ -109,6 +109,10 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                         </>
                     )}
 
+                    
+                </div> {/* End of desktop links */}
+
+                <div className="flex items-center gap-4 md:gap-6"> {/* Start of right side controls */}
                     {/* Theme Toggle Button */}
                     <button 
                         onClick={() => setIsDark(!isDark)} 

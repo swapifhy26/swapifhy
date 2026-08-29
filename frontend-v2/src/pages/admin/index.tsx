@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     Users, Repeat2, FileText, Heart, MessageSquare, UserPlus, Mail,
     LayoutDashboard, RefreshCw, LogOut, Star, Activity, ChevronLeft,
@@ -765,7 +766,7 @@ export default function AdminDashboard() {
                                         <p className={`text-sm font-medium ${text}`}>Maintenance Mode</p>
                                         <p className={`text-xs ${subtext}`}>Show a maintenance page to all non-admin users</p>
                                     </div>
-                                    <button onClick={() => setMaintenanceMode(m => !m)}
+                                    <button onClick={() => handleMaintenanceToggle(!maintenanceMode)}
                                         className={`w-12 h-6 rounded-full transition-colors relative ${maintenanceMode ? "bg-amber-500" : "bg-gray-300 dark:bg-gray-700"}`}>
                                         <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform shadow ${maintenanceMode ? "translate-x-6" : "translate-x-0.5"}`} />
                                     </button>
@@ -1158,7 +1159,7 @@ export default function AdminDashboard() {
                                         <p className={`text-sm font-medium ${text}`}>Maintenance Mode</p>
                                         <p className={`text-xs ${subtext}`}>Show a maintenance page to all non-admin users</p>
                                     </div>
-                                    <button onClick={() => setMaintenanceMode(m => !m)}
+                                    <button onClick={() => handleMaintenanceToggle(!maintenanceMode)}
                                         className={`w-12 h-6 rounded-full transition-colors relative ${maintenanceMode ? "bg-amber-500" : "bg-gray-300 dark:bg-gray-700"}`}>
                                         <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform shadow ${maintenanceMode ? "translate-x-6" : "translate-x-0.5"}`} />
                                     </button>

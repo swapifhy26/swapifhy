@@ -239,6 +239,7 @@ export default function AdminDashboard() {
             setAllowNewRegistrations(!!d.allowNewRegistrations); 
         } 
     }, [apiFetch]);
+    const fetchInquiries = useCallback(async () => { const res = await apiFetch("/api/admin/inquiries"); if (res) setInquiries(res); }, [apiFetch]);
 
     const handleMaintenanceToggle = async (turnOn: boolean) => {
         if (!turnOn) {
@@ -303,7 +304,7 @@ export default function AdminDashboard() {
         if (activeTab === "waitlist" && !waitlist) loadWaitlist();
         if (activeTab === "settings") loadSettings();
         if (activeTab === "inquiries" && inquiries.length === 0) fetchInquiries();
-    }, [activeTab, adminKey, skills, users.length, engagement, waitlist, loadSkills, loadUsers, loadEngagement, loadWaitlist, loadSettings]);
+    }, [activeTab, adminKey, skills, users.length, engagement, waitlist, loadSkills, loadUsers, loadEngagement, loadWaitlist, loadSettings, fetchInquiries]);
 
     const handleRefresh = async () => {
         setRefreshing(true);

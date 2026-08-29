@@ -97,10 +97,17 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
         if (settings) {
             // 2. Enforce Maintenance Mode Barrier
             if (settings.maintenanceMode) {
-                return res.status(503).json({
-                    error: 'Service Unavailable',
-                    message: 'Swapifhy is currently undergoing scheduled backend updates. Please try again shortly.'
-                });
+                if (settings.maintenanceEndTime && new Date() > new Date(settings.maintenanceEndTime)) {
+                    await prisma.systemSettings.update({
+                        where: { id: settings.id },
+                        data: { maintenanceMode: false, maintenanceEndTime: null, maintenanceRemark: null }
+                    });
+                } else {
+                    return res.status(503).json({
+                        error: 'Service Unavailable',
+                        message: settings.maintenanceRemark || 'Swapifhy is currently undergoing scheduled backend updates. Please try again shortly.'
+                    });
+                }
             }
 
             // 3. Enforce Registration Lock Barrier

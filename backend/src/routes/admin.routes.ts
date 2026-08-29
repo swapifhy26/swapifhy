@@ -398,16 +398,20 @@ router.put("/settings", async (req: Request, res: Response) => {
         if (!settings) {
             settings = await prisma.systemSettings.create({
                 data: {
-                    maintenanceMode:       maintenanceMode       ?? false,
-                    allowRegistrations: allowRegistrations ?? true
+                    maintenanceMode: maintenanceMode ?? false,
+                    allowRegistrations: allowRegistrations ?? true,
+                    maintenanceEndTime: maintenanceEndTime ? new Date(maintenanceEndTime) : null,
+                    maintenanceRemark: maintenanceRemark || null
                 }
             });
         } else {
             settings = await prisma.systemSettings.update({
                 where: { id: settings.id },
                 data: {
-                    ...(maintenanceMode      !== undefined && { maintenanceMode }),
-                    ...(allowRegistrations !== undefined && { allowRegistrations })
+                    ...(maintenanceMode !== undefined && { maintenanceMode }),
+                    ...(allowRegistrations !== undefined && { allowRegistrations }),
+                    ...(maintenanceEndTime !== undefined && { maintenanceEndTime: maintenanceEndTime ? new Date(maintenanceEndTime) : null }),
+                    ...(maintenanceRemark !== undefined && { maintenanceRemark: maintenanceRemark || null })
                 }
             });
         }

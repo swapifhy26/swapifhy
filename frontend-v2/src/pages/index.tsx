@@ -635,7 +635,7 @@ export default function Home() {
                                 <Link href="/#story" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Our Story</Link>
                                 <Link href="/#team" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Team</Link>
                                 <a href="https://tally.so/r/Ek5KZr" target="_blank" rel="noreferrer" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans flex items-center gap-1.5">Careers <ExternalLink className="w-3 h-3" /></a>
-                                <a href="#" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Press Kit</a>
+                                <Link href="/press-kit" className="text-sm text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 font-sans">Press Kit</Link>
                             </div>
                             <div className="flex flex-col gap-5 col-span-2 sm:col-span-1 mt-6 sm:mt-0">
                                 <h4 className="font-sans font-semibold text-foreground text-xs uppercase tracking-[0.2em] mb-2 opacity-50">Connect</h4>

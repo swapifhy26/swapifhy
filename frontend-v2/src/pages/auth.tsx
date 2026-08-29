@@ -129,7 +129,7 @@ export default function Auth() {
                 <div className="flex items-center gap-3 z-10">
                     <div className="w-10 h-10 rounded-lg border border-border bg-white flex items-center justify-center p-1.5">
                         <img
-                            src="https://www.swapifhy.com/assets/swapifhy-logo-DPxPDdg-.png"
+                            src="/images/features/swapifhy-logo-DPxPDdg-.png"
                             alt="Swapifhy Logo"
                         />
                     </div>

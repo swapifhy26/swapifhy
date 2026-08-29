@@ -81,7 +81,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         // ✨ FIXED: Aligned model query to prisma.settings
-        const settings = await prisma.settings.findFirst();
+        const settings = await prisma.systemSettings.findFirst();
 
         if (settings) {
             // 2. Enforce Maintenance Mode Barrier

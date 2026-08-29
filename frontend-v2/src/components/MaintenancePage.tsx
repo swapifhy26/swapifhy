@@ -1,58 +1,138 @@
 import React from "react";
-import { Zap, Wrench } from "lucide-react";
+import { Settings, Sparkles, Hammer, Clock } from "lucide-react";
 import Head from "next/head";
+import { motion } from "framer-motion";
 
 export default function MaintenancePage() {
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden font-sans text-foreground selection:bg-primary/40 selection:text-white">
             <Head>
-                <title>System Maintenance | Swapifhy</title>
+                <title>We'll be right back! | Swapifhy</title>
             </Head>
             
-            {/* Background elements to match Swapifhy vibe */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/10 blur-[120px]" />
+            {/* Animated Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.5, 0.3],
+                        x: [0, 50, 0],
+                        y: [0, -30, 0]
+                    }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px]" 
+                />
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.3, 1],
+                        opacity: [0.2, 0.4, 0.2],
+                        x: [0, -40, 0],
+                        y: [0, 40, 0]
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/20 blur-[120px]" 
+                />
+                
+                {/* Floating particles */}
+                <div className="absolute inset-0 bg-[url('/images/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
             </div>
 
-            <div className="relative z-10 flex flex-col items-center justify-center p-6 text-center max-w-2xl mx-auto">
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="relative z-10 flex flex-col items-center justify-center p-8 text-center max-w-2xl mx-auto w-full"
+            >
                 {/* Logo */}
-                <div className="mb-12">
+                <motion.div 
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", bounce: 0.5, duration: 1 }}
+                    className="mb-16"
+                >
                     <img 
                         src="/images/features/swapifhy-logo-DPxPDdg-.png" 
                         alt="Swapifhy Logo" 
-                        className="h-10 w-auto drop-shadow-sm dark:brightness-125 mx-auto" 
+                        className="h-14 md:h-16 w-auto drop-shadow-xl dark:brightness-125 mx-auto hover:scale-105 transition-transform duration-500" 
                     />
-                </div>
+                </motion.div>
 
-                {/* Animated Icon */}
-                <div className="relative mb-8 group">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-colors duration-700 animate-pulse" />
-                    <div className="w-24 h-24 rounded-full glass-elite border border-border/50 flex items-center justify-center relative shadow-2xl">
-                        <Wrench className="w-10 h-10 text-primary animate-[spin_4s_linear_infinite]" />
+                {/* Animated Graphic */}
+                <div className="relative mb-12 flex items-center justify-center h-40 w-40">
+                    {/* Glowing pulse rings */}
+                    <motion.div 
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute inset-0 bg-primary/20 rounded-full blur-xl" 
+                    />
+                    
+                    <div className="absolute w-32 h-32 rounded-full glass-elite border-2 border-primary/30 flex items-center justify-center shadow-[0_0_40px_rgba(75,100,250,0.2)]">
+                        {/* Main rotating gear */}
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        >
+                            <Settings className="w-12 h-12 text-primary" />
+                        </motion.div>
                     </div>
+
+                    {/* Orbiting Elements */}
+                    <motion.div 
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                        className="absolute w-full h-full"
+                    >
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass-elite border border-border flex items-center justify-center shadow-lg bg-surface">
+                            <Sparkles className="w-5 h-5 text-amber-400" />
+                        </div>
+                    </motion.div>
+
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                        className="absolute w-full h-full"
+                    >
+                        <div className="absolute bottom-4 right-0 w-8 h-8 rounded-full glass-elite border border-border flex items-center justify-center shadow-lg bg-surface">
+                            <Hammer className="w-4 h-4 text-secondary" />
+                        </div>
+                    </motion.div>
                 </div>
 
-                {/* Content */}
-                <h1 className="text-4xl md:text-5xl font-black font-heading mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                    Upgrading the Network
-                </h1>
+                {/* Friendly Content */}
+                <motion.h1 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-4xl md:text-5xl font-black font-heading mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-secondary pb-2"
+                >
+                    We're getting a glow-up!
+                </motion.h1>
                 
-                <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-lg leading-relaxed">
-                    We are currently performing critical maintenance to improve the Swapifhy platform. We will be back online shortly.
-                </p>
+                <motion.p 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-lg md:text-xl text-muted-foreground/90 mb-12 max-w-lg leading-relaxed"
+                >
+                    Swapifhy is currently undergoing some awesome upgrades. We're polishing the gears and adding new features. We'll be back online before you know it!
+                </motion.p>
 
-                {/* Status Badge */}
-                <div className="px-6 py-3 glass-elite rounded-full border border-primary/20 shadow-lg shadow-primary/5 flex items-center gap-3">
-                    <div className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                {/* Status Indicator */}
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="px-6 py-4 glass-elite rounded-2xl border border-primary/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex items-center gap-4 group"
+                >
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/10 text-amber-500">
+                        <Clock className="w-5 h-5 animate-pulse" />
                     </div>
-                    <span className="text-sm font-bold tracking-widest uppercase text-amber-500">
-                        System Offline
-                    </span>
-                </div>
-            </div>
+                    <div className="text-left">
+                        <h3 className="text-sm font-bold text-foreground">Estimated Wait Time</h3>
+                        <p className="text-xs font-medium text-muted-foreground">Just a few moments...</p>
+                    </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 }

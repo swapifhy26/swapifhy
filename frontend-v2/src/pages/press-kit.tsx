@@ -62,7 +62,7 @@ export default function PressKit() {
           <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-4">
             Official Press Kit
           </div>
-          <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/50">
+          <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-500 dark:from-white dark:to-white/50">
             Swapifhy Media Resources
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -92,10 +92,10 @@ export default function PressKit() {
             </div>
             
             <div className="mt-8 pt-8 border-t border-border/50 flex flex-wrap gap-4">
-              <div className="flex items-center gap-2 text-sm text-foreground bg-white/5 px-4 py-2 rounded-full border border-white/10">
+              <div className="flex items-center gap-2 text-sm text-foreground bg-foreground/5 px-4 py-2 rounded-full border border-border/50">
                 <Mail size={16} className="text-muted-foreground" /> swapifhy.official@gmail.com
               </div>
-              <div className="flex items-center gap-2 text-sm text-foreground bg-white/5 px-4 py-2 rounded-full border border-white/10">
+              <div className="flex items-center gap-2 text-sm text-foreground bg-foreground/5 px-4 py-2 rounded-full border border-border/50">
                 <Globe size={16} className="text-muted-foreground" /> www.swapifhy.com
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function PressKit() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {pressReleases.map((press, index) => (
-              <div key={index} className="group p-6 rounded-2xl bg-background/50 border border-white/5 hover:border-primary/30 transition duration-300 hover:bg-white/5">
+              <div key={index} className="group p-6 rounded-2xl bg-background/50 border border-border/50 hover:border-primary/30 transition duration-300 hover:bg-foreground/5">
                 <div className="text-xs font-mono text-primary/80 mb-3">{press.date}</div>
                 <h3 className="text-lg font-semibold text-foreground mb-3 leading-snug group-hover:text-primary transition">
                   {press.title}

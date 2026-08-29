@@ -60,8 +60,17 @@ app.use(express.json());
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Basic health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
-    res.json({ status: 'ok', message: 'Swapifhy MVP API is running locally (TypeScript)' });
+app.get('/api/health', async (req: Request, res: Response) => {
+    try {
+        const settings = await prisma.systemSettings.findFirst();
+        res.json({ 
+            status: 'ok', 
+            message: 'Swapifhy MVP API is running locally (TypeScript)',
+            maintenanceMode: settings?.maintenanceMode || false 
+        });
+    } catch (e) {
+        res.json({ status: 'ok', message: 'Swapifhy MVP API is running locally (TypeScript)', maintenanceMode: false });
+    }
 });
 
 // Swagger API Documentation Endpoint

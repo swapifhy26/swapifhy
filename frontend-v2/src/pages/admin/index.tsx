@@ -42,6 +42,7 @@ const NAV_ITEMS = [
     { id: "skills", label: "Skills", icon: Star },
     { id: "activity", label: "Activity", icon: Activity },
     { id: "waitlist", label: "Waitlist", icon: Mail },
+    { id: "inquiries", label: "Inquiries", icon: MessageSquare },
     { id: "settings", label: "Settings", icon: Settings },
 ];
 

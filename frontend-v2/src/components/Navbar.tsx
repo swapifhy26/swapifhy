@@ -118,6 +118,11 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                     </button>
 
                     {userName ? (
+                        <>
+                        {/* MOBILE LOGOUT BUTTON */}
+                        <button onClick={handleLogout} className="md:hidden ml-4 p-2 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center justify-center">
+                            <LogOut className="w-5 h-5" />
+                        </button>
                         <div className="hidden md:flex items-center pl-6 ml-2 border-l border-border/50 relative">
                             
                             {/* ── NOTIFICATION BELL INTEGRATION ── */}
@@ -218,8 +223,9 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
-                            </div>
+                                                        </div>
                         </div>
+                        </>
                     ) : (
                         <Link href="/auth" className="ml-2 px-6 py-2.5 rounded-full bg-primary text-white font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-sm tracking-tight shadow-md lg:shadow-xl">
                             Log In

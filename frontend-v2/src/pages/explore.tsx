@@ -211,8 +211,8 @@ export default function Explore() {
     }, [matches, searchQuery, sortBy, filterDomain]);
 
     const Skeleton = () => (
-        <div className="flex flex-col gap-10 w-full animate-pulse mt-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
+        <div className="flex flex-col gap-6 md:gap-10 w-full animate-pulse mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
                 {[...Array(9)].map((_, i) => (
                     <div key={i} className="h-[460px] rounded-[3rem] glass-elite" />
                 ))}
@@ -331,7 +331,7 @@ export default function Explore() {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
                         {processedMatches.map((m, i) => {
                             const matched = isSkillMatch(m);
                             return (
@@ -343,7 +343,7 @@ export default function Explore() {
                                     className="h-full"
                                 >
                                     <GlowCard className="h-full">
-                                        <div className="p-10 rounded-[3.5rem] glass-elite flex flex-col h-full group relative">
+                                        <div className="p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] glass-elite flex flex-col h-full group relative">
 
                                             {/* ✅ Skill Match badge — ONLY shown when skills actually match */}
                                             {matched && (
@@ -361,7 +361,7 @@ export default function Explore() {
                                             )}
 
                                             {/* Avatar */}
-                                            <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 border border-border flex items-center justify-center shadow-inner mb-6 overflow-hidden transform group-hover:rotate-3 transition-transform">
+                                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem]-4 md:mb-6 overflow-hidden transform group-hover:rotate-3 transition-transform">
                                                 {m.avatarUrl ? (
                                                     <img src={m.avatarUrl} alt={m.name} className="w-full h-full object-cover" />
                                                 ) : (

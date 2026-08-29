@@ -251,13 +251,24 @@ export default function Auth() {
                         )}
 
                         {/* Submit */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full py-3 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
-                        >
-                            {loading ? "Signing in…" : "Sign in"}
-                        </button>
+                        <div className="space-y-3">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+                            >
+                                {loading ? "Signing in…" : "Sign in"}
+                            </button>
+                            
+                            <a
+                                href="https://forms.gle/QGkAaG99uTxUre7T7"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-full flex items-center justify-center py-3 rounded-lg bg-surface border border-border text-foreground text-sm font-medium hover:bg-white/5 transition"
+                            >
+                                Request Beta Access
+                            </a>
+                        </div>
 
                         {/* Access state note */}
                         <div className="text-center text-sm text-muted-foreground">

@@ -36,7 +36,7 @@ const checkPlatformControls = async (
         }
 
         // 2. Registration lock — only blocks /register
-        if (req.path === '/register' && !settings.allowNewRegistrations) {
+        if (req.path === '/register' && !settings.allowRegistrations) {
             return res.status(403).json({
                 error:   "Registrations Closed",
                 message: "New user registrations are currently disabled by system administrators."
@@ -59,7 +59,7 @@ router.get('/status', async (req: Request, res: Response) => {
         const settings = await prisma.systemSettings.findFirst();
         res.json({
             maintenanceMode:       settings?.maintenanceMode       ?? false,
-            allowNewRegistrations: settings?.allowNewRegistrations ?? true
+            allowNewRegistrations: settings?.allowRegistrations ?? true
         });
     } catch {
         // Safe fallback — never break the login page

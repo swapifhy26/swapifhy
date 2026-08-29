@@ -24,6 +24,7 @@ model User {
   updatedAt    DateTime  @updatedAt
   lastActiveAt DateTime?
   avatarUrl    String?
+  isBanned     Boolean   @default(false)
   
   // PRIVACY CONTROL (PROFESSIONAL PROTOCOL)
   privacy      String    @default("PUBLIC") // PUBLIC, PRIVATE, FOLLOWERS_ONLY

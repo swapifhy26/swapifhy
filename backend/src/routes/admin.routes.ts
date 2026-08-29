@@ -244,7 +244,7 @@ router.get("/users", async (req: Request, res: Response) => {
 
 // ── 6. BAN / UNBAN ──
 router.put("/users/:id/ban", async (req: Request, res: Response) => {
-    const { id }     = req.params;
+    const id = req.params.id as string;
     const { banned } = req.body;
 
     try {
@@ -265,7 +265,7 @@ router.put("/users/:id/ban", async (req: Request, res: Response) => {
 
 // ── 7. PERMANENT USER DELETION ──
 router.delete("/users/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as string;
     try {
         await prisma.user.delete({ where: { id } });
         res.status(200).json({ success: true, message: "User deleted." });
@@ -277,7 +277,7 @@ router.delete("/users/:id", async (req: Request, res: Response) => {
 
 // ── 8. EDIT A POST ──
 router.put("/posts/:id", async (req: Request, res: Response) => {
-    const { id }      = req.params;
+    const id = req.params.id as string;
     const { content } = req.body;
 
     try {
@@ -310,7 +310,7 @@ router.delete("/posts/all", async (req: Request, res: Response) => {
 
 // ── 10. DELETE A SINGLE POST ──
 router.delete("/posts/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.params.id as string;
     try {
         await prisma.post.delete({ where: { id } });
         res.status(200).json({ success: true, message: "Post deleted." });
@@ -354,7 +354,7 @@ router.post("/waitlist", async (req: Request, res: Response) => {
 
 // ── 13. REMOVE FROM WAITLIST ──
 router.delete("/waitlist/:idOrEmail", async (req: Request, res: Response) => {
-    const { idOrEmail } = req.params;
+    const idOrEmail = req.params.idOrEmail as string;
     try {
         const where = idOrEmail.includes("@")
             ? { email: idOrEmail }
@@ -375,13 +375,13 @@ router.get("/settings", async (req: Request, res: Response) => {
 
         if (!settings) {
             settings = await prisma.systemSettings.create({
-                data: { maintenanceMode: false, allowNewRegistrations: true }
+                data: { maintenanceMode: false, allowRegistrations: true }
             });
         }
 
         res.status(200).json({
             maintenanceMode:      settings.maintenanceMode,
-            allowNewRegistrations: settings.allowNewRegistrations
+            allowRegistrations: settings.allowRegistrations
         });
     } catch (error) {
         console.error("Admin Settings Fetch Error:", error);
@@ -393,7 +393,7 @@ router.get("/settings", async (req: Request, res: Response) => {
 // FIX: was prisma.settings → prisma.systemSettings
 router.put("/settings", async (req: Request, res: Response) => {
     try {
-        const { maintenanceMode, allowNewRegistrations } = req.body;
+        const { maintenanceMode, allowRegistrations } = req.body;
 
         let settings = await prisma.systemSettings.findFirst();
 
@@ -401,7 +401,7 @@ router.put("/settings", async (req: Request, res: Response) => {
             settings = await prisma.systemSettings.create({
                 data: {
                     maintenanceMode:       maintenanceMode       ?? false,
-                    allowNewRegistrations: allowNewRegistrations ?? true
+                    allowRegistrations: allowRegistrations ?? true
                 }
             });
         } else {
@@ -409,14 +409,14 @@ router.put("/settings", async (req: Request, res: Response) => {
                 where: { id: settings.id },
                 data: {
                     ...(maintenanceMode      !== undefined && { maintenanceMode }),
-                    ...(allowNewRegistrations !== undefined && { allowNewRegistrations })
+                    ...(allowRegistrations !== undefined && { allowRegistrations })
                 }
             });
         }
 
         res.status(200).json({
             maintenanceMode:      settings.maintenanceMode,
-            allowNewRegistrations: settings.allowNewRegistrations
+            allowRegistrations: settings.allowRegistrations
         });
     } catch (error) {
         console.error("Admin Settings Update Error:", error);

@@ -179,7 +179,7 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
 export const revokeMessage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const senderId = req.user?.id;
-        const messageId = req.params.messageId;
+        const messageId = req.params.messageId as string;
         if (!senderId || !messageId) { res.status(400).json({ error: "Invalid request" }); return; }
 
         const message = await prisma.chatMessage.findUnique({ where: { id: messageId } });

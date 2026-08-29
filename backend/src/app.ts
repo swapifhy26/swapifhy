@@ -97,7 +97,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
             const isRegisterRoute = req.path === '/api/auth/register' || req.path === '/api/auth/signup';
             
             // ✨ FIXED: Aligned field constraint to allowNewRegistrations
-            if (!settings.allowNewRegistrations && req.method === 'POST' && isRegisterRoute) {
+            if (!settings.allowRegistrations && req.method === 'POST' && isRegisterRoute) {
                 return res.status(403).json({
                     error: 'Registration Locked',
                     message: 'Public registration pipelines are temporarily frozen. Please join the waitlist.'

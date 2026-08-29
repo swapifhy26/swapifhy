@@ -219,7 +219,7 @@ export default function Settings() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-40">
+        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-36 md:pb-40">
             {/* Background orbs */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <div className="mesh-orb orb-blue opacity-10 top-[-10%] left-[-10%]" />

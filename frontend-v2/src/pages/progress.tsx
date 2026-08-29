@@ -135,7 +135,7 @@ export default function Progress() {
     ];
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-24">
+        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-36 md:pb-24">
             
             {/* Dynamic Ambient Background Orbs */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">

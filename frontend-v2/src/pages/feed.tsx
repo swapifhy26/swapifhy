@@ -206,7 +206,7 @@ export default function SwapFeed() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-x-hidden pt-32 pb-24 bg-grid">
+        <div className="w-full min-h-screen bg-background relative overflow-x-hidden pt-32 pb-36 md:pb-24 bg-grid">
             <div className="mesh-orb-elite bg-primary left-[-10%] top-[10%] w-[50vw] h-[50vw]" />
             <div className="mesh-orb-elite bg-accent right-[-10%] top-[40%] w-[40vw] h-[40vw] animation-delay-2000" />
 

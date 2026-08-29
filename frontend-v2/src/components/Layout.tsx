@@ -56,7 +56,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             {/* Global navbar — hidden on standalone pages like /auth */}
             {!isStandalone && <Navbar isDark={isDark} setIsDark={setIsDark} toggleChatList={() => setIsChatListOpen(!isChatListOpen)} />}
 
-            <main className="relative z-10 w-full">
+            <main className="relative z-10 w-full pb-32 md:pb-0">
                 {!mounted && <Loader />}
                 <div className="relative w-full">
                     {children}

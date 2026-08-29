@@ -160,7 +160,7 @@ export default function Dashboard() {
                 <div className="mesh-orb orb-pink opacity-5 bottom-[-10%] right-[-10%]" />
             </div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-7xl mx-auto px-6 pb-40 relative z-10 pt-24">
+            <motion.div initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-7xl mx-auto px-6 pb-36 md:pb-40 relative z-10 pt-24">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-32 relative z-10">
                     <div className="flex-1">
                         <div className="flex items-center gap-4 mb-4">
@@ -285,6 +285,9 @@ export default function Dashboard() {
                                 <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60 italic">// CRUD Operations Synchronized in Real-time</p>
                                 <button onClick={() => handleSave()} disabled={saving} className="btn-gradient px-14 py-5 text-xs font-black text-white uppercase tracking-[0.4em]">
                                     {saving ? "SAVING..." : "Save Changes"}
+                                </button>
+                                <button onClick={() => { localStorage.removeItem('swapifhy_token'); window.location.href = '/'; }} className="md:hidden mt-4 w-full px-14 py-5 rounded-full bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-black uppercase tracking-[0.4em] hover:bg-red-500/20 transition-all">
+                                    Log Out
                                 </button>
                             </div>
                         </div>

@@ -93,7 +93,7 @@ export default function SwapNetwork() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-24">
+        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-36 md:pb-24">
             <div className="max-w-5xl mx-auto px-6 relative z-10 w-full">
                 {/* Header Stratum */}
                 <div className="mb-12">
@@ -106,7 +106,7 @@ export default function SwapNetwork() {
                 </div>
 
                 {/* Telemetry Stat Bar */}
-                <div className="grid grid-cols-2 gap-4 md:gap-6 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-10">
                     <div className="bg-surface/30 p-6 md:p-8 flex flex-col justify-center items-start md:items-center rounded-2xl border border-border/40 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-5 bg-gradient-to-bl from-foreground to-transparent w-full h-full transform transition-transform group-hover:scale-105" />
                         <h4 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-1 z-10">Total Followers</h4>

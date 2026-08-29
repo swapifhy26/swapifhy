@@ -221,7 +221,7 @@ export default function Explore() {
     );
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-hidden">
+        <div className="w-full min-h-screen bg-background relative overflow-hidden pb-36 md:pb-24">
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <div className="mesh-orb orb-blue opacity-10 top-[-10%] left-[-10%]" />
                 <div className="mesh-orb orb-pink opacity-5 bottom-[-10%] right-[-10%]" />

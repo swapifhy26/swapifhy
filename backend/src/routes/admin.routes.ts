@@ -25,19 +25,15 @@ router.get("/overview", async (req: Request, res: Response) => {
     try {
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
-        const [
-            totalUsers, totalSwaps, totalPosts, totalLikes,
-            totalComments, totalFollows, totalWaitlist, activeNow
-        ] = await Promise.all([
-            prisma.user.count(),
-            prisma.swap.count(),
-            prisma.post.count(),
-            prisma.like.count(),
-            prisma.comment.count(),
-            prisma.follow.count(),
-            prisma.waitlist.count(),
-            prisma.user.count({ where: { lastActiveAt: { gte: fiveMinutesAgo } } })
-        ]);
+        // Run sequentially to avoid exhausting Neon free-tier connection pooler
+        const totalUsers = await prisma.user.count();
+        const totalSwaps = await prisma.swap.count();
+        const totalPosts = await prisma.post.count();
+        const totalLikes = await prisma.like.count();
+        const totalComments = await prisma.comment.count();
+        const totalFollows = await prisma.follow.count();
+        const totalWaitlist = await prisma.waitlist.count();
+        const activeNow = await prisma.user.count({ where: { lastActiveAt: { gte: fiveMinutesAgo } } });
 
         const swapStatuses = await prisma.swap.groupBy({
             by: ["status"],

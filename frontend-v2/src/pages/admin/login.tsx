@@ -34,7 +34,9 @@ export default function AdminLogin() {
 
             if (res.ok) {
                 sessionStorage.setItem("swapifhy_admin_key", secret);
-                router.replace("/admin");
+                // Use a hard redirect to bypass Next.js chunk-loading errors 
+                // in case the frontend was recently deployed and chunks changed.
+                window.location.href = "/admin";
             } else {
                 setError("Invalid admin key. Access denied.");
                 setLoading(false);

@@ -361,7 +361,7 @@ export default function Explore() {
                                             )}
 
                                             {/* Avatar */}
-                                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem]-4 md:mb-6 overflow-hidden transform group-hover:rotate-3 transition-transform">
+                                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 border border-border flex items-center justify-center shadow-inner mb-4 md:mb-6 overflow-hidden transform group-hover:rotate-3 transition-transform">
                                                 {m.avatarUrl ? (
                                                     <img src={m.avatarUrl} alt={m.name} className="w-full h-full object-cover" />
                                                 ) : (

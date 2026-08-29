@@ -15,7 +15,11 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
             const diff = target - now;
             if (diff <= 0) {
                 setTimeLeft("00:00:00");
-                // The backend will automatically disable it on next health check
+                // Force an immediate reload so the user gets back in instantly without waiting for the 30s polling
+                if (!window.maintenanceReloaded) {
+                    window.maintenanceReloaded = true;
+                    setTimeout(() => window.location.reload(), 1500);
+                }
                 return;
             }
             const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

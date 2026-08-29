@@ -445,7 +445,7 @@ router.get("/inquiries", async (req: Request, res: Response) => {
 // "?"? MARK INQUIRY AS READ "?"?
 router.put("/inquiries/:id", async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { isRead } = req.body;
         const inquiry = await prisma.inquiry.update({
             where: { id },
@@ -461,7 +461,7 @@ router.put("/inquiries/:id", async (req: Request, res: Response) => {
 // "?"? DELETE INQUIRY "?"?
 router.delete("/inquiries/:id", async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         await prisma.inquiry.delete({
             where: { id }
         });

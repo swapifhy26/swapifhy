@@ -1,5 +1,5 @@
 import React from "react";
-import { Settings, Sparkles, Hammer, Clock } from "lucide-react";
+import { Settings, Sparkles, Clock } from "lucide-react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 
@@ -48,7 +48,7 @@ export default function MaintenancePage() {
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-                    className="mb-16"
+                    className="mb-20"
                 >
                     <img 
                         src="/images/features/swapifhy-logo-DPxPDdg-.png" 
@@ -57,45 +57,69 @@ export default function MaintenancePage() {
                     />
                 </motion.div>
 
-                {/* Animated Graphic */}
-                <div className="relative mb-12 flex items-center justify-center h-40 w-40">
-                    {/* Glowing pulse rings */}
-                    <motion.div 
-                        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-primary/20 rounded-full blur-xl" 
-                    />
+                {/* Animated Graphic - INTERLOCKING GEARS */}
+                <div className="relative mb-16 flex items-center justify-center h-48 w-48">
                     
-                    <div className="absolute w-32 h-32 rounded-full glass-elite border-2 border-primary/30 flex items-center justify-center shadow-[0_0_40px_rgba(75,100,250,0.2)]">
-                        {/* Main rotating gear */}
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                        >
-                            <Settings className="w-12 h-12 text-primary" />
-                        </motion.div>
+                    {/* Deep Glowing Aura */}
+                    <motion.div 
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute inset-0 bg-primary/30 rounded-full blur-3xl z-0" 
+                    />
+
+                    {/* Central Primary Gear */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                        <div className="w-28 h-28 rounded-full glass-elite flex items-center justify-center border border-primary/40 shadow-[0_0_30px_rgba(91,196,192,0.3)] bg-surface/50 backdrop-blur-xl">
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                            >
+                                <Settings className="w-16 h-16 text-primary drop-shadow-[0_0_15px_rgba(91,196,192,0.8)]" />
+                            </motion.div>
+                        </div>
                     </div>
 
-                    {/* Orbiting Elements */}
-                    <motion.div 
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                        className="absolute w-full h-full"
-                    >
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass-elite border border-border flex items-center justify-center shadow-lg bg-surface">
-                            <Sparkles className="w-5 h-5 text-amber-400" />
+                    {/* Top Right Secondary Gear */}
+                    <div className="absolute -top-4 -right-4 z-20">
+                        <div className="w-16 h-16 rounded-full glass-elite flex items-center justify-center border border-secondary/40 shadow-lg bg-surface/80 backdrop-blur-xl">
+                            <motion.div
+                                animate={{ rotate: -360 }}
+                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            >
+                                <Settings className="w-8 h-8 text-secondary drop-shadow-[0_0_10px_rgba(107,143,212,0.8)]" />
+                            </motion.div>
                         </div>
+                    </div>
+
+                    {/* Bottom Left Amber Gear */}
+                    <div className="absolute -bottom-6 -left-6 z-20">
+                        <div className="w-20 h-20 rounded-full glass-elite flex items-center justify-center border border-amber-500/40 shadow-lg bg-surface/80 backdrop-blur-xl">
+                            <motion.div
+                                animate={{ rotate: -360 }}
+                                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            >
+                                <Settings className="w-10 h-10 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]" />
+                            </motion.div>
+                        </div>
+                    </div>
+
+                    {/* Floating Sparkles */}
+                    <motion.div
+                        animate={{ y: [0, -15, 0], opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute top-0 -left-8 z-30"
+                    >
+                        <Sparkles className="w-6 h-6 text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+                    </motion.div>
+                    
+                    <motion.div
+                        animate={{ y: [0, 15, 0], opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                        className="absolute bottom-4 -right-10 z-30"
+                    >
+                        <Sparkles className="w-5 h-5 text-primary drop-shadow-[0_0_8px_rgba(91,196,192,0.8)]" />
                     </motion.div>
 
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                        className="absolute w-full h-full"
-                    >
-                        <div className="absolute bottom-4 right-0 w-8 h-8 rounded-full glass-elite border border-border flex items-center justify-center shadow-lg bg-surface">
-                            <Hammer className="w-4 h-4 text-secondary" />
-                        </div>
-                    </motion.div>
                 </div>
 
                 {/* Friendly Content */}
@@ -122,10 +146,11 @@ export default function MaintenancePage() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="px-6 py-4 glass-elite rounded-2xl border border-primary/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex items-center gap-4 group"
+                    className="px-6 py-4 glass-elite rounded-2xl border border-primary/20 shadow-[0_8px_30px_rgba(0,0,0,0.12)] flex items-center gap-4 group hover:bg-surface/60 transition-colors"
                 >
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/10 text-amber-500">
-                        <Clock className="w-5 h-5 animate-pulse" />
+                    <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/10 text-amber-500">
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-20 animate-ping"></span>
+                        <Clock className="w-5 h-5 relative z-10" />
                     </div>
                     <div className="text-left">
                         <h3 className="text-sm font-bold text-foreground">Estimated Wait Time</h3>

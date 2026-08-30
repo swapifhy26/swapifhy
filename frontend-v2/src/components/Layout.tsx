@@ -72,16 +72,14 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                         setIsChatOpen(true);
                         setIsChatListOpen(false);
                     }}
-                    currentUserId={currentUserId}
-                />
+                    />
             )}
 
             {isChatOpen && activeSwapId && (
                 <ChatPanel 
                     swapId={activeSwapId} 
                     onClose={() => setIsChatOpen(false)} 
-                    currentUserId={currentUserId} 
-                />
+                    />
             )}
         </div>
     );

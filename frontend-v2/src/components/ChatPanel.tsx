@@ -22,8 +22,7 @@ interface Message {
 interface ChatPanelProps {
     swapId: string;
     onClose: () => void;
-    currentUserId: string;
-}
+    }
 
 const cleanJargon = (text: string) => {
     if (!text) return text;
@@ -135,10 +134,18 @@ const themes = {
     }
 };
 
-export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) => {
+export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState("");
-    const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
+        const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState("");
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
+        if (user.id) setCurrentUserId(user.id);
+    }, []);
+
+    if (!currentUserId) return null;
     const [isExpanded, setIsExpanded] = useState(false);
     const [partner, setPartner] = useState<any>(null);
     const [userProfile, setUserProfile] = useState<any>(null);

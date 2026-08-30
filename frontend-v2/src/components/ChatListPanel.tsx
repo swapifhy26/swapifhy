@@ -221,10 +221,17 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
                                                         <span className="text-[8px] font-black text-green-400 uppercase tracking-widest shrink-0">online</span>
                                                     )}
                                                 </div>
-                                                <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-tighter flex items-center gap-1.5 shrink-0 ml-2">
-                                                    <Clock className="w-2.5 h-2.5" />
-                                                    {new Date(conv.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                                                </span>
+                                                <div className="flex items-center shrink-0">
+                                                    <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-tighter flex items-center gap-1.5 ml-2">
+                                                        <Clock className="w-2.5 h-2.5" />
+                                                        {new Date(conv.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                                    </span>
+                                                    {conv.unreadCount ? (
+                                                        <span className="flex items-center justify-center bg-primary text-white text-[9px] font-black rounded-full min-w-[16px] h-4 px-1 shadow-[0_0_8px_rgba(75,100,250,0.5)] ml-2">
+                                                            {conv.unreadCount}
+                                                        </span>
+                                                    ) : null}
+                                                </div>
                                             </div>
                                             <p className="text-[12px] text-zinc-500 truncate group-hover:text-zinc-400 transition-colors">
                                                 {cleanJargon(conv.lastMessage)}

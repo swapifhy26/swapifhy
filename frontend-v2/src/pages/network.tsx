@@ -204,8 +204,7 @@ export default function SwapNetwork() {
                 <ChatPanel 
                     swapId={activeSwapId} 
                     onClose={() => setIsChatOpen(false)} 
-                    currentUserId={currentUserId} 
-                />
+                    />
             )}
         </div>
     );

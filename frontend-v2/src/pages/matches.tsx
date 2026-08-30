@@ -224,7 +224,6 @@ export default function MatchMatrix() {
             {activeSwapId && (
                 <ChatPanel 
                     swapId={activeSwapId} 
-                    currentUserId={currentUserId} 
                     onClose={() => setActiveSwapId(null)} 
                 />
             )}

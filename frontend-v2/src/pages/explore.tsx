@@ -532,7 +532,6 @@ export default function Explore() {
                 {activeSwapId && (
                     <ChatPanel
                         swapId={activeSwapId}
-                        currentUserId={currentUserId}
                         onClose={() => setActiveSwapId(null)}
                     />
                 )}

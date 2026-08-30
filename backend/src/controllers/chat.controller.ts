@@ -91,7 +91,12 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
             include: {
                 proposer: { select: { id: true, name: true, avatarUrl: true } },
                 receiver: { select: { id: true, name: true, avatarUrl: true } },
-                messages: { orderBy: { createdAt: 'desc' }, take: 1 }
+                messages: { orderBy: { createdAt: 'desc' }, take: 1 },
+                _count: {
+                    select: {
+                        messages: { where: { senderId: { not: userId }, isRead: false } }
+                    }
+                }
             },
             orderBy: { updatedAt: 'desc' }
         });
@@ -110,7 +115,8 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
                 status: s.status,
                 updatedAt: s.updatedAt,
                 isOnline,
-                isProposer: s.proposerId === userId
+                isProposer: s.proposerId === userId,
+                unreadCount: s._count?.messages || 0
             };
         });
 
@@ -138,6 +144,12 @@ export const getMessages = async (req: AuthRequest, res: Response): Promise<void
         if (swap.proposerId !== userId && swap.receiverId !== userId) {
             res.status(403).json({ error: "Unauthorized" }); return;
         }
+
+        // Mark unread messages from the partner as read
+        await prisma.chatMessage.updateMany({
+            where: { swapId, senderId: { not: userId }, isRead: false },
+            data: { isRead: true }
+        });
 
         const messages = await prisma.chatMessage.findMany({
             where: { swapId },

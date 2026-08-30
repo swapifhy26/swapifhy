@@ -119,6 +119,8 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
             swap = await prisma.swap.create({
                 data: { proposerId, receiverId, status: "PENDING" }
             });
+            // Award XP for proposing a swap
+            await prisma.user.update({ where: { id: proposerId }, data: { xp: { increment: 50 } } });
             await prisma.chatMessage.create({
                 data: {
                     swapId: swap.id,

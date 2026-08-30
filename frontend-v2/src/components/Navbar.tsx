@@ -11,6 +11,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
     const [scrolled, setScrolled] = useState(false);
     const [userName, setUserName] = useState<string | null>(null);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [userXp, setUserXp] = useState<number>(0);
     
     // Dropdown States
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -107,6 +108,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                     if (data?.user) {
                         setUserName(data.user.name);
                         setAvatarUrl(data.user.avatarUrl);
+                        setUserXp(data.user.xp || 0);
                     }
                 })
                 .catch(console.error);

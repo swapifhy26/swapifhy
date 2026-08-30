@@ -62,6 +62,8 @@ export const acceptSwap = async (req: AuthRequest, res: Response): Promise<void>
             where: { id: swapId },
             data: { status: "ACCEPTED", proposerSkillId, receiverSkillId }
         });
+        // Award XP for accepting a swap
+        await prisma.user.update({ where: { id: swap.receiverId }, data: { xp: { increment: 50 } } });
         
         // Notify proposer that swap was accepted
         await prisma.notification.create({
@@ -170,14 +172,18 @@ export const leaveSwap = async (req: AuthRequest, res: Response): Promise<void> 
         if (m.targetDurationHours > 0 && totalHours < m.targetDurationHours) {
             await prisma.user.update({
                 where: { id: userId },
-                data: { reputation: { decrement: 5 } } // Representing -0.25 stars via reputation
+                data: { reputation: { decrement: 5 } }
             });
+            await prisma.mentorship.update({ where: { id }, data: { status: "CANCELLED" }});
+        } else {
+            // Completed! Award +500 XP
+            await prisma.user.update({
+                where: { id: userId },
+                data: { xp: { increment: 500 } }
+            });
+            await prisma.mentorship.update({ where: { id }, data: { status: "COMPLETED" }});
         }
 
-        await prisma.mentorship.update({
-            where: { id },
-            data: { status: "CANCELLED" }
-        });
         res.status(200).json({ success: true });
     } catch (err) {
         res.status(500).json({ error: "Failed to leave swap" });
@@ -251,6 +257,8 @@ export const rateTeacher = async (req: AuthRequest, res: Response): Promise<void
         const mRating = await prisma.mentorshipRating.create({
             data: { mentorshipId: id, weekStarting: new Date(), rating, feedback }
         });
+        // Award XP for leaving a review
+        if (req.user?.id) await prisma.user.update({ where: { id: req.user.id }, data: { xp: { increment: 20 } } });
         
         // Boost teacher rep based on rating
         const m = await prisma.mentorship.findUnique({ where: { id }});

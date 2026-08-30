@@ -25,6 +25,13 @@ model User {
   lastActiveAt DateTime?
   avatarUrl    String?
   isBanned     Boolean   @default(false)
+
+  // GAMIFICATION
+  currentStreak   Int       @default(0)
+  highestStreak   Int       @default(0)
+  lastStreakDate  DateTime?
+  xp              Int       @default(0)
+
   
   // PRIVACY CONTROL (PROFESSIONAL PROTOCOL)
   privacy      String    @default("PUBLIC") // PUBLIC, PRIVATE, FOLLOWERS_ONLY

@@ -138,14 +138,13 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState("");
         const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
-    const [currentUserId, setCurrentUserId] = useState("");
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
-        if (user.id) setCurrentUserId(user.id);
-    }, []);
-
-    if (!currentUserId) return null;
+    const [currentUserId, setCurrentUserId] = useState(() => {
+        if (typeof window !== "undefined") {
+            const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
+            return user.id || "";
+        }
+        return "";
+    });
     const [isExpanded, setIsExpanded] = useState(false);
     const [partner, setPartner] = useState<any>(null);
     const [userProfile, setUserProfile] = useState<any>(null);

@@ -103,6 +103,7 @@ export default function Explore() {
     const [currentUserId, setCurrentUserId] = useState<string>("");
     const [myTeaching, setMyTeaching] = useState<string[]>([]);
     const [myLearning, setMyLearning] = useState<string[]>([]);
+    const [mySwaps, setMySwaps] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [filterDomain, setFilterDomain] = useState("all");
@@ -140,6 +141,15 @@ export default function Explore() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
+
+        fetch(`${API_URL}/api/chat/conversations`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.conversations) setMySwaps(data.conversations);
+            })
+            .catch(() => {});
     }, []);
 
     // ✅ Real skill match: they teach what I want to learn OR they learn what I can teach
@@ -177,7 +187,24 @@ export default function Explore() {
                 body: JSON.stringify({ receiverId })
             });
             const data = await res.json();
-            if (data.swapId) setActiveSwapId(data.swapId);
+            if (data.swapId) {
+                // Refresh swaps to update button UI
+                fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } })
+                    .then(r => r.json()).then(d => { if (d.conversations) setMySwaps(d.conversations); });
+            }
+        } catch (err) { console.error(err); }
+    };
+
+    const handleAcceptSwap = async (swapId: string) => {
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            await fetch(`${API_URL}/api/mentorships/${swapId}/accept`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            // Refresh swaps to update button UI
+            fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(r => r.json()).then(d => { if (d.conversations) setMySwaps(d.conversations); });
         } catch (err) { console.error(err); }
     };
 

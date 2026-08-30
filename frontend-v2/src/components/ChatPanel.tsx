@@ -147,6 +147,8 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
     const [muted, setMuted] = useState(false);
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [isDark, setIsDark] = useState(true);
+    const [swapStatus, setSwapStatus] = useState<string>("PENDING");
+    const [isProposer, setIsProposer] = useState<boolean>(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -225,6 +227,17 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
                 body: JSON.stringify({ swapId, content: type === "TEXT" ? inputText : null, type, details })
             });
             if (res.ok) { setInputText(""); fetchData(); }
+        } catch (err) { console.error(err); }
+    };
+
+    const handleAcceptSwap = async () => {
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            await fetch(`${API_URL}/api/mentorships/${swapId}/accept`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            fetchData();
         } catch (err) { console.error(err); }
     };
 

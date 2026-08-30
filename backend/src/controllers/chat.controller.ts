@@ -99,7 +99,8 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
                 lastMessage: s.messages[0]?.content || "No messages yet",
                 status: s.status,
                 updatedAt: s.updatedAt,
-                isOnline
+                isOnline,
+                isProposer: s.proposerId === userId
             };
         });
 
@@ -150,7 +151,7 @@ export const getMessages = async (req: AuthRequest, res: Response): Promise<void
             return { ...msg, details: parsedDetails };
         });
 
-        res.status(200).json({ messages: scrubbedMessages, partner: { ...partner, isOnline } });
+        res.status(200).json({ messages: scrubbedMessages, partner: { ...partner, isOnline }, status: swap.status, isProposer: swap.proposerId === userId });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch messages" });
     }

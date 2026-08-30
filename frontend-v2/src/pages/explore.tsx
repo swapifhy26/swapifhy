@@ -469,19 +469,57 @@ export default function Explore() {
                                                     }
                                                 </button>
 
-                                                {/* ✅ Message button — always visible, themed colour */}
-                                                <button
-                                                    className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:scale-[1.02] shadow-lg"
-                                                    style={{
-                                                        background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)",
-                                                        color: "#fff",
-                                                        boxShadow: "0 4px 20px rgba(91,196,192,0.25)"
-                                                    }}
-                                                    onClick={() => handleSync(m.id)}
-                                                >
-                                                    Message
-                                                    <MessageSquare className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                                                </button>
+                                                {(() => {
+                                                    const swap = mySwaps.find(s => s.partnerId === m.id);
+                                                    
+                                                    if (swap && swap.status === 'ACCEPTED') {
+                                                        return (
+                                                            <button
+                                                                className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:scale-[1.02] shadow-lg"
+                                                                style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff", boxShadow: "0 4px 20px rgba(91,196,192,0.25)" }}
+                                                                onClick={() => setActiveSwapId(swap.swapId)}
+                                                            >
+                                                                Message
+                                                                <MessageSquare className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                                                            </button>
+                                                        );
+                                                    }
+                                                    
+                                                    if (swap && swap.status === 'PENDING') {
+                                                        if (swap.isProposer) {
+                                                            return (
+                                                                <button
+                                                                    className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn opacity-50 cursor-not-allowed"
+                                                                    style={{ background: "#333", color: "#fff" }}
+                                                                >
+                                                                    Requested
+                                                                </button>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <button
+                                                                    className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:scale-[1.02] shadow-lg"
+                                                                    style={{ background: "#F07060", color: "#fff", boxShadow: "0 4px 20px rgba(240,112,96,0.25)" }}
+                                                                    onClick={() => handleAcceptSwap(swap.swapId)}
+                                                                >
+                                                                    Accept Swap
+                                                                </button>
+                                                            );
+                                                        }
+                                                    }
+
+                                                    // Default: Start a Swap
+                                                    return (
+                                                        <button
+                                                            className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:scale-[1.02] shadow-lg"
+                                                            style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff", boxShadow: "0 4px 20px rgba(91,196,192,0.25)" }}
+                                                            onClick={() => handleSync(m.id)}
+                                                        >
+                                                            Start a Swap
+                                                            <Zap className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                                                        </button>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     </GlowCard>

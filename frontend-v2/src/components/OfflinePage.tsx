@@ -36,7 +36,7 @@ export default function OfflinePage() {
                     
                     <button 
                         onClick={() => window.location.reload()}
-                        className="flex items-center gap-2 px-8 py-3 rounded-full bg-foreground text-background font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-xl"
+                        className="flex items-center gap-2 px-8 py-3 rounded-full bg-primary text-white font-bold text-sm hover:scale-105 hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 transition-all shadow-xl border border-primary/50"
                     >
                         <RefreshCw className="w-4 h-4" />
                         Retry Connection

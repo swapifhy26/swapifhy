@@ -232,7 +232,13 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ swapId, content: type === "TEXT" ? inputText : null, type, details })
             });
-            if (res.ok) { setInputText(""); fetchData(); }
+            if (res.ok) { 
+                setInputText(""); 
+                fetchData(); 
+            } else {
+                setInputText(""); 
+                fetchData();
+            }
         } catch (err) { console.error(err); }
     };
 
@@ -422,7 +428,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                     className={`h-full border-l flex flex-col overflow-hidden transition-colors duration-300 backdrop-blur-[50px] ${t.panelBg} ${t.borderLeft}`}
                 >
                     {/* ── HEADER ── */}
-                    <div className={`px-8 py-5 border-b flex items-center justify-between transition-colors duration-300 ${t.header}`}>
+                    <div className={`px-4 lg:px-8 py-4 lg:py-5 border-b flex items-center justify-between transition-colors duration-300 ${t.header}`}>
                         <div className="flex items-center gap-4">
                             <div className="relative">
                                 {partner?.avatarUrl ? (
@@ -540,7 +546,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                 >
                                     {msg.senderId.startsWith("SYSTEM_WARNING") ? (
                                         <div className="w-full py-4 flex justify-center items-center">
-                                            <div className="relative z-10 p-4 rounded-2xl border border-red-500/30 bg-red-500/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(239,68,68,0.15)] text-red-400 text-[13px] leading-relaxed font-medium text-center max-w-[85%]">
+                                            <div className="relative z-10 p-4 rounded-2xl border border-red-500/30 bg-red-500/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(239,68,68,0.15)] text-red-400 text-[13px] leading-relaxed font-medium text-center max-w-[92%] lg:max-w-[85%]">
                                                 {cleanJargon(msg.content)}
                                             </div>
                                         </div>
@@ -552,7 +558,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                             </span>
                                         </div>
                                     ) : (
-                                        <div className={`max-w-[85%] space-y-1.5 group ${msg.senderId === currentUserId ? "items-end" : "items-start"}`}>
+                                        <div className={`max-w-[92%] lg:max-w-[85%] space-y-1.5 group ${msg.senderId === currentUserId ? "items-end" : "items-start"}`}>
                                             {msg.type === "TEXT" ? (
                                                 <div className={`relative p-4 px-6 rounded-[1.75rem] text-[14px] leading-relaxed font-sans ${
                                                     msg.senderId === currentUserId
@@ -589,7 +595,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                     </div>
 
                     {/* ── INPUT ── */}
-                    <div className={`p-6 border-t transition-colors duration-300 backdrop-blur-[80px] ${t.inputArea}`}>
+                    <div className={`p-4 lg:p-6 border-t transition-colors duration-300 backdrop-blur-[80px] ${t.inputArea}`}>
                         {muted && (
                             <div className={`mb-3 px-4 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-widest text-center ${t.mutedBanner}`}>
                                 Notifications muted

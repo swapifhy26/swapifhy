@@ -46,6 +46,10 @@ model User {
   // A user can initiate or receive a swap proposal
   swapsProposed  Swap[] @relation("SwapProposer")
   swapsReceived  Swap[] @relation("SwapReceiver")
+  
+  // MENTORSHIP SYSTEM
+  mentorshipsTeaching Mentorship[] @relation("MentorshipTeacher")
+  mentorshipsLearning Mentorship[] @relation("MentorshipStudent")
 
   // Network Social Layer
   posts          Post[]
@@ -72,6 +76,7 @@ model Skill {
   
   teachingRefs SkillTeaching[]
   learningRefs SkillLearning[]
+  mentorships  Mentorship[]
 }
 
 model SkillTeaching {
@@ -103,6 +108,11 @@ model Swap {
   id            String   @id @default(uuid())
   proposerId    String
   receiverId    String
+  
+  // SKILLS EXCHANGED (Optional for backward compatibility, but required for new UI)
+  proposerSkillId String? // The skill the proposer wants to TEACH
+  receiverSkillId String? // The skill the receiver wants to TEACH (proposer wants to LEARN)
+  
   status        String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COMPLETED
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -112,6 +122,9 @@ model Swap {
   
   // CHAT HISTORY
   messages      ChatMessage[]
+  
+  // GENERATED MENTORSHIPS
+  mentorships   Mentorship[]
 }
 
 model ChatMessage {
@@ -189,4 +202,81 @@ model Inquiry {
   subject   String?
   createdAt DateTime @default(now())
   isRead    Boolean  @default(false)
+}
+// ==========================================
+// MENTORSHIP & LEARNING HUB MODELS
+// ==========================================
+
+model Mentorship {
+  id              String   @id @default(uuid())
+  swapId          String?
+  teacherId       String
+  studentId       String
+  skillId         String
+  
+  targetDurationHours Float    @default(0) // Goal set by teacher
+  meetingLink     String?
+  nextMilestone   String?
+  status          String   @default("ACTIVE") // ACTIVE, CANCELLED, COMPLETED
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  swap            Swap?    @relation(fields: [swapId], references: [id])
+  teacher         User     @relation("MentorshipTeacher", fields: [teacherId], references: [id])
+  student         User     @relation("MentorshipStudent", fields: [studentId], references: [id])
+  skill           Skill    @relation(fields: [skillId], references: [id])
+  
+  classes         MentorshipClass[]
+  assignments     MentorshipAssignment[]
+  resources       MentorshipResource[]
+  ratings         MentorshipRating[]
+}
+
+model MentorshipClass {
+  id              String   @id @default(uuid())
+  mentorshipId    String
+  title           String
+  startTime       DateTime
+  durationMinutes Int
+  isCompleted     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  
+  mentorship      Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
+}
+
+model MentorshipAssignment {
+  id              String   @id @default(uuid())
+  mentorshipId    String
+  title           String
+  description     String?
+  isCompleted     Boolean  @default(false)
+  score           Float?   // e.g., 0-100
+  feedback        String?
+  dueDate         DateTime?
+  createdAt       DateTime @default(now())
+  
+  mentorship      Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
+}
+
+model MentorshipResource {
+  id              String   @id @default(uuid())
+  mentorshipId    String
+  title           String
+  url             String
+  createdAt       DateTime @default(now())
+  
+  mentorship      Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
+}
+
+model MentorshipRating {
+  id              String   @id @default(uuid())
+  mentorshipId    String
+  weekStarting    DateTime // To track "weekly" ratings
+  rating          Float    // 1 to 5 stars
+  feedback        String?
+  createdAt       DateTime @default(now())
+  
+  mentorship      Mentorship @relation(fields: [mentorshipId], references: [id], onDelete: Cascade)
 }

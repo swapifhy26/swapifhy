@@ -32,6 +32,11 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
         const { receiverId } = req.body;
         if (!proposerId || !receiverId) { res.status(400).json({ error: "Participants not identified" }); return; }
 
+        // Enforce max 5 pending sent requests limit
+        const pendingSent = await prisma.swap.count({
+            where: { proposerId, status: "PENDING" }
+        });
+        
         let swap = await prisma.swap.findFirst({
             where: {
                 OR: [
@@ -40,6 +45,11 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
                 ]
             }
         });
+        
+        if (!swap && pendingSent >= 5) {
+            res.status(400).json({ error: "You can only have up to 5 pending sent swap requests at a time." });
+            return;
+        }
 
         if (!swap) {
             swap = await prisma.swap.create({

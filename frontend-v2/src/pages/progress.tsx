@@ -14,7 +14,7 @@ const BADGE_DEFINITIONS = [
 
 export default function Progress() {
     const [activeTab, setActiveTab] = useState<"overview" | "learning" | "teaching">("overview");
-    const [stats, setStats] = useState({ totalSwaps: 0, hoursLearned: 0, hoursTaught: 0, avgRating: 0, studentsTaught: 0 });
+    const [stats, setStats] = useState({ totalSwaps: 0, hoursLearned: 0, hoursTaught: 0, avgRating: 0, studentsTaught: 0, currentStreak: 0, highestStreak: 0 });
     const [incomingSwaps, setIncomingSwaps] = useState<any[]>([]);
     const [outgoingSwaps, setOutgoingSwaps] = useState<any[]>([]);
     const [learning, setLearning] = useState<any[]>([]);
@@ -49,7 +49,9 @@ export default function Progress() {
                     hoursLearned: profData.user.hoursLearned ?? 0,
                     hoursTaught: profData.user.hoursTaught ?? 0,
                     avgRating: profData.user.avgRating ?? 0,
-                    studentsTaught: mentData.teaching?.length || 0
+                    studentsTaught: mentData.teaching?.length || 0,
+                    currentStreak: profData.user.currentStreak ?? 0,
+                    highestStreak: profData.user.highestStreak ?? 0
                 });
             }
             if (reqData.incoming) setIncomingSwaps(reqData.incoming);
@@ -136,7 +138,7 @@ export default function Progress() {
                         </div>
                         <div>
                             <h2 className="text-3xl lg:text-4xl font-heading font-black tracking-tighter text-foreground mb-1">
-                                3-Day Streak!
+                                {stats.currentStreak}-Day Streak!
                             </h2>
                             <p className="text-muted-foreground font-sans text-sm lg:text-base font-medium">
                                 Come back tomorrow to keep your flame alive.
@@ -152,7 +154,7 @@ export default function Progress() {
                         <div className="relative h-4 rounded-full bg-muted overflow-hidden mb-3 border border-border/50 shadow-inner">
                             <motion.div 
                                 initial={{ width: 0 }}
-                                animate={{ width: "42%" }} 
+                                animate={{ width: `${Math.min((stats.currentStreak / 7) * 100, 100)}%` }} 
                                 transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
                                 className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.5)]"
                             >
@@ -161,7 +163,7 @@ export default function Progress() {
                         </div>
                         <div className="flex justify-between text-[11px] font-black text-muted-foreground uppercase tracking-wider">
                             <span className="text-orange-500">Day 1</span>
-                            <span className="text-orange-500">Day 3 (You)</span>
+                            <span className="text-orange-500">Day {stats.currentStreak} (You)</span>
                             <span>Day 7</span>
                         </div>
                     </div>

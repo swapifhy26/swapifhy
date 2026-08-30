@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticate } from "../middleware/auth.middleware";
+import { authenticateToken } from "../middleware/auth.middleware";
 import {
     getSwapRequests,
     acceptSwap,
@@ -14,7 +14,7 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticateToken);
 
 // SWAP REQUESTS
 router.get("/requests", getSwapRequests);

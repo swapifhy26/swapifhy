@@ -29,7 +29,7 @@ export const getSwapRequests = async (req: AuthRequest, res: Response): Promise<
 export const acceptSwap = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.user?.id;
-        const swapId = req.params.id;
+        const swapId = req.params.id as string;
         if (!userId) return;
 
         const swap = await prisma.swap.findUnique({ where: { id: swapId } });
@@ -131,7 +131,7 @@ export const getMentorships = async (req: AuthRequest, res: Response): Promise<v
 
 export const updateMentorshipProgress = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { nextMilestone, meetingLink } = req.body;
         const updated = await prisma.mentorship.update({
             where: { id },
@@ -146,14 +146,14 @@ export const updateMentorshipProgress = async (req: AuthRequest, res: Response):
 export const leaveSwap = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.user?.id;
-        const { id } = req.params;
-        const m = await prisma.mentorship.findUnique({ where: { id }, include: { classes: true } });
+        const id = req.params.id as string;
+        const m = await prisma.mentorship.findUnique({ where: { id }, include: { classes: true } }) as any;
         if (!m || (m.teacherId !== userId && m.studentId !== userId)) {
             res.status(403).json({ error: "Unauthorized" });
             return;
         }
 
-        const totalHours = m.classes.reduce((acc, c) => acc + (c.isCompleted ? c.durationMinutes / 60 : 0), 0);
+        const totalHours = m.classes.reduce((acc: number, c: any) => acc + (c.isCompleted ? c.durationMinutes / 60 : 0), 0);
         
         // Penalty if target not met
         if (m.targetDurationHours > 0 && totalHours < m.targetDurationHours) {
@@ -175,7 +175,7 @@ export const leaveSwap = async (req: AuthRequest, res: Response): Promise<void> 
 
 export const scheduleClass = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { title, startTime, durationMinutes, isCompleted } = req.body;
         
         const cl = await prisma.mentorshipClass.create({
@@ -199,7 +199,7 @@ export const scheduleClass = async (req: AuthRequest, res: Response): Promise<vo
 
 export const addResource = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { title, url } = req.body;
         const resource = await prisma.mentorshipResource.create({
             data: { mentorshipId: id, title, url }
@@ -217,7 +217,7 @@ export const addResource = async (req: AuthRequest, res: Response): Promise<void
 
 export const gradeAssignment = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { title, description, isCompleted, score, feedback } = req.body;
         const assignment = await prisma.mentorshipAssignment.create({
             data: { mentorshipId: id, title, description, isCompleted, score, feedback }
@@ -234,7 +234,7 @@ export const gradeAssignment = async (req: AuthRequest, res: Response): Promise<
 
 export const rateTeacher = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { rating, feedback } = req.body;
         
         const mRating = await prisma.mentorshipRating.create({

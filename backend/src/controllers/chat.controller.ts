@@ -201,7 +201,7 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
                 await prisma.chatMessage.create({
                     data: {
                         swapId,
-                        senderId: "SYSTEM",
+                        senderId: "SYSTEM_WARNING_" + senderId,
                         content: "⚠️ WARNING: Your message violated our safety policy. All chats are recorded. Strict action and reporting to authorities will occur for harassment or explicit content.",
                         type: "TEXT"
                     }

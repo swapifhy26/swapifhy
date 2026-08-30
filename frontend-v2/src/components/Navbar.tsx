@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { LogOut, User, Compass, Zap, MessageSquare, Bell } from "lucide-react"; // Added Bell icon
+import { LogOut, User, Users, Compass, Zap, MessageSquare, Bell } from "lucide-react"; // Added Bell icon
 import { motion, AnimatePresence } from "framer-motion";
 import { API_URL } from "../lib/api";
 
@@ -256,12 +256,12 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                             className="absolute top-14 right-0 w-48 glass-elite rounded-2xl shadow-xl border border-border/50 overflow-hidden py-2 z-50 flex flex-col"
                                         >
                                             <Link 
-                                                href="/dashboard" 
-                                                onClick={() => setIsDropdownOpen(false)}
-                                                className="px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface/80 hover:text-primary transition-colors flex items-center gap-3 w-full text-left"
-                                            >
-                                                <User className="w-4 h-4 text-primary" /> Profile Swap
-                                            </Link>
+                        href="/matches"
+                        className={`relative flex flex-col items-center justify-center w-[52px] h-[52px] rounded-full transition-all duration-300 active:scale-95 ${router.pathname === "/matches" ? "bg-primary/10 shadow-inner" : "hover:bg-foreground/5"}`}
+                    >
+                        <Users className={`w-[22px] h-[22px] transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`} />
+                        <span className={`text-[10px] font-bold mt-1 transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`}>Matches</span>
+                    </Link>
                                             <Link 
                                                 href="/settings" 
                                                 onClick={() => setIsDropdownOpen(false)}
@@ -338,19 +338,11 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                     </Link>
 
                     <Link 
-                        href="/dashboard"
-                        className={`relative flex flex-col items-center justify-center w-[52px] h-[52px] rounded-full transition-all duration-300 active:scale-95 ${router.pathname === "/dashboard" ? "bg-primary/10 shadow-inner" : "hover:bg-foreground/5"}`}
+                        href="/matches"
+                        className={`relative flex flex-col items-center justify-center w-[52px] h-[52px] rounded-full transition-all duration-300 active:scale-95 ${router.pathname === "/matches" ? "bg-primary/10 shadow-inner" : "hover:bg-foreground/5"}`}
                     >
-                        <div className={`w-[24px] h-[24px] rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 overflow-hidden border transition-all ${router.pathname === "/dashboard" ? "border-primary shadow-[0_0_8px_rgba(75,100,250,0.4)]" : "border-border/50"}`}>
-                            {avatarUrl ? (
-                                <img src={avatarUrl} alt={userName} className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-foreground text-[10px] font-bold">
-                                    {userName.charAt(0)}
-                                </div>
-                            )}
-                        </div>
-                        <span className={`text-[10px] font-bold mt-1 transition-colors ${router.pathname === "/dashboard" ? "text-primary" : "text-muted-foreground"}`}>Profile</span>
+                        <Users className={`w-[22px] h-[22px] transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`} />
+                        <span className={`text-[10px] font-bold mt-1 transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`}>Matches</span>
                     </Link>
 
                 </div>

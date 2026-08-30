@@ -63,6 +63,16 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
                     type: "TEXT"
                 }
             });
+            // Notify receiver about the new swap request
+            await prisma.notification.create({
+                data: {
+                    userId: receiverId,
+                    title: "New Swap Request",
+                    message: `You have a new swap request!`,
+                    type: "SWAP_REQUEST",
+                    link: "/explore"
+                }
+            });
         }
 
         res.status(200).json({ swapId: swap.id });
@@ -179,6 +189,21 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
                 details: details ? JSON.stringify(details) : undefined
             }
         });
+        // Notify the partner about the new message
+        if (type !== "SYSTEM") {
+            const partnerId = swap.proposerId === senderId ? swap.receiverId : swap.proposerId;
+            
+            // Just push a new notification
+            await prisma.notification.create({
+                data: {
+                    userId: partnerId,
+                    title: "New Message",
+                    message: `You received a new message.`,
+                    type: "NEW_MESSAGE",
+                    link: "/explore"
+                }
+            });
+        }
 
         await prisma.swap.update({ where: { id: swapId }, data: { updatedAt: new Date() } });
         res.status(201).json({ message });

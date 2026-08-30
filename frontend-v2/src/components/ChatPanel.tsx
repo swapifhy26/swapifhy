@@ -528,15 +528,23 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                 </p>
                             </div>
                         ) : (
-                            messages.map((msg, idx) => (
+                            messages.map((msg, idx) => {
+                                if (msg.senderId.startsWith("SYSTEM_WARNING") && msg.senderId !== `SYSTEM_WARNING_${currentUserId}`) return null;
+                                return (
                                 <motion.div
                                     key={msg.id}
                                     initial={{ opacity: 0, y: 16 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ type: "spring", damping: 25, delay: Math.min(idx * 0.02, 0.3) }}
-                                    className={`flex flex-col ${msg.senderId === currentUserId ? "items-end" : "items-start"}`}
+                                    className={`flex flex-col ${msg.senderId === currentUserId ? "items-end" : msg.senderId.startsWith("SYSTEM") ? "items-center" : "items-start"}`}
                                 >
-                                    {msg.senderId === "SYSTEM" ? (
+                                    {msg.senderId.startsWith("SYSTEM_WARNING") ? (
+                                        <div className="w-full py-4 flex justify-center items-center">
+                                            <div className="relative z-10 p-4 rounded-2xl border border-red-500/30 bg-red-500/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(239,68,68,0.15)] text-red-400 text-[13px] leading-relaxed font-medium text-center max-w-[85%]">
+                                                {cleanJargon(msg.content)}
+                                            </div>
+                                        </div>
+                                    ) : msg.senderId === "SYSTEM" ? (
                                         <div className="w-full py-4 flex justify-center items-center relative">
                                             <div className={`absolute left-0 right-0 h-px ${t.systemLine}`} />
                                             <span className={`relative z-10 text-[9px] font-black uppercase tracking-[0.5em] px-6 py-2 rounded-full border ${t.systemMsg}`}>
@@ -575,7 +583,8 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                         </div>
                                     )}
                                 </motion.div>
-                            ))
+                            );
+                        })
                         )}
                     </div>
 

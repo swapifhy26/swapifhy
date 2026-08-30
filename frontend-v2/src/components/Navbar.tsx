@@ -172,11 +172,8 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
 
                     {userName ? (
                         <>
-                        {/* MOBILE LOGOUT BUTTON */}
-                        <button onClick={handleLogout} className="md:hidden ml-4 p-2 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-full transition-colors flex items-center justify-center">
-                            <LogOut className="w-5 h-5" />
-                        </button>
-                        <div className="hidden md:flex items-center pl-6 ml-2 border-l border-border/50 relative">
+                        
+                        <div className="flex items-center gap-2 md:gap-0 pl-2 md:pl-6 ml-2 md:border-l border-border/50 relative">
                             
                             {/* ── NOTIFICATION BELL INTEGRATION ── */}
                             <div ref={notificationRef} className="relative mr-5">
@@ -201,7 +198,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                             transition={{ duration: 0.2, ease: "easeOut" }}
-                                            className="absolute top-12 right-[-80px] w-80 glass-elite bg-surface/95 backdrop-blur-xl rounded-2xl shadow-xl border border-border/50 py-3 z-50 flex flex-col"
+                                            className="absolute top-12 -right-12 md:right-[-80px] w-[90vw] max-w-[320px] sm:w-80 glass-elite bg-surface/95 backdrop-blur-xl rounded-2xl shadow-xl border border-border/50 py-3 z-50 flex flex-col"
                                         >
                                             <div className="px-4 pb-3 border-b border-border/50 flex justify-between items-center mb-2">
                                                 <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Notifications</h3>
@@ -244,7 +241,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                             </div>
                                         )}
                                     </div>
-                                    <span className={`text-sm tracking-tight font-semibold transition-colors ${isDropdownOpen ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
+                                    <span className={`hidden md:inline text-sm tracking-tight font-semibold transition-colors ${isDropdownOpen ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
                                         {userName.split(' ')[0]}
                                     </span>
                                 </button>

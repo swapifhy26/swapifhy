@@ -407,7 +407,7 @@ export const ChatPanel = ({ swapId, onClose, currentUserId }: ChatPanelProps) =>
 
     return (
         <AnimatePresence>
-            <div className={`fixed top-[85px] right-0 h-[calc(100vh-85px)] z-[150] shadow-3xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isExpanded ? "w-[100vw] lg:w-[65%]" : "w-[100vw] lg:w-[440px]"}`}>
+            <div className={`fixed top-[85px] right-0 h-[calc(100dvh-85px)] z-[150] shadow-3xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isExpanded ? "w-[100vw] lg:w-[65%]" : "w-[100vw] lg:w-[440px]"}`}>
                 <motion.div
                     initial={{ x: "100%", opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}

@@ -257,11 +257,11 @@ export default function Explore() {
             <motion.div
                 initial={{ opacity: 0, scale: 0.99 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-7xl mx-auto px-6 pb-32 relative z-10 pt-24"
+                className="w-full max-w-7xl mx-auto px-4 md:px-6 pb-32 relative z-10 pt-24"
             >
                 {/* Header */}
                 <div className="mb-16 space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-tight">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight leading-tight">
                         Discover <span className="text-gradient">Users</span>
                     </h1>
                     <p className="text-muted-foreground font-medium text-lg max-w-xl leading-relaxed">
@@ -353,7 +353,7 @@ export default function Explore() {
                         <h3 className="text-2xl font-heading font-bold mb-2 text-foreground">No Results Found</h3>
                         <p className="text-muted-foreground text-sm mb-8">Try a different keyword, skill name, or domain.</p>
                         <button onClick={() => { setSearchQuery(""); setFilterDomain("all"); setSortBy("newest"); }}
-                            className="px-6 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-foreground text-xs font-semibold hover:border-primary/50 hover:text-primary transition-all">
+                            className="px-4 md:px-6 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-border text-foreground text-xs font-semibold hover:border-primary/50 hover:text-primary transition-all">
                             Clear All Filters
                         </button>
                     </div>

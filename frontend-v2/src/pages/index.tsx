@@ -250,7 +250,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
-                    className="text-5xl md:text-7xl font-heading font-black tracking-tight leading-[0.95] mb-10 text-foreground uppercase"
+                    className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tight leading-[0.95] mb-10 text-foreground uppercase"
                 >
                     Learn <span className="text-secondary text-gradient-elite">alongside</span> peers.<br />
                     Not <span className="text-foreground">beneath</span> them.
@@ -312,7 +312,7 @@ export default function Home() {
                         <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-border glass-elite text-accent font-tech text-[9px] uppercase tracking-[0.5em] mb-10 shadow-md backdrop-blur-3xl">
                             <Info className="w-3.5 h-3.5" /> About Swapifhy
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground mb-8 uppercase leading-[0.9]">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground mb-8 uppercase leading-[0.9]">
                             Trading Skills,<br /><span className="text-gradient-elite">Reimagined.</span>
                         </h2>
                         <p className="text-base md:text-lg text-muted-foreground font-medium leading-relaxed tracking-normal max-w-xl mb-8">
@@ -372,7 +372,7 @@ export default function Home() {
             <section id="features" className="max-w-7xl w-full mx-auto px-6 mb-48 relative z-20">
                 <div className="mb-14 text-center">
                     <span className="text-accent font-tech font-black uppercase tracking-[0.6em] text-[10px] mb-5 block">✧ Platform Capabilities ✧</span>
-                    <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground uppercase leading-[0.95]">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground uppercase leading-[0.95]">
                         Built for <span className="text-gradient-elite">Real Exchange.</span>
                     </h2>
                     <p className="mt-4 text-base text-muted-foreground font-sans max-w-lg mx-auto leading-relaxed">
@@ -470,7 +470,7 @@ export default function Home() {
             <section id="how-it-works" className="max-w-6xl w-full mx-auto px-6 mb-44 relative z-20">
                 <div className="text-center mb-28">
                     <span className="text-secondary font-tech font-black uppercase tracking-[0.6em] text-[10px] mb-8 block">✧ Simple Steps ✧</span>
-                    <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground uppercase leading-[0.95]">How it <span className="text-gradient-elite">Works</span></h2>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black tracking-tight text-foreground uppercase leading-[0.95]">How it <span className="text-gradient-elite">Works</span></h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-20 relative">
                     <div className="hidden md:block absolute top-[28%] left-0 w-full h-[1px] bg-border z-0" />
@@ -495,7 +495,7 @@ export default function Home() {
             <section id="team" className="w-full max-w-7xl mx-auto px-6 py-40 relative z-20 border-t border-border/40">
                 <div className="mb-28 text-center flex flex-col items-center">
                     <span className="text-primary font-tech font-black uppercase tracking-[0.8em] text-[10px] mb-8 block">✧ The Architect Collective ✧</span>
-                    <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tighter text-foreground uppercase leading-none">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black tracking-tighter text-foreground uppercase leading-none">
                         Core <span className="text-gradient-elite">Architects</span>
                     </h2>
                 </div>
@@ -607,7 +607,8 @@ export default function Home() {
                                             btn.textContent = "Sending...";
                                             btn.disabled = true;
                                             try {
-                                                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/inquiries`, {
+                                                const baseUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3001');
+                                                const res = await fetch(`${baseUrl}/api/auth/inquiries`, {
                                                     method: "POST",
                                                     headers: { "Content-Type": "application/json" },
                                                     body: JSON.stringify({ email: emailVal, subject: subjectVal })

@@ -111,11 +111,11 @@ export default function Progress() {
                 }`} />
             </div>
 
-            <div className="max-w-6xl mx-auto px-6 relative z-10 w-full">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 relative z-10 w-full">
                 
                 {/* Header */}
                 <div className="mb-12">
-                    <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight mb-4">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight mb-4">
                         Your <span className={`transition-colors duration-500 ${
                             activeTab === "learning" ? "text-teal-500" : activeTab === "teaching" ? "text-rose-500" : "text-primary"
                         }`}>Progress</span>
@@ -157,7 +157,7 @@ export default function Progress() {
                     {activeTab === "overview" && (
                         <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-12">
                             {/* Stats Grid */}
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                                 {[
                                     { label: "Total Swaps", value: stats.totalSwaps, icon: <Users className="w-5 h-5 text-primary" />, bg: "bg-primary/10" },
                                     { label: "Hours Learned", value: stats.hoursLearned, icon: <Clock className="w-5 h-5 text-teal-500" />, bg: "bg-teal-500/10" },
@@ -241,10 +241,10 @@ export default function Progress() {
                                             <div className="h-2 bg-surface/50 rounded-full overflow-hidden"><div className="h-full bg-teal-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 relative z-10">
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes</p><p className="font-bold text-lg">{m.classes?.length || 0}</p></div>
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments</p><p className="font-bold text-lg">{m.assignments?.length || 0}</p></div>
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 relative z-10">
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes</p><p className="font-bold text-lg">{m.classes?.length || 0}</p></div>
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments</p><p className="font-bold text-lg">{m.assignments?.length || 0}</p></div>
                                             <div className="p-4 bg-teal-500/10 rounded-2xl border border-teal-500/20"><p className="text-[10px] uppercase font-bold text-teal-500 tracking-widest mb-1">Status</p><p className="font-bold text-lg text-teal-500">{m.status}</p></div>
                                         </div>
 
@@ -281,10 +281,10 @@ export default function Progress() {
                                             <div className="h-2 bg-surface/50 rounded-full overflow-hidden"><div className="h-full bg-rose-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 relative z-10">
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes Done</p><p className="font-bold text-lg">{m.classes?.filter((c:any)=>c.isCompleted).length || 0}</p></div>
-                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments Done</p><p className="font-bold text-lg">{m.assignments?.filter((a:any)=>a.isCompleted).length || 0}</p></div>
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 relative z-10">
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes Done</p><p className="font-bold text-lg">{m.classes?.filter((c:any)=>c.isCompleted).length || 0}</p></div>
+                                            <div className="p-3 sm:p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments Done</p><p className="font-bold text-lg">{m.assignments?.filter((a:any)=>a.isCompleted).length || 0}</p></div>
                                             <div className="p-4 bg-rose-500/10 rounded-2xl border border-rose-500/20"><p className="text-[10px] uppercase font-bold text-rose-500 tracking-widest mb-1">Status</p><p className="font-bold text-lg text-rose-500">{m.status}</p></div>
                                         </div>
 

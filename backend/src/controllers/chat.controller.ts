@@ -1,5 +1,7 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+
+const BANNED_WORDS = ["porn", "sex", "nude", "nudes", "dick", "pussy", "whore", "slut", "bitch"];
 import { AuthRequest } from '../middleware/auth.middleware';
 
 const prisma = new PrismaClient();
@@ -59,7 +61,7 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
                 data: {
                     swapId: swap.id,
                     senderId: "SYSTEM",
-                    content: "Swap started! You can now message and share contact info.",
+                    content: "Swap started! You can now message and share contact info. Please note: Every message is recorded. Chat appropriately. Violations hindering women's safety will be reported to authorities.",
                     type: "TEXT"
                 }
             });
@@ -190,6 +192,25 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
         if (swap.proposerId !== senderId && swap.receiverId !== senderId) {
             res.status(403).json({ error: "Unauthorized" }); return;
         }
+        if (type === "TEXT" && content) {
+            const lowerContent = content.toLowerCase();
+            const containsBanned = BANNED_WORDS.some(word => lowerContent.includes(word));
+            
+            if (containsBanned) {
+                // Send a system warning to the user instead
+                await prisma.chatMessage.create({
+                    data: {
+                        swapId,
+                        senderId: "SYSTEM",
+                        content: "⚠️ WARNING: Your message violated our safety policy. All chats are recorded. Strict action and reporting to authorities will occur for harassment or explicit content.",
+                        type: "TEXT"
+                    }
+                });
+                res.status(400).json({ error: "Message violates safety policy." });
+                return;
+            }
+        }
+
 
         const message = await prisma.chatMessage.create({
             data: {

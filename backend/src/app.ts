@@ -14,6 +14,7 @@ import engagementRoutes from './routes/engagement.routes';
 import uploadRoutes from './routes/upload.routes';
 import adminRoutes from './routes/admin.routes';
 import mentorshipRoutes from './routes/mentorship.routes';
+import notificationRoutes from './routes/notification.routes';
 
 import swaggerUi from 'swagger-ui-express';
 import { swaggerDocument } from './swagger';
@@ -159,6 +160,7 @@ app.use('/api/engagement', engagementRoutes);
 app.use('/api/upload', uploadRoutes); // Identity Node Upload
 app.use('/api/admin', adminRoutes);   // Admin Command Center
 app.use('/api/mentorships', mentorshipRoutes); // Learning & Teaching Hub
+app.use('/api/notifications', notificationRoutes);
 
 // Global Error Handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

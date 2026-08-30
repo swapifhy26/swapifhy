@@ -62,6 +62,17 @@ export const acceptSwap = async (req: AuthRequest, res: Response): Promise<void>
             where: { id: swapId },
             data: { status: "ACCEPTED", proposerSkillId, receiverSkillId }
         });
+        
+        // Notify proposer that swap was accepted
+        await prisma.notification.create({
+            data: {
+                userId: swap.proposerId,
+                title: "Swap Accepted",
+                message: `Your swap request was accepted!`,
+                type: "SWAP_ACCEPTED",
+                link: "/progress"
+            }
+        });
 
         // Create Mentorships (Dual Flow)
         if (proposerSkillId) {

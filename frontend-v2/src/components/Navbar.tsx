@@ -4,14 +4,7 @@ import { useRouter } from "next/router";
 import { LogOut, User, Compass, Zap, MessageSquare, Bell } from "lucide-react"; // Added Bell icon
 import { motion, AnimatePresence } from "framer-motion";
 
-// MOCK DATA: Simulating the different types of notifications you requested
-const MOCK_NOTIFICATIONS = [
-    { id: 1, type: "SWAP_REQUEST", text: "New swap request from Sarah for React.js!", time: "2m ago" },
-    { id: 2, type: "MESSAGE", text: "David: That time works perfectly for me.", time: "15m ago" },
-    { id: 3, type: "ACHIEVEMENT", text: 'Achievement Unlocked: "The Polyglot" 🎉', time: "1h ago" },
-    { id: 4, type: "MOTIVATION", text: "The expert in anything was once a beginner. Keep pushing your skills today!", time: "3h ago" },
-    { id: 5, type: "PROMO", text: "Swapifhy Premium: 50% off this weekend only.", time: "5h ago" },
-];
+
 
 export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: boolean, setIsDark: (val: boolean) => void, toggleChatList: () => void }) {
     const [scrolled, setScrolled] = useState(false);
@@ -21,6 +14,61 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
     // Dropdown States
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    
+    // Notifications State
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    // Fetch Notifications
+    useEffect(() => {
+        if (userName) {
+            const fetchNotifs = () => {
+                const token = localStorage.getItem("swapifhy_token");
+                if (!token) return;
+                fetch(`${API_URL}/api/notifications`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.notifications) setNotifications(d.notifications);
+                    if (d.unreadCount !== undefined) setUnreadCount(d.unreadCount);
+                })
+                .catch(() => {});
+            };
+            fetchNotifs();
+            const interval = setInterval(fetchNotifs, 15000); // 15s poll
+            return () => clearInterval(interval);
+        }
+    }, [userName]);
+
+    const markAllRead = () => {
+        const token = localStorage.getItem("swapifhy_token");
+        if (!token) return;
+        fetch(`${API_URL}/api/notifications/read-all`, {
+            method: "PUT",
+            headers: { "Authorization": `Bearer ${token}` }
+        }).then(() => {
+            setUnreadCount(0);
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+        });
+    };
+
+    const handleNotificationClick = (n: any) => {
+        if (!n.isRead) {
+            const token = localStorage.getItem("swapifhy_token");
+            fetch(`${API_URL}/api/notifications/${n.id}/read`, {
+                method: "PUT",
+                headers: { "Authorization": `Bearer ${token}` }
+            }).then(() => {
+                setUnreadCount(prev => Math.max(0, prev - 1));
+                setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, isRead: true } : x));
+            });
+        }
+        setIsNotificationOpen(false);
+        if (n.link) {
+            window.location.href = n.link;
+        }
+    };
     
     // Refs for outside click detection
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -140,7 +188,9 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                 >
                                     <Bell className="w-[18px] h-[18px]" />
                                     {/* Active Pulse Indicator */}
-                                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(75,100,250,0.8)]" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(75,100,250,0.8)]" />
+                                    )}
                                 </button>
 
                                 <AnimatePresence>
@@ -154,7 +204,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                         >
                                             <div className="px-4 pb-3 border-b border-border/50 flex justify-between items-center mb-2">
                                                 <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Notifications</h3>
-                                                <button className="text-[10px] font-bold text-primary hover:underline transition-all">Mark read</button>
+                                                <button onClick={markAllRead} className="text-[10px] font-bold text-primary hover:underline transition-all">Mark read</button>
                                             </div>
                                             <div className="max-h-[300px] overflow-y-auto px-2 space-y-1">
                                                 {MOCK_NOTIFICATIONS.map((n) => (

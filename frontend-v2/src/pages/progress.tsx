@@ -96,26 +96,57 @@ export default function Progress() {
     if (!loaded) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
-        <div className="min-h-screen bg-background text-foreground pb-24 lg:pb-0 selection:bg-primary/20">
+        <div className="w-full min-h-screen bg-background relative overflow-hidden pt-32 pb-36 md:pb-24 selection:bg-primary/20">
             <Head><title>Progress & Learning Hub - Swapifhy</title></Head>
 
-            <div className="max-w-6xl mx-auto px-4 py-8 lg:py-12 lg:pl-64">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold font-display tracking-tight mb-2 flex items-center gap-3">
-                            Your Progress <TrendingUp className="w-6 h-6 text-primary" />
-                        </h1>
-                        <p className="text-muted-foreground text-sm">Track milestones, schedule classes, and manage swaps.</p>
-                    </div>
+            {/* Dynamic Ambient Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className={`mesh-orb transition-all duration-1000 absolute top-[-10%] left-[-10%] ${
+                    activeTab === "learning" ? "bg-teal-500/15 scale-125 blur-[140px]" : 
+                    activeTab === "teaching" ? "bg-rose-500/5 scale-90 blur-[100px]" : "orb-blue opacity-10"
+                }`} />
+                <div className={`mesh-orb transition-all duration-1000 absolute bottom-[-10%] right-[-10%] ${
+                    activeTab === "learning" ? "bg-teal-500/5 scale-90 blur-[100px]" : 
+                    activeTab === "teaching" ? "bg-rose-500/15 scale-125 blur-[140px]" : "orb-pink opacity-5"
+                }`} />
+            </div>
+
+            <div className="max-w-6xl mx-auto px-6 relative z-10 w-full">
+                
+                {/* Header */}
+                <div className="mb-12">
+                    <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground tracking-tight mb-4">
+                        Your <span className={`transition-colors duration-500 ${
+                            activeTab === "learning" ? "text-teal-500" : activeTab === "teaching" ? "text-rose-500" : "text-primary"
+                        }`}>Progress</span>
+                    </h1>
+                    <p className="text-muted-foreground font-medium text-lg leading-relaxed max-w-2xl">
+                        Track milestones, schedule classes, and manage swaps.
+                    </p>
                 </div>
 
-                {/* Tabs */}
-                <div className="relative bg-card/30 backdrop-blur-xl border border-border/50 p-1.5 rounded-2xl mb-8 flex items-center w-full max-w-md mx-auto lg:mx-0 shadow-sm overflow-hidden">
-                    <motion.div className="absolute top-1.5 bottom-1.5 bg-background shadow-md border border-border/50 rounded-xl" layoutId="activeProgressTab" initial={false}
-                        animate={{ left: activeTab === "overview" ? "6px" : activeTab === "learning" ? "33.33%" : "66.66%", width: "calc(33.33% - 8px)" }}
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }} />
+                {/* Tab Toggle */}
+                <div className="flex bg-surface/50 p-1.5 rounded-2xl w-full max-w-md mb-12 border border-border/40 relative shadow-sm backdrop-blur-xl">
+                    <motion.div
+                        className="absolute top-1.5 bottom-1.5 bg-background shadow-md border border-border/50 rounded-xl"
+                        layoutId="activeProgressTab"
+                        initial={false}
+                        animate={{
+                            left: activeTab === "overview" ? "6px" : activeTab === "learning" ? "33.33%" : "66.66%",
+                            width: "calc(33.33% - 8px)"
+                        }}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
                     {(["overview", "learning", "teaching"] as const).map(tab => (
-                        <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-colors relative z-10 capitalize ${activeTab === tab ? tab === "learning" ? "text-teal-500" : tab === "teaching" ? "text-rose-500" : "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold transition-colors relative z-10 capitalize ${
+                                activeTab === tab 
+                                    ? tab === "learning" ? "text-teal-500" : tab === "teaching" ? "text-rose-500" : "text-primary"
+                                    : "text-muted-foreground hover:text-foreground"
+                            }`}
+                        >
                             {tab}
                         </button>
                     ))}
@@ -125,7 +156,7 @@ export default function Progress() {
                     {/* OVERVIEW */}
                     {activeTab === "overview" && (
                         <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-12">
-                            {/* Stats */}
+                            {/* Stats Grid */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                                 {[
                                     { label: "Total Swaps", value: stats.totalSwaps, icon: <Users className="w-5 h-5 text-primary" />, bg: "bg-primary/10" },
@@ -134,9 +165,11 @@ export default function Progress() {
                                     { label: "Avg Rating", value: stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "—", icon: <Star className="w-5 h-5 text-amber-500" />, bg: "bg-amber-500/10" }
                                 ].map((stat, i) => (
                                     <div key={i} className="glass-elite p-8 rounded-3xl flex flex-col items-center text-center group hover:-translate-y-1 transition-all">
-                                        <div className={`w-12 h-12 rounded-2xl ${stat.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>{stat.icon}</div>
-                                        <h3 className="text-3xl font-black mb-1">{stat.value}</h3>
-                                        <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+                                        <div className={`w-12 h-12 rounded-2xl ${stat.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                            {stat.icon}
+                                        </div>
+                                        <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{stat.label}</h4>
+                                        <p className="text-4xl font-black text-foreground">{stat.value}</p>
                                     </div>
                                 ))}
                             </div>
@@ -196,7 +229,7 @@ export default function Progress() {
                                     <div key={m.id} className="glass-elite p-8 rounded-3xl relative overflow-hidden group">
                                         <div className="flex justify-between items-start mb-6 relative z-10">
                                             <div>
-                                                <span className="text-xs font-black tracking-widest text-teal-500 uppercase mb-2 block">Ongoing Learning</span>
+                                                <span className="text-[11px] font-bold tracking-widest text-teal-500 uppercase mb-2 block">Ongoing Learning</span>
                                                 <h2 className="text-3xl font-bold font-display mb-1">{m.skill.name}</h2>
                                                 <p className="text-sm text-muted-foreground flex items-center gap-2">Teacher: <span className="font-semibold text-foreground">{m.teacher.name}</span></p>
                                             </div>
@@ -205,20 +238,20 @@ export default function Progress() {
 
                                         <div className="mb-6 relative z-10">
                                             <div className="flex justify-between text-xs font-bold mb-2"><span className="text-muted-foreground uppercase tracking-wider">Progress</span><span className="text-teal-500">{prog}%</span></div>
-                                            <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-teal-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
+                                            <div className="h-2 bg-surface/50 rounded-full overflow-hidden"><div className="h-full bg-teal-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Classes</p><p className="font-bold text-lg">{m.classes?.length || 0}</p></div>
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Assignments</p><p className="font-bold text-lg">{m.assignments?.length || 0}</p></div>
-                                            <div className="p-4 bg-teal-500/10 rounded-2xl border border-teal-500/20"><p className="text-[10px] uppercase font-bold text-teal-500 mb-1">Status</p><p className="font-bold text-lg text-teal-500">{m.status}</p></div>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 relative z-10">
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes</p><p className="font-bold text-lg">{m.classes?.length || 0}</p></div>
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments</p><p className="font-bold text-lg">{m.assignments?.length || 0}</p></div>
+                                            <div className="p-4 bg-teal-500/10 rounded-2xl border border-teal-500/20"><p className="text-[10px] uppercase font-bold text-teal-500 tracking-widest mb-1">Status</p><p className="font-bold text-lg text-teal-500">{m.status}</p></div>
                                         </div>
 
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="flex flex-wrap gap-3 relative z-10">
                                             {m.meetingLink && <a href={m.meetingLink} target="_blank" className="px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-xl hover:bg-primary/90 flex items-center gap-2"><LinkIcon className="w-4 h-4"/> Join Class</a>}
-                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("rate"); }} className="px-4 py-2 bg-background border border-border hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><Star className="w-4 h-4 text-amber-500"/> Rate Teacher</button>
-                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("leave"); }} className="px-4 py-2 bg-background border border-border hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2 text-red-500"><AlertTriangle className="w-4 h-4"/> Leave Swap</button>
+                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("rate"); }} className="px-4 py-2 bg-surface/50 border border-border/40 hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><Star className="w-4 h-4 text-amber-500"/> Rate Teacher</button>
+                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("leave"); }} className="px-4 py-2 bg-surface/50 border border-border/40 hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2 text-red-500"><AlertTriangle className="w-4 h-4"/> Leave Swap</button>
                                         </div>
                                     </div>
                                 );
@@ -236,7 +269,7 @@ export default function Progress() {
                                     <div key={m.id} className="glass-elite p-8 rounded-3xl relative overflow-hidden group">
                                         <div className="flex justify-between items-start mb-6 relative z-10">
                                             <div>
-                                                <span className="text-xs font-black tracking-widest text-rose-500 uppercase mb-2 block">Mentor Node</span>
+                                                <span className="text-[11px] font-bold tracking-widest text-rose-500 uppercase mb-2 block">Mentor Node</span>
                                                 <h2 className="text-3xl font-bold font-display mb-1">{m.skill.name}</h2>
                                                 <p className="text-sm text-muted-foreground flex items-center gap-2">Student: <span className="font-semibold text-foreground">{m.student.name}</span></p>
                                             </div>
@@ -245,21 +278,21 @@ export default function Progress() {
 
                                         <div className="mb-6 relative z-10">
                                             <div className="flex justify-between text-xs font-bold mb-2"><span className="text-muted-foreground uppercase tracking-wider">Student Progress</span><span className="text-rose-500">{prog}%</span></div>
-                                            <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-rose-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
+                                            <div className="h-2 bg-surface/50 rounded-full overflow-hidden"><div className="h-full bg-rose-500 rounded-full transition-all duration-1000" style={{ width: `${prog}%` }} /></div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Classes Done</p><p className="font-bold text-lg">{m.classes?.filter((c:any)=>c.isCompleted).length || 0}</p></div>
-                                            <div className="p-4 bg-background/50 rounded-2xl border border-border/50"><p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Assignments Done</p><p className="font-bold text-lg">{m.assignments?.filter((a:any)=>a.isCompleted).length || 0}</p></div>
-                                            <div className="p-4 bg-rose-500/10 rounded-2xl border border-rose-500/20"><p className="text-[10px] uppercase font-bold text-rose-500 mb-1">Status</p><p className="font-bold text-lg text-rose-500">{m.status}</p></div>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 relative z-10">
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Target Hours</p><p className="font-bold text-lg">{m.targetDurationHours || 0}h</p></div>
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Classes Done</p><p className="font-bold text-lg">{m.classes?.filter((c:any)=>c.isCompleted).length || 0}</p></div>
+                                            <div className="p-4 bg-surface/50 rounded-2xl border border-border/40"><p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-1">Assignments Done</p><p className="font-bold text-lg">{m.assignments?.filter((a:any)=>a.isCompleted).length || 0}</p></div>
+                                            <div className="p-4 bg-rose-500/10 rounded-2xl border border-rose-500/20"><p className="text-[10px] uppercase font-bold text-rose-500 tracking-widest mb-1">Status</p><p className="font-bold text-lg text-rose-500">{m.status}</p></div>
                                         </div>
 
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="flex flex-wrap gap-3 relative z-10">
                                             <button onClick={() => { setActiveMentorship(m); setActiveModal("settings"); }} className="px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-xl hover:bg-primary/90 flex items-center gap-2">Manage Swap</button>
-                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("class"); }} className="px-4 py-2 bg-background border border-border hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><Calendar className="w-4 h-4"/> Schedule Class</button>
-                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("assignment"); }} className="px-4 py-2 bg-background border border-border hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><FileText className="w-4 h-4"/> Add Assignment</button>
-                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("resource"); }} className="px-4 py-2 bg-background border border-border hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><LinkIcon className="w-4 h-4"/> Add Resource</button>
+                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("class"); }} className="px-4 py-2 bg-surface/50 border border-border/40 hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><Calendar className="w-4 h-4"/> Schedule Class</button>
+                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("assignment"); }} className="px-4 py-2 bg-surface/50 border border-border/40 hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><FileText className="w-4 h-4"/> Add Assignment</button>
+                                            <button onClick={() => { setActiveMentorship(m); setActiveModal("resource"); }} className="px-4 py-2 bg-surface/50 border border-border/40 hover:bg-muted text-sm font-bold rounded-xl flex items-center gap-2"><LinkIcon className="w-4 h-4"/> Add Resource</button>
                                         </div>
                                     </div>
                                 );
@@ -281,7 +314,7 @@ export default function Progress() {
                                 <p className="text-sm text-muted-foreground mb-4">Rate {activeMentorship?.teacher.name}'s classes this week.</p>
                                 <input type="number" min="1" max="5" placeholder="Rating (1-5)" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, rating: parseFloat(e.target.value)})} />
                                 <textarea placeholder="Feedback (optional)" className="w-full p-3 rounded-xl bg-background border border-border mb-4 h-24" onChange={e => setFormData({...formData, feedback: e.target.value})}></textarea>
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/rate`, "POST", formData)} className="w-full py-3 bg-teal-500 text-white font-bold rounded-xl">Submit Rating</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/rate`, "POST", formData)} className="w-full py-3 bg-teal-500 text-white font-bold rounded-xl hover:bg-teal-600 transition-colors">Submit Rating</button>
                             </div>
                         )}
 
@@ -289,7 +322,7 @@ export default function Progress() {
                             <div>
                                 <h3 className="text-xl font-bold mb-4 text-red-500">Leave Swap Early?</h3>
                                 <p className="text-sm text-muted-foreground mb-4">If you leave the swap before the target hours are met, you will receive a 0.25 star reputation penalty.</p>
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/leave`, "POST")} className="w-full py-3 bg-red-500 text-white font-bold rounded-xl">I understand, Leave Swap</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/leave`, "POST")} className="w-full py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors">I understand, Leave Swap</button>
                             </div>
                         )}
 
@@ -300,8 +333,8 @@ export default function Progress() {
                                 <input type="number" placeholder="Target Hours (e.g. 20)" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, targetDurationHours: parseFloat(e.target.value)})} />
                                 <p className="text-sm text-muted-foreground mb-2">Meeting Link (Zoom, Meet, etc)</p>
                                 <input type="url" placeholder="https://..." className="w-full p-3 rounded-xl bg-background border border-border mb-4" onChange={e => setFormData({...formData, meetingLink: e.target.value})} />
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/progress`, "PUT", formData)} className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl mb-2">Save Settings</button>
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/leave`, "POST")} className="w-full py-3 bg-red-500/10 text-red-500 font-bold rounded-xl">End Swap</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/progress`, "PUT", formData)} className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl mb-2 hover:bg-primary/90 transition-colors">Save Settings</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/leave`, "POST")} className="w-full py-3 bg-red-500/10 text-red-500 font-bold rounded-xl hover:bg-red-500/20 transition-colors">End Swap</button>
                             </div>
                         )}
 
@@ -312,7 +345,7 @@ export default function Progress() {
                                 <input type="datetime-local" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, startTime: e.target.value})} />
                                 <input type="number" placeholder="Duration (Minutes)" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, durationMinutes: parseInt(e.target.value)})} />
                                 <label className="flex items-center gap-2 mb-4 text-sm font-bold"><input type="checkbox" onChange={e => setFormData({...formData, isCompleted: e.target.checked})} /> Mark as completed now (Grants bonus)</label>
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/classes`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl">Save Class</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/classes`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-colors">Save Class</button>
                             </div>
                         )}
 
@@ -323,7 +356,7 @@ export default function Progress() {
                                 <input type="number" placeholder="Score (0-100)" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, score: parseFloat(e.target.value)})} />
                                 <textarea placeholder="Feedback" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, feedback: e.target.value})}></textarea>
                                 <label className="flex items-center gap-2 mb-4 text-sm font-bold"><input type="checkbox" onChange={e => setFormData({...formData, isCompleted: e.target.checked})} /> Mark as completed (Boosts student progress)</label>
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/assignments`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl">Save Assignment</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/assignments`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-colors">Save Assignment</button>
                             </div>
                         )}
 
@@ -332,7 +365,7 @@ export default function Progress() {
                                 <h3 className="text-xl font-bold mb-4">Add Resource</h3>
                                 <input type="text" placeholder="Resource Title" className="w-full p-3 rounded-xl bg-background border border-border mb-3" onChange={e => setFormData({...formData, title: e.target.value})} />
                                 <input type="url" placeholder="Resource URL" className="w-full p-3 rounded-xl bg-background border border-border mb-4" onChange={e => setFormData({...formData, url: e.target.value})} />
-                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/resources`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl">Share Resource</button>
+                                <button onClick={() => actionMentorship(`/api/mentorships/${activeMentorship.id}/resources`, "POST", formData)} className="w-full py-3 bg-rose-500 text-white font-bold rounded-xl hover:bg-rose-600 transition-colors">Share Resource</button>
                             </div>
                         )}
                     </div>

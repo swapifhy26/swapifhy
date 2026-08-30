@@ -4,6 +4,7 @@ import { Layout } from "../components/Layout";
 import { useEffect } from "react";
 import { API_URL } from "../lib/api";
 import MaintenancePage from "../components/MaintenancePage";
+import OfflinePage from "../components/OfflinePage";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -11,8 +12,24 @@ export default function App({ Component, pageProps }: AppProps) {
     const [isMaintenance, setIsMaintenance] = useState(false);
     const [maintenanceRemark, setMaintenanceRemark] = useState("");
     const [maintenanceEndTime, setMaintenanceEndTime] = useState<string | null>(null);
+    const [isOffline, setIsOffline] = useState(false);
     const router = useRouter();
     const isAdminRoute = router.pathname.startsWith('/admin');
+
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setIsOffline(!navigator.onLine);
+            const handleOnline = () => setIsOffline(false);
+            const handleOffline = () => setIsOffline(true);
+            window.addEventListener('online', handleOnline);
+            window.addEventListener('offline', handleOffline);
+            return () => {
+                window.removeEventListener('online', handleOnline);
+                window.removeEventListener('offline', handleOffline);
+            };
+        }
+    }, []);
 
     useEffect(() => {
         const checkHealth = async () => {
@@ -55,6 +72,10 @@ export default function App({ Component, pageProps }: AppProps) {
     }, []);
 
     
+    if (isOffline) {
+        return <OfflinePage />;
+    }
+
     if (isMaintenance && !isAdminRoute) {
         return <MaintenancePage remark={maintenanceRemark} endTime={maintenanceEndTime} />;
     }

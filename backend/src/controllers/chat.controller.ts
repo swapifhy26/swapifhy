@@ -93,7 +93,7 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
             include: {
                 proposer: { select: { id: true, name: true, avatarUrl: true } },
                 receiver: { select: { id: true, name: true, avatarUrl: true } },
-                messages: { orderBy: { createdAt: 'desc' }, take: 1 },
+                messages: { orderBy: { createdAt: 'desc' }, take: 10 },
                 _count: {
                     select: {
                         messages: { where: { senderId: { not: userId }, isRead: false } }
@@ -108,12 +108,14 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
             const partner = s.proposerId === userId ? s.receiver : s.proposer;
             const last = onlineUsers.get(partner.id);
             const isOnline = last !== undefined && (now - last) < 35000;
-            return {
+            
+              const validMessages = s.messages.filter(m => !(m.senderId.startsWith("SYSTEM_WARNING") && m.senderId !== `SYSTEM_WARNING_${userId}`));
+              return {
                 swapId: s.id,
                 partnerId: partner.id,
                 partnerName: partner.name,
                 partnerAvatar: partner.avatarUrl,
-                lastMessage: s.messages[0]?.content || "No messages yet",
+                lastMessage: validMessages[0]?.content || "No messages yet",
                 status: s.status,
                 updatedAt: s.updatedAt,
                 isOnline,

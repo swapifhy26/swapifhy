@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { LogOut, User, Compass, Zap, MessageSquare, Bell } from "lucide-react"; // Added Bell icon
 import { motion, AnimatePresence } from "framer-motion";
+import { API_URL } from "../lib/api";
 
 
 
@@ -207,12 +208,18 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                                 <button onClick={markAllRead} className="text-[10px] font-bold text-primary hover:underline transition-all">Mark read</button>
                                             </div>
                                             <div className="max-h-[300px] overflow-y-auto px-2 space-y-1">
-                                                {MOCK_NOTIFICATIONS.map((n) => (
-                                                    <div key={n.id} className="p-3 rounded-xl hover:bg-foreground/5 transition-colors cursor-pointer">
-                                                        <p className="text-xs font-medium text-foreground leading-snug">{n.text}</p>
-                                                        <p className="text-[9px] text-muted-foreground mt-1.5 uppercase tracking-widest font-bold opacity-70">{n.time}</p>
-                                                    </div>
-                                                ))}
+                                                {notifications.length === 0 ? (
+        <div className="p-4 text-center text-xs text-muted-foreground">No notifications yet.</div>
+    ) : (
+        notifications.map((n) => (
+            <div key={n.id} onClick={() => handleNotificationClick(n)} className={`p-3 rounded-xl transition-colors cursor-pointer ${n.isRead ? 'opacity-60 hover:bg-foreground/5' : 'bg-primary/5 hover:bg-primary/10 border border-primary/10'}`}>
+                <p className="text-xs font-medium text-foreground leading-snug">{n.message}</p>
+                <p className="text-[9px] text-muted-foreground mt-1.5 uppercase tracking-widest font-bold opacity-70">
+                    {new Date(n.createdAt).toLocaleDateString()} {new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </p>
+            </div>
+        ))
+    )}
                                             </div>
                                         </motion.div>
                                     )}

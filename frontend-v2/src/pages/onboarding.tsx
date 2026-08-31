@@ -189,7 +189,7 @@ export default function Onboarding() {
                             <div className="bg-black/20 rounded-xl p-3 border border-white/5">
                                 <span className="text-[10px] uppercase font-bold text-teal-400 mb-2 block tracking-widest">Select what to learn:</span>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {magicMatch.teachSkills?.map((s: string) => {
+                                    {magicMatch.teaching?.map((s: string) => {
                                         const isSelected = selectedSkills.includes(s);
                                         return (
                                             <button
@@ -213,7 +213,7 @@ export default function Onboarding() {
                             <div className="bg-black/20 rounded-xl p-3 border border-white/5">
                                 <span className="text-[10px] uppercase font-bold text-rose-400 mb-1 block tracking-widest">They Want To Learn</span>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {magicMatch.learnSkills?.slice(0, 3).map((s: string) => (
+                                    {magicMatch.learning?.slice(0, 3).map((s: string) => (
                                         <span key={s} className="text-xs bg-white/5 text-white/90 px-2 py-1 rounded-md border border-white/10">{s}</span>
                                     ))}
                                 </div>

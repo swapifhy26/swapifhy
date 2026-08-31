@@ -664,8 +664,8 @@ export default function Explore() {
                             </div>
                             
                             <div className="space-y-3 mb-8">
-                                {syncTarget.teachSkills?.length > 0 ? (
-                                    syncTarget.teachSkills.map((skill: string) => {
+                                {syncTarget.teaching?.length > 0 ? (
+                                    syncTarget.teaching.map((skill: string) => {
                                         const isSelected = selectedSkills.includes(skill);
                                         return (
                                             <button

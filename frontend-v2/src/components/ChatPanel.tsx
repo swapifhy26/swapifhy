@@ -599,7 +599,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                     </div>
                     
                     {/* 🧊 ICEBREAKERS */}
-                    {messages.filter(m => m.type === 'TEXT').length === 0 && (
+                    {messages.filter(m => m.senderId !== 'SYSTEM' && !m.senderId.startsWith('SYSTEM_WARNING')).length === 0 && (
                         <div className="px-6 py-3 flex flex-col gap-2 bg-gradient-to-t from-background to-transparent w-full z-10 border-t border-border/10">
                             <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2 w-full snap-x">
                                 {["Hey! So excited to swap skills! When are you free to chat? \uD83D\uDC4B", "I've been wanting to learn this forever! Where should we start? \uD83D\uDE80", "Let's set up a quick intro call this week! \uD83D\uDCC5"].map((icebreaker, i) => (

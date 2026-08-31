@@ -129,14 +129,18 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
                     type: "TEXT"
                 }
             });
-            // Notify receiver about the new swap request
-            await prisma.notification.create({
+        } else if (swap.status === "ACCEPTED" || swap.status === "COMPLETED") {
+            // Re-initiate swap using existing channel
+            swap = await prisma.swap.update({
+                where: { id: swap.id },
+                data: { proposerId, receiverId, status: "PENDING" }
+            });
+            await prisma.chatMessage.create({
                 data: {
-                    userId: receiverId,
-                    title: "New Swap Request",
-                    message: `You have a new swap request!`,
-                    type: "SWAP_REQUEST",
-                    link: "/explore"
+                    swapId: swap.id,
+                    senderId: "SYSTEM",
+                    content: "A new swap has been requested!",
+                    type: "TEXT"
                 }
             });
         }

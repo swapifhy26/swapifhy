@@ -35,6 +35,10 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
                 hobbies: user.hobbies,
                 avatarUrl: user.avatarUrl,
                 reputation: user.reputation,
+                xp: user.xp,
+                currentStreak: user.currentStreak,
+                highestStreak: user.highestStreak,
+                lastStreakDate: user.lastStreakDate,
                 // PROFESSIONAL FOOTPRINT (PII)
                 phoneNumber: user.phoneNumber,
                 github: user.github,

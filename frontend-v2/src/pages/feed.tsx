@@ -215,7 +215,7 @@ export default function SwapFeed() {
             <div className="mesh-orb-elite bg-primary left-[-10%] top-[10%] w-[50vw] h-[50vw]" />
             <div className="mesh-orb-elite bg-accent right-[-10%] top-[40%] w-[40vw] h-[40vw] animation-delay-2000" />
 
-            <div className="max-w-[1080px] mx-auto px-6 relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="max-w-[1080px] mx-auto px-4 sm:px-6 relative z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 {/* ── LEFT: Mini Profile ── */}
                 <div className="hidden lg:block lg:col-span-3 space-y-6">
@@ -284,8 +284,9 @@ export default function SwapFeed() {
                                 />
                             </div>
                             <hr className="border-border/60 my-4" />
-                            <div className="flex items-center justify-between">
-                                <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none w-full sm:w-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                                    
                                     {(["UPDATE", "OFFER", "REQUEST", "BOUNTY"] as const).map(type => {
                                         const isActive = postType === type;
                                         const typeColor = type === "BOUNTY" ? "orange-500" : type === "OFFER" ? "secondary" : type === "REQUEST" ? "accent" : "primary";
@@ -305,13 +306,14 @@ export default function SwapFeed() {
                                             </button>
                                         );
                                     })}
+                                
                                 </div>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     type="submit"
                                     disabled={!content.trim()}
-                                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-primary to-accent text-white flex items-center gap-2 text-[13px] font-bold disabled:opacity-40 disabled:grayscale transition-all shadow-md"
+                                    className="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-to-r from-primary to-accent text-white flex items-center gap-2 text-[13px] font-bold disabled:opacity-40 disabled:grayscale transition-all shadow-md"
                                 >
                                     <span>Post</span>
                                     <Send className="w-3.5 h-3.5" />

@@ -365,7 +365,7 @@ export default function SwapFeed() {
                                                 Milestone Unlocked!
                                             </h3>
                                             
-                                            <p className="text-lg sm:text-xl font-medium text-white/90 leading-relaxed max-w-lg mb-8" dangerouslySetInnerHTML={{ __html: post.content.replace(/\*\*(.*?)\*\*/g, '<span class="font-bold text-white bg-white/10 px-2 py-0.5 rounded-md mx-1 border border-white/20">$1</span>').replace(/@(\w+)/g, '<span class="text-pink-200 font-bold">@$1</span>') }} />
+                                            <p className="text-lg sm:text-xl font-medium text-white/90 leading-relaxed max-w-lg mb-8" dangerouslySetInnerHTML={{ __html: (post.content || "").replace(/\*\*(.*?)\*\*/g, '<span class="font-bold text-white bg-white/10 px-2 py-0.5 rounded-md mx-1 border border-white/20">$1</span>').replace(/@(\w+)/g, '<span class="text-pink-200 font-bold">@$1</span>') }} />
                                             
                                             <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 backdrop-blur-xl border border-white/15 text-xs font-bold text-white/80 uppercase tracking-widest shadow-lg">
                                                 <span dangerouslySetInnerHTML={{ __html: '&#x2728;' }} /> Community Celebration
@@ -385,7 +385,7 @@ export default function SwapFeed() {
                                                 </button>
                                             </div>
                                             <div className="text-xs font-bold text-white/50 tracking-wider">
-                                                {formatDate(post.createdAt)}
+                                                {new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>
 
@@ -403,16 +403,16 @@ export default function SwapFeed() {
                                                             {post.comments?.map((comment: any) => (
                                                                 <div key={comment.id} className="flex gap-3">
                                                                     <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                                                                        {comment.user.avatarUrl ? (
-                                                                            <img src={comment.user.avatarUrl} alt="" className="w-full h-full object-cover rounded-full" />
+                                                                        {comment.user?.avatarUrl ? (
+                                                                            <img src={comment.user?.avatarUrl} alt="" className="w-full h-full object-cover rounded-full" />
                                                                         ) : (
-                                                                            <span className="text-xs font-bold text-white/80">{comment.user.name?.charAt(0) || "?"}</span>
+                                                                            <span className="text-xs font-bold text-white/80">{comment.user?.name?.charAt(0) || "?"}</span>
                                                                         )}
                                                                     </div>
                                                                     <div className="flex-1 bg-white/5 rounded-2xl rounded-tl-none p-3 border border-white/5">
                                                                         <div className="flex items-center gap-2 mb-1">
-                                                                            <span className="text-[12px] font-bold text-white/90">{comment.user.name}</span>
-                                                                            <span className="text-[10px] text-white/40">{formatDate(comment.createdAt)}</span>
+                                                                            <span className="text-[12px] font-bold text-white/90">{comment.user?.name}</span>
+                                                                            <span className="text-[10px] text-white/40">{new Date(comment.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                                                                         </div>
                                                                         <p className="text-[13px] text-white/70">{comment.content}</p>
                                                                     </div>
@@ -579,10 +579,10 @@ export default function SwapFeed() {
                                                         post.comments.map((comment: any) => (
                                                             <div key={comment.id} className="flex gap-3.5">
                                                                 <div className="w-8 h-8 rounded-full bg-background border border-border shrink-0 flex items-center justify-center text-[10px] font-bold text-foreground mt-0.5">
-                                                                    {comment.user.name.charAt(0)}
+                                                                    {comment.user?.name.charAt(0)}
                                                                 </div>
                                                                 <div className="bg-surface/60 px-4 py-3 rounded-2xl rounded-tl-sm border border-border/40 max-w-[90%]">
-                                                                    <h5 className="text-[12px] font-bold text-foreground mb-1">{comment.user.name}</h5>
+                                                                    <h5 className="text-[12px] font-bold text-foreground mb-1">{comment.user?.name}</h5>
                                                                     <p className="text-[13px] text-foreground/80 leading-relaxed font-sans">{comment.content}</p>
                                                                 </div>
                                                             </div>

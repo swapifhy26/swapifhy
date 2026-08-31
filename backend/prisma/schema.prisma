@@ -63,6 +63,7 @@ model User {
   posts          Post[]
   comments       Comment[]
   likes          Like[]
+  supportTickets SupportTicket[]
 }
 
 model Follow {
@@ -302,4 +303,17 @@ model Notification {
   createdAt DateTime @default(now())
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  userId    String?
+  ticketId  String   @unique
+  type      String   // QUERY, BUG
+  category  String
+  content   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

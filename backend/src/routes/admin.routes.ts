@@ -472,4 +472,28 @@ router.delete("/inquiries/:id", async (req: Request, res: Response) => {
     }
 });
 
+
+
+// "?"? GET SUPPORT TICKETS (AUTO-DELETE > 3 DAYS) "?"?
+router.get("/tickets", async (req: Request, res: Response) => {
+    try {
+        // 1. Delete tickets older than 3 days
+        const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+        await prisma.supportTicket.deleteMany({
+            where: { createdAt: { lt: threeDaysAgo } }
+        });
+
+        // 2. Fetch remaining tickets
+        const tickets = await prisma.supportTicket.findMany({
+            orderBy: { createdAt: 'desc' },
+            include: { user: { select: { name: true, email: true } } }
+        });
+
+        res.json({ tickets });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch tickets" });
+    }
+});
+
 export default router;

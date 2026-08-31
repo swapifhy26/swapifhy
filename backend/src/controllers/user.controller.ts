@@ -275,3 +275,25 @@ export const markStreak = async (req: AuthRequest, res: Response): Promise<void>
         res.status(500).json({ error: "Failed to mark streak" });
     }
 };
+
+export const submitTicket = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        const { ticketId, type, category, content } = req.body;
+
+        const ticket = await prisma.supportTicket.create({
+            data: {
+                ticketId,
+                type,
+                category,
+                content,
+                userId: userId || null
+            }
+        });
+
+        res.status(201).json(ticket);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to create ticket" });
+    }
+};

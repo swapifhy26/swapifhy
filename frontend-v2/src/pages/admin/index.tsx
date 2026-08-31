@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
+import { Eye, useRouter } from "next/router";
 import Head from "next/head";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -43,6 +43,7 @@ const NAV_ITEMS = [
     { id: "activity", label: "Activity", icon: Activity },
     { id: "waitlist", label: "Waitlist", icon: Mail },
     { id: "inquiries", label: "Inquiries", icon: MessageSquare },
+    { id: "tickets", label: "Support Tickets", icon: AlertTriangle },
     { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -165,6 +166,7 @@ export default function AdminDashboard() {
     const [adminKey, setAdminKey] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("overview");
     const [inquiries, setInquiries] = useState<any[]>([]);
+    const [tickets, setTickets] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [dark, setDark] = useState(false);
@@ -304,6 +306,7 @@ export default function AdminDashboard() {
         if (activeTab === "waitlist" && !waitlist) loadWaitlist();
         if (activeTab === "settings") loadSettings();
         if (activeTab === "inquiries" && inquiries.length === 0) fetchInquiries();
+            fetchTickets();
     }, [activeTab, adminKey, skills, users.length, engagement, waitlist, loadSkills, loadUsers, loadEngagement, loadWaitlist, loadSettings, fetchInquiries]);
 
     const handleRefresh = async () => {
@@ -793,7 +796,63 @@ export default function AdminDashboard() {
                     </div>
                 )}
 
-                {activeTab === "settings" && (
+                {activeTab === "tickets" && (
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <h2 className="text-2xl font-black mb-1">Support Tickets</h2>
+                                        <p className="text-muted-foreground text-sm">Queries, Feedback, and Bug Reports from the Help Page. Auto-deletes after 3 days.</p>
+                                    </div>
+                                    <button onClick={fetchTickets} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors shadow-sm">
+                                        <RefreshCw className="w-4 h-4" /> Refresh
+                                    </button>
+                                </div>
+                                <div className={`rounded-2xl border overflow-hidden ${dark ? "bg-gray-800/30 border-gray-700" : "bg-white border-gray-200 shadow-sm"}`}>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm text-left">
+                                            <thead className={`text-xs uppercase font-bold ${dark ? "bg-gray-800/80 text-gray-400" : "bg-gray-50 text-gray-500"}`}>
+                                                <tr>
+                                                    <th className="px-6 py-4">Ticket ID</th>
+                                                    <th className="px-6 py-4">Type</th>
+                                                    <th className="px-6 py-4">Category</th>
+                                                    <th className="px-6 py-4">User</th>
+                                                    <th className="px-6 py-4">Content</th>
+                                                    <th className="px-6 py-4">Date</th>
+                                                    <th className="px-6 py-4 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                                {tickets.length > 0 ? tickets.map((t: any) => (
+                                                    <tr key={t.id} className={`${dark ? "hover:bg-gray-800/50" : "hover:bg-gray-50"}`}>
+                                                        <td className="px-6 py-4 font-mono font-bold">{t.ticketId}</td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`px-2 py-1 rounded-md text-[10px] font-bold ${t.type === 'BUG' ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                                                                {t.type}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 font-medium">{t.category}</td>
+                                                        <td className="px-6 py-4">{t.user?.name || "Guest"}</td>
+                                                        <td className="px-6 py-4"><div className="max-w-[300px] truncate">{t.content}</div></td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(t.createdAt).toLocaleString()}</td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button title="View" className="p-1.5 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                                                <Eye className="w-4 h-4" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )) : (
+                                                    <tr>
+                                                        <td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">No active tickets.</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+{activeTab === "settings" && (
                     <div>
                         <h1 className={`text-2xl font-bold mb-1 ${text}`}>Settings</h1>
                         <p className={`text-sm mb-8 ${subtext}`}>Platform configuration and admin controls.</p>

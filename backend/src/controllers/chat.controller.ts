@@ -106,6 +106,15 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
 
         // Removed barrier: Unlimited pending requests
 
+        let swap = await prisma.swap.findFirst({
+            where: {
+                OR: [
+                    { proposerId, receiverId },
+                    { proposerId: receiverId, receiverId: proposerId }
+                ]
+            }
+        });
+
         if (!swap) {
             swap = await prisma.swap.create({
                 data: { proposerId, receiverId, status: "PENDING", receiverSkillId: receiverSkillIds }

@@ -1,3 +1,7 @@
+// TAILWIND SAFELIST FOR DYNAMIC CLASSES
+// bg-emerald-500 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.3)]
+// bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] shadow-blue-500/20 hover:bg-blue-600
+// bg-rose-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] shadow-rose-500/20 hover:bg-rose-600
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HelpCircle, Bug, MessageSquare, Plus, Minus, CheckCircle, Ticket, ChevronRight, Zap } from "lucide-react";

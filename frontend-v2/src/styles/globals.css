@@ -31,7 +31,7 @@
 
     --color-border: hsla(232, 20%, 30%, 0.08);
     --color-muted: hsl(210, 20%, 92%);
-    --color-muted-foreground: hsl(232, 15%, 45%);
+    --color-muted-foreground: hsl(232, 15%, 35%); /* Improved contrast for light mode */
 }   
 
 @layer base {

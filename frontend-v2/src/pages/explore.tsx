@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import {
     User, Zap, MessageSquare, Github, Linkedin, Instagram,
-    Globe, Search, Filter, SlidersHorizontal, X
+    Globe, Search, Filter, SlidersHorizontal, X, CheckCircle2
 } from "lucide-react";
 import { ChatPanel } from "../components/ChatPanel";
 import { API_URL } from "../lib/api";

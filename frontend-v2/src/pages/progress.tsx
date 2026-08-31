@@ -356,7 +356,6 @@ export default function Progress() {
                                                     <button onClick={() => handleRevokeSwap(req.id)} className="px-3 py-1.5 bg-red-900/50 text-red-200 text-xs font-bold rounded-lg hover:bg-red-600 transition-colors">
                                                         Revoke
                                                     </button>
-                                                </div>
 
                                             </div>
                                         ))}

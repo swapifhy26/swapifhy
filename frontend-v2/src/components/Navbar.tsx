@@ -257,13 +257,13 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                             transition={{ duration: 0.2, ease: "easeOut" }}
                                             className="absolute top-14 right-0 w-48 glass-elite rounded-2xl shadow-xl border border-border/50 overflow-hidden py-2 z-50 flex flex-col"
                                         >
-                                            <Link 
-                        href="/matches"
-                        className={`relative flex flex-col items-center justify-center w-[52px] h-[52px] rounded-full transition-all duration-300 active:scale-95 ${router.pathname === "/matches" ? "bg-primary/10 shadow-inner" : "hover:bg-foreground/5"}`}
-                    >
-                        <Users className={`w-[22px] h-[22px] transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`} />
-                        <span className={`text-[10px] font-bold mt-1 transition-colors ${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground"}`}>Matches</span>
-                    </Link>
+                                                                                        <Link 
+                                                href="/dashboard" 
+                                                onClick={() => setIsDropdownOpen(false)}
+                                                className="px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface/80 hover:text-primary transition-colors flex items-center gap-3 w-full text-left"
+                                            >
+                                                <User className="w-4 h-4 text-primary" /> Profile
+                                            </Link>
                                             <Link 
                                                 href="/settings" 
                                                 onClick={() => setIsDropdownOpen(false)}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { LogOut, User, Users, Compass, Zap, MessageSquare, Bell } from "lucide-react"; // Added Bell icon
+import { LogOut, User, Users, Compass, Zap, MessageSquare, Bell, HelpCircle } from "lucide-react"; // Added Bell icon
 import { motion, AnimatePresence } from "framer-motion";
 import { API_URL } from "../lib/api";
 
@@ -270,6 +270,13 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                                                 className="px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface/80 hover:text-primary transition-colors flex items-center gap-3 w-full text-left"
                                             >
                                                 <Zap className="w-4 h-4 text-accent" /> Preferences
+                                            </Link>
+                                            <Link 
+                                                href="/help" 
+                                                onClick={() => setIsDropdownOpen(false)}
+                                                className="px-4 py-2.5 text-sm font-medium text-foreground hover:bg-surface/80 hover:text-emerald-400 transition-colors flex items-center gap-3 w-full text-left"
+                                            >
+                                                <HelpCircle className="w-4 h-4 text-emerald-400" /> Help & Support
                                             </Link>
                                             
                                             <hr className="border-t border-border/40 my-1 mx-2" />

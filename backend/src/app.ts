@@ -3,6 +3,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
 import helmet from 'helmet';
+import compression from 'compression';
+import hpp from 'hpp';
 import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
@@ -59,6 +61,8 @@ app.use('/api/auth', authLimiter);
 // Global Middlewares
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
+app.use(compression());
+app.use(hpp());
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Basic health check endpoint

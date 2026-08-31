@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Eye, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,7 +8,7 @@ import {
     ChevronRight, CheckCircle2, Wifi, Settings, Moon, Sun, Trash2,
     UserX, UserCheck, Plus, Edit2, X, AlertTriangle, Shield, Ban,
     Search, Save, Bell, Key, Globe, Database, ChevronDown
-} from "lucide-react";
+} , Eye } from "lucide-react";
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, CartesianGrid

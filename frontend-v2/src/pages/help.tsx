@@ -167,11 +167,11 @@ export default function HelpPage() {
                                         {activeTab === "QUERY" && (
                                             <div>
                                                 <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Department</label>
-                                                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full p-4 rounded-xl bg-background border border-border focus:border-blue-500 outline-none appearance-none font-medium">
-                                                    <option>General Support</option>
-                                                    <option>Account & Billing</option>
-                                                    <option>Technical Assistance</option>
-                                                    <option>Safety & Moderation</option>
+                                                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full p-4 rounded-xl bg-background border border-border focus:border-blue-500 outline-none appearance-none font-medium text-foreground">
+                                                    <option className="bg-background text-foreground">General Support</option>
+                                                    <option className="bg-background text-foreground">Account & Billing</option>
+                                                    <option className="bg-background text-foreground">Technical Assistance</option>
+                                                    <option className="bg-background text-foreground">Safety & Moderation</option>
                                                 </select>
                                             </div>
                                         )}

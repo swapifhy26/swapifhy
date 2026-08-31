@@ -206,13 +206,20 @@ export default function Explore() {
         } catch (err) { console.error(err); }
     };
 
-    const handleSync = async (receiverId: string) => {
+    
+    const handleSync = async () => {
+        if (!syncTarget) return;
+        if (selectedSkills.length === 0) {
+            alert("Please select at least one skill to learn.");
+            return;
+        }
+        setSyncing(true);
         try {
             const token = localStorage.getItem("swapifhy_token");
             const res = await fetch(`${API_URL}/api/chat/sync`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ receiverId })
+                body: JSON.stringify({ receiverId: syncTarget.id, skillsToLearn: selectedSkills })
             });
             const data = await res.json();
             if (data.swapId) {
@@ -225,7 +232,16 @@ export default function Explore() {
                 alert(data.error);
             }
         } catch (err) { console.error(err); }
+        setSyncTarget(null);
+        setSelectedSkills([]);
+        setSyncing(false);
     };
+
+    const initiateSyncPrompt = (user: any) => {
+        setSyncTarget(user);
+        setSelectedSkills([]);
+    };
+
 
     
     const handleRevokeSwap = async (swapId: string) => {

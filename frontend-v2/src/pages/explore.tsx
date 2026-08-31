@@ -191,6 +191,8 @@ export default function Explore() {
                 // Refresh swaps to update button UI
                 fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } })
                     .then(r => r.json()).then(d => { if (d.conversations) setMySwaps(d.conversations); });
+            } else if (data.error) {
+                alert(data.error);
             }
         } catch (err) { console.error(err); }
     };

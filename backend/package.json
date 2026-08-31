@@ -6,8 +6,7 @@
   "scripts": {
     "build": "npx prisma generate && tsc",
     "start": "npx prisma db push && node dist/main.js",
-    "dev": "tsx watch src/main.ts",
-    "postinstall": "prisma generate"
+    "dev": "tsx watch src/main.ts"
   },
   "keywords": [],
   "author": "",

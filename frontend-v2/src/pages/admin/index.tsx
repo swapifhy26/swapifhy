@@ -183,7 +183,7 @@ export default function AdminDashboard() {
     const [waitlist, setWaitlist] = useState<{ total: number; recent: WaitlistEntry[] } | null>(null);
 
     // Modals
-    const [confirm, setConfirm] = useState<{ open: boolean; title: string; message: string; confirmLabel?: string; onConfirm: () => void } | null>(null);
+    const [confirm, setConfirm] = useState<any>(null);
     const [editPost, setEditPost] = useState<TopPost | null>(null);
     const [showAddWaitlist, setShowAddWaitlist] = useState(false);
 
@@ -241,7 +241,27 @@ export default function AdminDashboard() {
             setAllowNewRegistrations(!!d.allowNewRegistrations); 
         } 
     }, [apiFetch]);
-    const fetchInquiries = useCallback(async () => { const res = await apiFetch("/api/admin/inquiries"); if (res) setInquiries(res); }, [apiFetch]); const fetchTickets = useCallback(async () => { try { const res = await apiFetch("/api/admin/tickets"); if (res?.tickets) setTickets(res.tickets); } catch (e) {} }, [apiFetch]);
+    const fetchInquiries = useCallback(async () => { const res = await apiFetch("/api/admin/inquiries"); if (res) setInquiries(res); }, [apiFetch]); 
+    const fetchTickets = useCallback(async () => { try { const res = await apiFetch("/api/admin/tickets"); if (res?.tickets) setTickets(res.tickets); } catch (e) {} }, [apiFetch]);
+
+    const handleTicketDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this ticket?")) return;
+        const res = await apiFetch(`/api/admin/tickets/${id}`, { method: "DELETE" });
+        if (res?.success) {
+            setTickets(tickets.filter(t => t.id !== id));
+        }
+    };
+
+    const handleTicketStatusToggle = async (ticket: any) => {
+        const newStatus = ticket.status === "OPEN" ? "CLOSED" : "OPEN";
+        const res = await apiFetch(`/api/admin/tickets/${ticket.id}/status`, { 
+            method: "PATCH", 
+            body: JSON.stringify({ status: newStatus }) 
+        });
+        if (res) {
+            setTickets(tickets.map(t => t.id === ticket.id ? { ...t, status: newStatus } : t));
+        }
+    };
 
     const handleMaintenanceToggle = async (turnOn: boolean) => {
         if (!turnOn) {
@@ -436,7 +456,7 @@ export default function AdminDashboard() {
                     title={confirm.title}
                     message={confirm.message}
                     confirmLabel={confirm.confirmLabel}
-                    danger={(confirm as any).danger !== false}
+                    {...(confirm as any)}
                     onConfirm={confirm.onConfirm}
                     onCancel={() => setConfirm(null)}
                 />
@@ -812,33 +832,45 @@ export default function AdminDashboard() {
                                         <table className="w-full text-sm text-left">
                                             <thead className={`text-xs uppercase font-bold ${dark ? "bg-gray-800/80 text-gray-400" : "bg-gray-50 text-gray-500"}`}>
                                                 <tr>
-                                                    <th className="px-6 py-4">Ticket ID</th>
-                                                    <th className="px-6 py-4">Type</th>
-                                                    <th className="px-6 py-4">Category</th>
-                                                    <th className="px-6 py-4">User</th>
-                                                    <th className="px-6 py-4">Content</th>
-                                                    <th className="px-6 py-4">Date</th>
-                                                    <th className="px-6 py-4 text-right">Actions</th>
-                                                </tr>
+                                                        <th className="px-6 py-4">Ticket ID</th>
+                                                        <th className="px-6 py-4">Status</th>
+                                                        <th className="px-6 py-4">Type</th>
+                                                        <th className="px-6 py-4">Category</th>
+                                                        <th className="px-6 py-4">User Info</th>
+                                                        <th className="px-6 py-4">Content</th>
+                                                        <th className="px-6 py-4">Date</th>
+                                                        <th className="px-6 py-4 text-right">Actions</th>
+                                                    </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                                                 {tickets.length > 0 ? tickets.map((t: any) => (
                                                     <tr key={t.id} className={`${dark ? "hover:bg-gray-800/50" : "hover:bg-gray-50"}`}>
                                                         <td className="px-6 py-4 font-mono font-bold">{t.ticketId}</td>
-                                                        <td className="px-6 py-4">
-                                                            <span className={`px-2 py-1 rounded-md text-[10px] font-bold ${t.type === 'BUG' ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                                                                {t.type}
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-6 py-4 font-medium">{t.category}</td>
-                                                        <td className="px-6 py-4">{t.user?.name || "Guest"}</td>
-                                                        <td className="px-6 py-4"><div className="max-w-[300px] truncate">{t.content}</div></td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">{new Date(t.createdAt).toLocaleString()}</td>
-                                                        <td className="px-6 py-4 text-right">
-                                                            <button title="View" className="p-1.5 rounded-lg text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
-                                                                <Eye className="w-4 h-4" />
-                                                            </button>
-                                                        </td>
+                                                            <td className="px-6 py-4">
+                                                                <button onClick={() => handleTicketStatusToggle(t)} className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide transition-colors ${t.status === 'CLOSED' ? 'bg-gray-500/10 text-gray-500 hover:bg-gray-500/20' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'}`}>
+                                                                    {t.status || 'OPEN'}
+                                                                </button>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <span className={`px-2 py-1 rounded-md text-[10px] font-bold ${t.type === 'BUG' ? 'bg-rose-500/10 text-rose-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                                                                    {t.type}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-4 font-medium">{t.category}</td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="font-semibold">{t.user?.name || "Guest"}</div>
+                                                                <div className="text-xs text-muted-foreground">{t.email || t.user?.email || "No email"}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4">
+                                                                <p className="text-sm line-clamp-2 max-w-xs">{t.content}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-xs text-muted-foreground">
+                                                                {new Date(t.createdAt).toLocaleString()}
+                                                            </td>
+                                                            <td className="px-6 py-4 text-right space-x-3">
+                                                                <button onClick={() => alert(t.content)} className="text-indigo-500 hover:text-indigo-400 font-medium text-sm transition-colors">Read</button>
+                                                                <button onClick={() => handleTicketDelete(t.id)} className="text-rose-500 hover:text-rose-400 font-medium text-sm transition-colors">Delete</button>
+                                                            </td>
                                                     </tr>
                                                 )) : (
                                                     <tr>

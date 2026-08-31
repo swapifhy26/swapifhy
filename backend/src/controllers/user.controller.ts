@@ -276,10 +276,24 @@ export const markStreak = async (req: AuthRequest, res: Response): Promise<void>
     }
 };
 
-export const submitTicket = async (req: AuthRequest, res: Response): Promise<void> => {
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config/env';
+
+export const submitTicket = async (req: any, res: any): Promise<void> => {
     try {
-        const userId = req.user?.id;
-        const { ticketId, type, category, content } = req.body;
+        let userId = null;
+        
+        // Try to optionally extract the user ID if they happen to be logged in
+        const authHeader = req.headers['authorization'];
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            try {
+                const decoded = jwt.verify(token, JWT_SECRET) as any;
+                userId = decoded.id;
+            } catch(e) {}
+        }
+
+        const { ticketId, type, category, content, email } = req.body;
 
         const ticket = await prisma.supportTicket.create({
             data: {
@@ -287,6 +301,7 @@ export const submitTicket = async (req: AuthRequest, res: Response): Promise<voi
                 type,
                 category,
                 content,
+                email: email || null,
                 userId: userId || null
             }
         });

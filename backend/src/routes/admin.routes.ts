@@ -496,4 +496,35 @@ router.get("/tickets", async (req: Request, res: Response) => {
     }
 });
 
+
+
+// "?"? DELETE SUPPORT TICKET "?"?
+router.delete("/tickets/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id as string;
+        await prisma.supportTicket.delete({ where: { id } });
+        res.status(200).json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to delete ticket" });
+    }
+});
+
+// "?"? UPDATE SUPPORT TICKET STATUS "?"?
+router.patch("/tickets/:id/status", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id as string;
+        const { status } = req.body;
+        const ticket = await prisma.supportTicket.update({
+            where: { id },
+            data: { status }
+        });
+        res.status(200).json(ticket);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update ticket status" });
+    }
+});
+
 export default router;
+

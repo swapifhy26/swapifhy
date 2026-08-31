@@ -16,8 +16,8 @@ export default function MaintenancePage({ remark, endTime }: { remark?: string, 
             if (diff <= 0) {
                 setTimeLeft("00:00:00");
                 // Force an immediate reload so the user gets back in instantly without waiting for the 30s polling
-                if (!window.maintenanceReloaded) {
-                    window.maintenanceReloaded = true;
+                if (!(window as any).maintenanceReloaded) {
+                    (window as any).maintenanceReloaded = true;
                     setTimeout(() => window.location.reload(), 1500);
                 }
                 return;

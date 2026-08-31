@@ -4,13 +4,15 @@ import { authenticateToken } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Apply JWT authentication to all user routes
-router.use(authenticateToken);
+// PUBLIC ROUTES (Unauthenticated users can submit tickets)
+router.post('/ticket', submitTicket);
+
+// Apply JWT authentication to all user routes below
+router.use(authenticateToken as any);
 
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.put('/password', changePassword);
 router.post('/streak/mark', markStreak);
-router.post('/ticket', submitTicket);
 
 export default router;

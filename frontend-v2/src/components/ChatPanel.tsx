@@ -631,7 +631,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                             setInputText(prev => prev + emojiData.emoji);
                                             setShowEmojiPicker(false);
                                         }}
-                                        theme="auto"
+                                        theme={"auto" as any}
                                         lazyLoadEmojis={true}
                                         searchDisabled={true}
                                         skinTonesDisabled={true}

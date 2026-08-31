@@ -312,6 +312,7 @@ model SupportTicket {
   type      String   // QUERY, BUG
   category  String
   content   String
+  email     String?
   status    String   @default("OPEN")
   createdAt DateTime @default(now())
 

@@ -37,6 +37,7 @@ export default function HelpPage() {
     
     // Form states
     const [category, setCategory] = useState("General Support");
+    const [email, setEmail] = useState("");
     const [content, setContent] = useState("");
     const [submitted, setSubmitted] = useState(false);
     
@@ -66,24 +67,20 @@ export default function HelpPage() {
 
         try {
             const token = localStorage.getItem("swapifhy_token");
-            if (token) {
-                // Ignore API_URL import issues, we can just fetch relative to window.location or use absolute
-                // Wait, help.tsx might not have API_URL imported. Let's just use the absolute or standard prefix.
-                // It's usually imported from lib/api. We'll require it or just use fetch(`https://swapifhy-backend-iu0x.onrender.com/api/user/ticket`)
-                await fetch(`https://swapifhy-backend-iu0x.onrender.com/api/user/ticket`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        ticketId: ticket.id,
-                        type: ticket.type,
-                        category: ticket.category,
-                        content: ticket.content
-                    })
-                });
-            }
+            const headers: any = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            await fetch(`https://swapifhy-backend-iu0x.onrender.com/api/user/ticket`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    ticketId: ticket.id,
+                    type: ticket.type,
+                    category: ticket.category,
+                    content: ticket.content,
+                    email: email
+                })
+            });
         } catch(err) {
             console.error("Failed to sync ticket to server", err);
         }
@@ -92,6 +89,7 @@ export default function HelpPage() {
         setTimeout(() => {
             setSubmitted(false);
             setContent("");
+            setEmail("");
             setActiveTab("FAQ");
         }, 4000);
     };

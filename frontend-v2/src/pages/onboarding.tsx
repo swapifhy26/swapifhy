@@ -1,5 +1,6 @@
 import confetti from 'canvas-confetti';
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { X, ArrowRight, Sparkles, Zap, MessageSquare } from "lucide-react";
 import { API_URL } from "../lib/api";
@@ -115,7 +116,7 @@ export default function Onboarding() {
                 setCompleted(true);
                 
                 // Fetch first match while confetti plays
-                let foundMatch = null;
+                let foundMatch: any = null;
                 fetch(`${API_URL}/api/match/all`, { headers: { Authorization: `Bearer ${token}` } })
                     .then(r => r.json())
                     .then(data => {

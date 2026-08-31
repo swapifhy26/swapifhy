@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { 
     initiateSync, getConversations, getMessages, 
-    sendMessage, revokeMessage, heartbeat, getPresence 
+    sendMessage, revokeMessage, heartbeat, getPresence, revokeSwap 
 } from '../controllers/chat.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 
@@ -17,5 +17,6 @@ router.put('/revoke/:messageId', revokeMessage);
 // ✅ Presence
 router.post('/heartbeat', heartbeat);
 router.post('/presence', getPresence);
+router.delete('/swap/:swapId', revokeSwap);
 
 export default router;

@@ -197,6 +197,26 @@ export default function Explore() {
         } catch (err) { console.error(err); }
     };
 
+    
+    const handleRevokeSwap = async (swapId: string) => {
+        if (!confirm("Are you sure you want to revoke this swap request?")) return;
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            const res = await fetch(`${API_URL}/api/chat/swap/${swapId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                // Refresh swaps to update button UI
+                fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } })
+                    .then(r => r.json()).then(d => { if (d.conversations) setMySwaps(d.conversations); });
+            } else {
+                const d = await res.json();
+                alert(d.error || "Failed to revoke");
+            }
+        } catch (err) { console.error(err); }
+    };
+
     const handleAcceptSwap = async (swapId: string) => {
         try {
             const token = localStorage.getItem("swapifhy_token");
@@ -491,11 +511,13 @@ export default function Explore() {
                                                         if (swap.isProposer) {
                                                             return (
                                                                 <button
-                                                                    className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn opacity-50 cursor-not-allowed"
-                                                                    style={{ background: "#333", color: "#fff" }}
-                                                                >
-                                                                    Requested
-                                                                </button>
+                                                                className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:bg-red-900"
+                                                                style={{ background: "#333", color: "#fff" }}
+                                                                onClick={() => handleRevokeSwap(swap.swapId)}
+                                                            >
+                                                                <span className="group-hover/btn:hidden">Requested</span>
+                                                                <span className="hidden group-hover/btn:block text-red-400">Revoke</span>
+                                                            </button>
                                                             );
                                                         } else {
                                                             return (

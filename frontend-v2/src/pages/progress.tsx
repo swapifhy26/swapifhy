@@ -78,6 +78,24 @@ export default function Progress() {
 
     useEffect(() => { fetchData(); }, []);
 
+    
+    const handleRevokeSwap = async (swapId: string) => {
+        if (!confirm("Are you sure you want to revoke this swap request?")) return;
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            const res = await fetch(`${API_URL}/api/chat/swap/${swapId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                fetchData();
+            } else {
+                const d = await res.json();
+                alert(d.error || "Failed to revoke");
+            }
+        } catch (err) { console.error(err); }
+    };
+
     const acceptSwap = async (id: string) => {
         const res = await fetch(`${API_URL}/api/mentorships/${id}/accept`, { method: "POST", headers: { "Authorization": `Bearer ${token}` } });
         if (res.ok) fetchData();
@@ -334,6 +352,12 @@ export default function Progress() {
                                                         <p className="text-xs text-muted-foreground">Pending their approval</p>
                                                     </div>
                                                 </div>
+
+                                                    <button onClick={() => handleRevokeSwap(req.id)} className="px-3 py-1.5 bg-red-900/50 text-red-200 text-xs font-bold rounded-lg hover:bg-red-600 transition-colors">
+                                                        Revoke
+                                                    </button>
+                                                </div>
+
                                             </div>
                                         ))}
                                     </div>

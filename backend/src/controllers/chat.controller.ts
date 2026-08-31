@@ -333,3 +333,29 @@ export const revokeMessage = async (req: AuthRequest, res: Response): Promise<vo
         res.status(500).json({ error: "Failed to revoke message" });
     }
 };
+
+
+export const revokeSwap = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        const swapId = req.params.swapId as string;
+        if (!userId) { res.status(401).json({ error: "Unauthorized" }); return; }
+
+        const swap = await prisma.swap.findUnique({ where: { id: swapId } });
+        if (!swap || swap.proposerId !== userId || swap.status !== "PENDING") {
+            res.status(400).json({ error: "Invalid swap request to revoke" });
+            return;
+        }
+
+        // Delete the swap (cascade deletes messages)
+        await prisma.swap.delete({ where: { id: swapId } });
+        
+        // Deduct the 50 XP they got for proposing
+        await prisma.user.update({ where: { id: userId }, data: { xp: { decrement: 50 } } });
+
+        res.status(200).json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to revoke swap" });
+    }
+};

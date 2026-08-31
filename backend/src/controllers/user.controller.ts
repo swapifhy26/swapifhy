@@ -13,6 +13,7 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
+        
         const user = await prisma.user.findUnique({
             where: { id: userId },
             include: {
@@ -26,6 +27,30 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
+        // Calculate Gamification & Mentorship stats dynamically
+        const totalSwapsCount = await prisma.mentorship.count({
+            where: { OR: [{ teacherId: userId }, { studentId: userId }] }
+        });
+
+        const taughtClasses = await prisma.mentorshipClass.aggregate({
+            where: { mentorship: { teacherId: userId }, isCompleted: true },
+            _sum: { durationMinutes: true }
+        });
+        const hoursTaught = Math.round((taughtClasses._sum.durationMinutes || 0) / 60 * 10) / 10;
+
+        const learnedClasses = await prisma.mentorshipClass.aggregate({
+            where: { mentorship: { studentId: userId }, isCompleted: true },
+            _sum: { durationMinutes: true }
+        });
+        const hoursLearned = Math.round((learnedClasses._sum.durationMinutes || 0) / 60 * 10) / 10;
+
+        const ratings = await prisma.mentorshipRating.aggregate({
+            where: { mentorship: { teacherId: userId } },
+            _avg: { rating: true }
+        });
+        const avgRating = ratings._avg.rating ? Math.round(ratings._avg.rating * 10) / 10 : 0;
+
+
         res.status(200).json({
             user: {
                 id: user.id,
@@ -35,10 +60,16 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
                 hobbies: user.hobbies,
                 avatarUrl: user.avatarUrl,
                 reputation: user.reputation,
+                
                 xp: user.xp,
                 currentStreak: user.currentStreak,
                 highestStreak: user.highestStreak,
                 lastStreakDate: user.lastStreakDate,
+                totalSwaps: totalSwapsCount,
+                hoursTaught: hoursTaught,
+                hoursLearned: hoursLearned,
+                avgRating: avgRating,
+
                 // PROFESSIONAL FOOTPRINT (PII)
                 phoneNumber: user.phoneNumber,
                 github: user.github,

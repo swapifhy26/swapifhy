@@ -223,14 +223,15 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
         scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
     }, [messages]);
 
-    const sendMessage = async (type = "TEXT", details: any = null) => {
-        if (type === "TEXT" && !inputText.trim()) return;
+    const sendMessage = async (type = "TEXT", details: any = null, overrideText: string | null = null) => {
+        const textToSend = overrideText !== null ? overrideText : inputText;
+        if (type === "TEXT" && !textToSend.trim()) return;
         try {
             const token = localStorage.getItem("swapifhy_token");
             const res = await fetch(`${API_URL}/api/chat/send`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ swapId, content: type === "TEXT" ? inputText : null, type, details })
+                body: JSON.stringify({ swapId, content: type === "TEXT" ? textToSend : null, type, details })
             });
             if (res.ok) { 
                 setInputText(""); 
@@ -593,8 +594,25 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                         })
                         )}
                     </div>
+                    
+                    {/* 🧊 ICEBREAKERS */}
+                    {messages.filter(m => m.type === 'TEXT').length === 0 && (
+                        <div className="px-6 py-3 flex flex-col gap-2 bg-gradient-to-t from-background to-transparent w-full z-10 border-t border-border/10">
+                            <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-2 w-full snap-x">
+                                {["Hey! So excited to swap skills! When are you free to chat? \uD83D\uDC4B", "I've been wanting to learn this forever! Where should we start? \uD83D\uDE80", "Let's set up a quick intro call this week! \uD83D\uDCC5"].map((icebreaker, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => sendMessage("TEXT", null, icebreaker)}
+                                        className="px-4 py-2 rounded-xl text-[12px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all shadow-sm text-left whitespace-nowrap shrink-0 snap-start"
+                                    >
+                                        {icebreaker}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                    {/* ── INPUT ── */}
+                    {/* ✨ INPUT ✨ */}
                     <div className={`p-4 lg:p-6 border-t transition-colors duration-300 backdrop-blur-[80px] ${t.inputArea}`}>
                         {muted && (
                             <div className={`mb-3 px-4 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-widest text-center ${t.mutedBanner}`}>

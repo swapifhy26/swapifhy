@@ -14,13 +14,11 @@ const clean = (data: any, keyName: string = ''): any => {
 
     if (typeof data === 'string') {
         // Unescape basic characters that sanitize-html might over-encode, but strip tags.
-        // sanitize-html transforms <script> into empty, but it might turn > into &gt;.
-        // We will just return the strictly stripped version.
         return sanitizeHtml(data, sanitizeOptions);
     }
     
     if (Array.isArray(data)) {
-        return data.map((item) => clean(item));
+        return data.map((item) => clean(item, keyName));
     }
     
     if (typeof data === 'object' && data !== null) {
@@ -35,8 +33,24 @@ const clean = (data: any, keyName: string = ''): any => {
 };
 
 export const xssSanitizer = (req: Request, res: Response, next: NextFunction) => {
-    if (req.body) req.body = clean(req.body);
-    if (req.query) req.query = clean(req.query);
-    if (req.params) req.params = clean(req.params);
+    try {
+        if (req.body && typeof req.body === 'object') {
+            for (const key in req.body) {
+                req.body[key] = clean(req.body[key], key);
+            }
+        }
+        if (req.query && typeof req.query === 'object') {
+            for (const key in req.query) {
+                req.query[key] = clean(req.query[key], key);
+            }
+        }
+        if (req.params && typeof req.params === 'object') {
+            for (const key in req.params) {
+                req.params[key] = clean(req.params[key], key);
+            }
+        }
+    } catch (e) {
+        console.error("XSS Sanitization Error:", e);
+    }
     next();
 };

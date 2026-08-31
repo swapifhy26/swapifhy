@@ -4,7 +4,6 @@ import cors from 'cors';
 
 import helmet from 'helmet';
 import compression from 'compression';
-import hpp from 'hpp';
 import { xssSanitizer } from './middleware/xss';
 import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.routes';
@@ -63,7 +62,6 @@ app.use('/api/auth', authLimiter);
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(compression());
-app.use(hpp());
 app.use(xssSanitizer);
 app.use('/uploads', express.static(UPLOADS_DIR));
 

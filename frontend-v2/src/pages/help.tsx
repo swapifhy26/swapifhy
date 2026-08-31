@@ -113,13 +113,13 @@ export default function HelpPage() {
 
                 {/* Tab Navigation */}
                 <div className="flex flex-wrap gap-4 justify-center mb-12">
-                    <button onClick={() => setActiveTab("FAQ")} className={`px-6 py-3 rounded-2xl font-bold transition-all \${activeTab === "FAQ" ? "bg-emerald-500 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
+                    <button onClick={() => setActiveTab("FAQ")} className={`px-6 py-3 rounded-2xl font-bold transition-all ${activeTab === "FAQ" ? "bg-emerald-500 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
                         Frequently Asked Questions
                     </button>
-                    <button onClick={() => setActiveTab("QUERY")} className={`px-6 py-3 rounded-2xl font-bold transition-all \${activeTab === "QUERY" ? "bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
+                    <button onClick={() => setActiveTab("QUERY")} className={`px-6 py-3 rounded-2xl font-bold transition-all ${activeTab === "QUERY" ? "bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
                         Raise a Query
                     </button>
-                    <button onClick={() => setActiveTab("BUG")} className={`px-6 py-3 rounded-2xl font-bold transition-all \${activeTab === "BUG" ? "bg-rose-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
+                    <button onClick={() => setActiveTab("BUG")} className={`px-6 py-3 rounded-2xl font-bold transition-all ${activeTab === "BUG" ? "bg-rose-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] scale-105" : "bg-surface border border-border text-muted-foreground hover:bg-surface/80"}`}>
                         Report a Bug / Feedback
                     </button>
                 </div>
@@ -156,7 +156,7 @@ export default function HelpPage() {
                                 </motion.div>
                             ) : (
                                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="p-8 rounded-[2rem] glass-card border border-border/50 shadow-2xl relative overflow-hidden">
-                                    <div className={`absolute top-0 left-0 w-full h-1 \${activeTab === 'BUG' ? 'bg-rose-500' : 'bg-blue-500'}`} />
+                                    <div className={`absolute top-0 left-0 w-full h-1 ${activeTab === 'BUG' ? 'bg-rose-500' : 'bg-blue-500'}`} />
                                     
                                     <h2 className="text-2xl font-black mb-2">{activeTab === "BUG" ? "Report an Issue" : "Raise a Query"}</h2>
                                     <p className="text-muted-foreground text-sm mb-8">
@@ -190,7 +190,7 @@ export default function HelpPage() {
                                             </div>
                                         </div>
 
-                                        <button type="submit" className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-white transition-all shadow-xl hover:scale-[1.02] \${activeTab === 'BUG' ? 'bg-rose-500 shadow-rose-500/20 hover:bg-rose-600' : 'bg-blue-500 shadow-blue-500/20 hover:bg-blue-600'}`}>
+                                        <button type="submit" className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-white transition-all shadow-xl hover:scale-[1.02] ${activeTab === 'BUG' ? 'bg-rose-500 shadow-rose-500/20 hover:bg-rose-600' : 'bg-blue-500 shadow-blue-500/20 hover:bg-blue-600'}`}>
                                             Submit Ticket
                                         </button>
                                     </form>
@@ -210,7 +210,7 @@ export default function HelpPage() {
                                 <div className="space-y-4">
                                     {tickets.map((t, i) => (
                                         <div key={i} className="p-4 rounded-xl bg-background border border-border/50 relative overflow-hidden group">
-                                            <div className={`absolute top-0 left-0 w-1 h-full \${t.type === 'BUG' ? 'bg-rose-500' : 'bg-blue-500'}`} />
+                                            <div className={`absolute top-0 left-0 w-1 h-full ${t.type === 'BUG' ? 'bg-rose-500' : 'bg-blue-500'}`} />
                                             <div className="flex justify-between items-start mb-2">
                                                 <span className="text-xs font-black font-mono text-muted-foreground">{t.id}</span>
                                                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold">{t.status}</span>

@@ -160,7 +160,7 @@ export const leaveSwap = async (req: AuthRequest, res: Response): Promise<void> 
     try {
         const userId = req.user?.id;
         const id = req.params.id as string;
-        const m = await prisma.mentorship.findUnique({ where: { id }, include: { classes: true } }) as any;
+        const m = await prisma.mentorship.findUnique({ where: { id }, include: { classes: true, teacher: true, student: true, skill: true } }) as any;
         if (!m || (m.teacherId !== userId && m.studentId !== userId)) {
             res.status(403).json({ error: "Unauthorized" });
             return;
@@ -182,6 +182,15 @@ export const leaveSwap = async (req: AuthRequest, res: Response): Promise<void> 
                 data: { xp: { increment: 500 } }
             });
             await prisma.mentorship.update({ where: { id }, data: { status: "COMPLETED" }});
+
+            // Auto-generate achievement post
+            await prisma.post.create({
+                data: {
+                    userId: m.teacherId,
+                    type: "ACHIEVEMENT",
+                    content: `🎉 **SWAP COMPLETED!** @${m.teacher.name} and @${m.student.name} just crushed a swap in **${m.skill.name}**!`
+                }
+            });
         }
 
         res.status(200).json({ success: true });

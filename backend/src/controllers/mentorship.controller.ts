@@ -38,14 +38,7 @@ export const acceptSwap = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Limit Check: Max 5 active students for the receiver
-        const activeTeaching = await prisma.mentorship.count({
-            where: { teacherId: userId, status: "ACTIVE" }
-        });
-        if (activeTeaching >= 5) {
-            res.status(400).json({ error: "You can only teach a maximum of 5 students at a time." });
-            return;
-        }
+        // Removed barrier: Teachers can now teach unlimited students
 
         // Auto-detect skills (Fallback to first skill if not explicitly set)
         let proposerSkillId = swap.proposerSkillId;
@@ -89,15 +82,20 @@ export const acceptSwap = async (req: AuthRequest, res: Response): Promise<void>
             });
         }
         if (receiverSkillId) {
-            // Receiver teaches Proposer
-            await prisma.mentorship.create({
-                data: {
-                    swapId: swap.id,
-                    teacherId: swap.receiverId,
-                    studentId: swap.proposerId,
-                    skillId: receiverSkillId
+            // Receiver teaches Proposer (can be multiple comma-separated skills!)
+            const skillIds = receiverSkillId.split(',');
+            for (const sId of skillIds) {
+                if (sId.trim()) {
+                    await prisma.mentorship.create({
+                        data: {
+                            swapId: swap.id,
+                            teacherId: swap.receiverId,
+                            studentId: swap.proposerId,
+                            skillId: sId.trim()
+                        }
+                    });
                 }
-            });
+            }
         }
 
         res.status(200).json({ success: true });

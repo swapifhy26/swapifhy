@@ -93,31 +93,22 @@ export const getPresence = async (req: AuthRequest, res: Response): Promise<void
 export const initiateSync = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const proposerId = req.user?.id;
-        const { receiverId } = req.body;
+        const { receiverId, skillsToLearn } = req.body;
+
+        let receiverSkillIds = null;
+        if (skillsToLearn && Array.isArray(skillsToLearn) && skillsToLearn.length > 0) {
+            const skills = await prisma.skill.findMany({
+                where: { name: { in: skillsToLearn } }
+            });
+            receiverSkillIds = skills.map(s => s.id).join(',');
+        }
         if (!proposerId || !receiverId) { res.status(400).json({ error: "Participants not identified" }); return; }
 
-        // Enforce max 5 pending sent requests limit
-        const pendingSent = await prisma.swap.count({
-            where: { proposerId, status: "PENDING" }
-        });
-        
-        let swap = await prisma.swap.findFirst({
-            where: {
-                OR: [
-                    { proposerId, receiverId },
-                    { proposerId: receiverId, receiverId: proposerId }
-                ]
-            }
-        });
-        
-        if (!swap && pendingSent >= 5) {
-            res.status(400).json({ error: "You can only have up to 5 pending sent swap requests at a time." });
-            return;
-        }
+        // Removed barrier: Unlimited pending requests
 
         if (!swap) {
             swap = await prisma.swap.create({
-                data: { proposerId, receiverId, status: "PENDING" }
+                data: { proposerId, receiverId, status: "PENDING", receiverSkillId: receiverSkillIds }
             });
             // Award XP for proposing a swap
             await prisma.user.update({ where: { id: proposerId }, data: { xp: { increment: 50 } } });
@@ -133,7 +124,7 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
             // Re-initiate swap using existing channel
             swap = await prisma.swap.update({
                 where: { id: swap.id },
-                data: { proposerId, receiverId, status: "PENDING" }
+                data: { proposerId, receiverId, status: "PENDING", receiverSkillId: receiverSkillIds }
             });
             await prisma.chatMessage.create({
                 data: {

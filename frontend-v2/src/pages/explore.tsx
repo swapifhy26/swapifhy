@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    User, Zap, MessageSquare, Github, Linkedin, Instagram,
+    User, Zap, MessageSquare, Github, Linkedin, Instagram, Check,
     Globe, Search, Filter, SlidersHorizontal, X, CheckCircle2
 } from "lucide-react";
 import { ChatPanel } from "../components/ChatPanel";
@@ -100,6 +100,9 @@ export default function Explore() {
     const [matches, setMatches] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeSwapId, setActiveSwapId] = useState<string | null>(null);
+    const [syncTarget, setSyncTarget] = useState<any>(null);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [syncing, setSyncing] = useState(false);
     const [currentUserId, setCurrentUserId] = useState<string>("");
     const [myTeaching, setMyTeaching] = useState<string[]>([]);
     const [myLearning, setMyLearning] = useState<string[]>([]);
@@ -572,7 +575,7 @@ export default function Explore() {
                                                                 <button
                                                                     className="w-full py-2 sm:py-3.5 rounded-xl text-[10px] sm:text-[12px] font-bold transition-all flex items-center justify-between px-2 sm:px-3 group/btn hover:scale-[1.02] shadow-lg h-full leading-tight text-left"
                                                                     style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff", boxShadow: "0 4px 20px rgba(91,196,192,0.25)" }}
-                                                                    onClick={(e) => { e.stopPropagation(); handleSync(m.id); }}
+                                                                    onClick={(e) => { e.stopPropagation(); initiateSyncPrompt(m); }}
                                                                 >
                                                                     <span>Start<br/>Swap</span>
                                                                     <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:rotate-12 transition-transform shrink-0" />
@@ -602,7 +605,7 @@ export default function Explore() {
                                                             <button
                                                                 className="w-full py-2.5 sm:py-3.5 rounded-xl text-[11px] sm:text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 group/btn hover:scale-[1.02] shadow-lg h-full"
                                                                 style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff", boxShadow: "0 4px 20px rgba(91,196,192,0.25)" }}
-                                                                onClick={() => handleSync(m.id)}
+                                                                onClick={(e) => { e.stopPropagation(); initiateSyncPrompt(m); }}
                                                             >
                                                                 Start a Swap
                                                                 <Zap className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -626,6 +629,66 @@ export default function Explore() {
                     />
                 )}
             </motion.div>
+            {/* Skill Selection Modal */}
+            <AnimatePresence>
+                {syncTarget && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card border border-border rounded-3xl p-6 w-full max-w-sm shadow-2xl relative"
+                        >
+                            <button onClick={() => setSyncTarget(null)} className="absolute top-4 right-4 p-2 hover:bg-muted rounded-full">
+                                <X className="w-5 h-5 text-muted-foreground" />
+                            </button>
+                            <div className="text-center mb-6">
+                                <h3 className="text-xl font-heading font-black text-foreground mb-1">Select Skills</h3>
+                                <p className="text-sm text-muted-foreground">What would you like to learn from {syncTarget.name}?</p>
+                            </div>
+                            
+                            <div className="space-y-3 mb-8">
+                                {syncTarget.teachSkills?.length > 0 ? (
+                                    syncTarget.teachSkills.map((skill: string) => {
+                                        const isSelected = selectedSkills.includes(skill);
+                                        return (
+                                            <button
+                                                key={skill}
+                                                onClick={() => {
+                                                    if (isSelected) {
+                                                        setSelectedSkills(prev => prev.filter(s => s !== skill));
+                                                    } else {
+                                                        setSelectedSkills(prev => [...prev, skill]);
+                                                    }
+                                                }}
+                                                className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-between ${isSelected ? 'border-primary bg-primary/10' : 'border-border/50 bg-surface/30 hover:border-primary/50'}`}
+                                            >
+                                                <span className={`font-bold ${isSelected ? 'text-primary' : 'text-foreground'}`}>{skill}</span>
+                                                <div className={`w-5 h-5 rounded-md border flex items-center justify-center ${isSelected ? 'bg-primary border-primary' : 'border-muted-foreground'}`}>
+                                                    {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                                                </div>
+                                            </button>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="text-sm text-muted-foreground text-center italic">This user hasn't listed any teaching skills yet.</p>
+                                )}
+                            </div>
+                            
+                            <button
+                                onClick={handleSync}
+                                disabled={selectedSkills.length === 0 || syncing}
+                                className="w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-lg disabled:opacity-50"
+                                style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff" }}
+                            >
+                                {syncing ? "Sending..." : <>Send Request <Zap className="w-4 h-4" /></>}
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
+
 }

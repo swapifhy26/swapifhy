@@ -55,6 +55,7 @@ export default function Onboarding() {
     const [magicMatch, setMagicMatch] = useState<any>(null);
     const [showMagicMatch, setShowMagicMatch] = useState(false);
     const [requestingSwap, setRequestingSwap] = useState(false);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
     // Guard: need a token; if the user already has skills, skip onboarding.
     useEffect(() => {
@@ -82,7 +83,7 @@ export default function Onboarding() {
             await fetch(`${API_URL}/api/chat/sync`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ receiverId: magicMatch.id })
+                body: JSON.stringify({ receiverId: magicMatch.id, skillsToLearn: selectedSkills })
             });
             // We can just redirect them to their matches/chat so they see it!
             router.push("/matches");
@@ -184,14 +185,31 @@ export default function Onboarding() {
                         <h2 className="text-xl font-bold text-white mb-1">{magicMatch.name}</h2>
                         
                         <div className="flex flex-col gap-3 mt-6 text-left">
+                            
                             <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                                <span className="text-[10px] uppercase font-bold text-teal-400 mb-1 block tracking-widest">They Can Teach You</span>
+                                <span className="text-[10px] uppercase font-bold text-teal-400 mb-2 block tracking-widest">Select what to learn:</span>
                                 <div className="flex flex-wrap gap-1.5">
-                                    {magicMatch.teachSkills?.slice(0, 3).map((s: string) => (
-                                        <span key={s} className="text-xs bg-white/5 text-white/90 px-2 py-1 rounded-md border border-white/10">{s}</span>
-                                    ))}
+                                    {magicMatch.teachSkills?.map((s: string) => {
+                                        const isSelected = selectedSkills.includes(s);
+                                        return (
+                                            <button
+                                                key={s}
+                                                onClick={() => {
+                                                    if (isSelected) {
+                                                        setSelectedSkills(prev => prev.filter(skill => skill !== s));
+                                                    } else {
+                                                        setSelectedSkills(prev => [...prev, s]);
+                                                    }
+                                                }}
+                                                className={`text-xs px-2 py-1.5 rounded-md border transition-all flex items-center gap-1 ${isSelected ? 'bg-teal-500/20 text-teal-300 border-teal-500/50' : 'bg-white/5 text-white/90 border-white/10 hover:border-white/30'}`}
+                                            >
+                                                {s}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
+
                             <div className="bg-black/20 rounded-xl p-3 border border-white/5">
                                 <span className="text-[10px] uppercase font-bold text-rose-400 mb-1 block tracking-widest">They Want To Learn</span>
                                 <div className="flex flex-wrap gap-1.5">
@@ -206,7 +224,7 @@ export default function Onboarding() {
                     <div className="flex flex-col gap-3">
                         <button
                             onClick={handleMagicSwap}
-                            disabled={requestingSwap}
+                            disabled={requestingSwap || selectedSkills.length === 0}
                             className="w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50"
                             style={{ background: "linear-gradient(135deg, #5BC4C0, #6B8FD4)", color: "#fff" }}
                         >

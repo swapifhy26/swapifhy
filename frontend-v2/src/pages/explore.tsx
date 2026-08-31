@@ -511,13 +511,17 @@ export default function Explore() {
                                                         if (swap.isProposer) {
                                                             return (
                                                                 <button
-                                                                className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-2 group/btn hover:bg-red-900"
-                                                                style={{ background: "#333", color: "#fff" }}
-                                                                onClick={() => handleRevokeSwap(swap.swapId)}
-                                                            >
-                                                                <span className="group-hover/btn:hidden">Requested</span>
-                                                                <span className="hidden group-hover/btn:block text-red-400">Revoke</span>
-                                                            </button>
+                                                                    className="flex-[1.5] py-3.5 rounded-xl text-[12px] font-bold transition-all flex items-center justify-center gap-1.5 group/btn border active:scale-95 shadow-sm"
+                                                                    style={{ background: "#2A2A2A", borderColor: "#444" }}
+                                                                    onClick={() => handleRevokeSwap(swap.swapId)}
+                                                                >
+                                                                    {/* Mobile: Cancel Req */}
+                                                                    <span className="md:hidden flex items-center gap-1 text-red-400"><X className="w-3.5 h-3.5" /> Cancel</span>
+                                                                    
+                                                                    {/* Desktop: Requested (Hover: Revoke) */}
+                                                                    <span className="hidden md:flex md:group-hover/btn:hidden items-center gap-1.5 text-gray-300"><CheckCircle2 className="w-4 h-4 text-teal-400" /> Requested</span>
+                                                                    <span className="hidden md:group-hover/btn:flex items-center gap-1.5 text-red-400"><X className="w-4 h-4" /> Revoke</span>
+                                                                </button>
                                                             );
                                                         } else {
                                                             return (

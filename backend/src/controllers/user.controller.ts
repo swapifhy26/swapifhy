@@ -237,20 +237,24 @@ export const markStreak = async (req: AuthRequest, res: Response): Promise<void>
         const user = await prisma.user.findUnique({ where: { id: userId }});
         if (!user) { res.status(404).json({ error: "User not found" }); return; }
 
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
+        const { timezoneOffset } = req.body;
+        const tzOffsetMs = (timezoneOffset || 0) * 60 * 1000;
+        
+        // Shift time by user's timezone to get local date strings via ISO
+        const localNow = new Date(Date.now() - tzOffsetMs);
+        const todayStr = localNow.toISOString().split('T')[0];
         
         let { currentStreak, highestStreak, lastStreakDate } = user;
-        const lastStr = lastStreakDate ? new Date(lastStreakDate).toISOString().split('T')[0] : null;
+        const lastLocal = lastStreakDate ? new Date(lastStreakDate.getTime() - tzOffsetMs) : null;
+        const lastStr = lastLocal ? lastLocal.toISOString().split('T')[0] : null;
 
         if (lastStr === todayStr) {
             res.status(400).json({ error: "Streak already marked for today!" });
             return;
         }
 
-        const yesterday = new Date(now);
-        yesterday.setDate(now.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        const localYesterday = new Date(localNow.getTime() - 24 * 60 * 60 * 1000);
+        const yesterdayStr = localYesterday.toISOString().split('T')[0];
 
         if (lastStr === yesterdayStr) {
             currentStreak += 1;

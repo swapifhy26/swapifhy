@@ -44,7 +44,9 @@ export default function Progress() {
         if (!stats.lastStreakDate) return false;
         const now = new Date();
         const last = new Date(stats.lastStreakDate);
-        return now.toISOString().split('T')[0] === last.toISOString().split('T')[0];
+        return now.getFullYear() === last.getFullYear() &&
+               now.getMonth() === last.getMonth() &&
+               now.getDate() === last.getDate();
     };
 
     const handleMarkStreak = async () => {
@@ -52,7 +54,8 @@ export default function Progress() {
             const token = localStorage.getItem("swapifhy_token");
             const res = await fetch(`${API_URL}/api/user/streak/mark`, {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({ timezoneOffset: new Date().getTimezoneOffset() })
             });
             const d = await res.json();
             if (res.ok) {

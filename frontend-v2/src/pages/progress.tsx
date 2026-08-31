@@ -35,6 +35,7 @@ export default function Progress() {
     
     // Modal state
     const [activeModal, setActiveModal] = useState<string | null>(null);
+    const [xpToast, setXpToast] = useState<{show: boolean, amount: number, text: string}>({show: false, amount: 0, text: ""});
     const [activeMentorship, setActiveMentorship] = useState<any>(null);
     const [formData, setFormData] = useState<any>({});
 
@@ -131,7 +132,11 @@ export default function Progress() {
 
     const acceptSwap = async (id: string) => {
         const res = await fetch(`${API_URL}/api/mentorships/${id}/accept`, { method: "POST", headers: { "Authorization": `Bearer ${token}` } });
-        if (res.ok) fetchData();
+        if (res.ok) {
+            fetchData();
+            setXpToast({ show: true, amount: 50, text: "Swap Accepted!" });
+            setTimeout(() => setXpToast(s => ({ ...s, show: false })), 3000);
+        }
         else { const d = await res.json(); alert(d.error || "Failed to accept swap"); }
     };
 

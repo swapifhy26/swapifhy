@@ -107,6 +107,7 @@ export default function Explore() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [filterDomain, setFilterDomain] = useState("all");
+    const [xpToast, setXpToast] = useState<{show: boolean, amount: number, text: string}>({show: false, amount: 0, text: ""});
 
     const router = useRouter();
 
@@ -191,6 +192,8 @@ export default function Explore() {
                 // Refresh swaps to update button UI
                 fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } })
                     .then(r => r.json()).then(d => { if (d.conversations) setMySwaps(d.conversations); });
+                setXpToast({ show: true, amount: 50, text: "Swap Requested!" });
+                setTimeout(() => setXpToast(s => ({ ...s, show: false })), 3000);
             } else if (data.error) {
                 alert(data.error);
             }

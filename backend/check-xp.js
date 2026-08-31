@@ -1,8 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function checkXP() {
-    const users = await prisma.user.findMany({ select: { name: true, xp: true, currentStreak: true, highestStreak: true }});
+async function checkAdityas() {
+    const users = await prisma.user.findMany({
+        where: { name: { contains: "Aditya", mode: "insensitive" } },
+        select: { id: true, name: true, xp: true, email: true }
+    });
     console.log(users);
 }
-checkXP();
+checkAdityas();

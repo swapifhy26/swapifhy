@@ -423,20 +423,32 @@ export default function Explore() {
 
                                             {/* ✅ Skill Match badge — ONLY shown when skills actually match */}
                                             
-                                            {/* 🔥 Match Compatibility Score Pill */}
+                                            {/* 🔥 {/* Match Compatibility Score Pill */}
                                             {(() => {
                                                 const matchScore = calculateMatchScore(m);
                                                 const isHighMatch = matchScore >= 85;
+                                                
+                                                // High Match Styling (Fire)
+                                                const highStyle = {
+                                                    background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+                                                    color: "#fff",
+                                                    boxShadow: "0 4px 20px rgba(255,107,107,0.4)",
+                                                    border: "1px solid rgba(255,255,255,0.2)"
+                                                };
+                                                
+                                                // Good Match Styling (Sparkle)
+                                                const goodStyle = {
+                                                    background: "linear-gradient(135deg, #6B8FD4, #5BC4C0)",
+                                                    color: "#fff",
+                                                    boxShadow: "0 4px 15px rgba(107,143,212,0.3)",
+                                                    border: "1px solid rgba(255,255,255,0.2)"
+                                                };
+
                                                 return (
                                                     <div className="absolute top-6 right-6 z-20">
-                                                        <div className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-xl ${isHighMatch ? 'animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.4)]' : ''}`}
-                                                            style={{
-                                                                background: isHighMatch ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.05)",
-                                                                border: `1px solid ${isHighMatch ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.1)"}`,
-                                                                color: isHighMatch ? "#22C55E" : "#888",
-                                                                backdropFilter: "blur(8px)"
-                                                            }}>
-                                                            {isHighMatch ? "🔥" : "💡"} {matchScore}% Match
+                                                        <div className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-transform duration-300 hover:scale-105 ${isHighMatch ? 'animate-pulse' : ''}`}
+                                                            style={isHighMatch ? highStyle : goodStyle}>
+                                                            {isHighMatch ? "🔥" : "✨"} {matchScore}% Match
                                                         </div>
                                                     </div>
                                                 );
@@ -581,23 +593,4 @@ export default function Explore() {
                                                             <Zap className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                                                         </button>
                                                     );
-                                                })()}
-                                            </div>
-                                        </div>
-                                    </GlowCard>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {activeSwapId && (
-                    <ChatPanel
-                        swapId={activeSwapId}
-                        onClose={() => setActiveSwapId(null)}
-                    />
-                )}
-            </motion.div>
-        </div>
-    );
-}
+                                                

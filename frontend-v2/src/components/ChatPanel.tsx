@@ -616,7 +616,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                     )}
 
                     {/* ✨ INPUT ✨ */}
-                    <div className={`p-4 lg:p-6 border-t transition-colors duration-300 backdrop-blur-[80px] ${t.inputArea}`}>
+                    <div className={`relative z-50 p-4 lg:p-6 border-t transition-colors duration-300 backdrop-blur-[80px] ${t.inputArea}`}>
                         {muted && (
                             <div className={`mb-3 px-4 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-widest text-center ${t.mutedBanner}`}>
                                 Notifications muted

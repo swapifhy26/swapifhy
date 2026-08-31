@@ -1,3 +1,5 @@
+import EmojiPicker from "emoji-picker-react";
+import { Smile } from "lucide-react";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -137,6 +139,7 @@ const themes = {
 export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState("");
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
         const [isBridgeModalOpen, setIsBridgeModalOpen] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(() => {
         if (typeof window !== "undefined") {
@@ -619,7 +622,34 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                 Notifications muted
                             </div>
                         )}
-                        <div className={`flex items-center gap-3 p-2 pr-3 rounded-[1.75rem] border transition-all duration-300 ${t.inputWrapper}`}>
+                        <div className={`flex items-center gap-3 p-2 pr-3 rounded-[1.75rem] border transition-all duration-300 ${t.inputWrapper}`} style={{ position: 'relative' }}>
+                            {/* Emoji Picker Popover */}
+                            {showEmojiPicker && (
+                                <div className="absolute bottom-[110%] left-0 z-50 shadow-2xl rounded-2xl overflow-hidden border border-white/10" style={{ animation: 'fade-in-up 0.2s ease-out' }}>
+                                    <EmojiPicker 
+                                        onEmojiClick={(emojiData) => {
+                                            setInputText(prev => prev + emojiData.emoji);
+                                            setShowEmojiPicker(false);
+                                        }}
+                                        theme="auto"
+                                        lazyLoadEmojis={true}
+                                        searchDisabled={true}
+                                        skinTonesDisabled={true}
+                                        width={280}
+                                        height={350}
+                                    />
+                                </div>
+                            )}
+
+                            <button
+                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                className={`p-3.5 rounded-2xl border transition-all group/emoji ${t.plusBtn}`}
+                                title="Add Emoji"
+                            >
+                                <Smile className="w-5 h-5 group-hover/emoji:scale-110 transition-transform" />
+                            </button>
+
+
                             <button
                                 onClick={() => setIsBridgeModalOpen(true)}
                                 className={`p-3.5 rounded-2xl border transition-all group/plus ${t.plusBtn}`}

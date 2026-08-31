@@ -8,7 +8,7 @@ import {
     ChevronRight, CheckCircle2, Wifi, Settings, Moon, Sun, Trash2,
     UserX, UserCheck, Plus, Edit2, X, AlertTriangle, Shield, Ban,
     Search, Save, Bell, Key, Globe, Database, ChevronDown
-} , Eye } from "lucide-react";
+, Eye } from "lucide-react";
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, CartesianGrid
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
             setAllowNewRegistrations(!!d.allowNewRegistrations); 
         } 
     }, [apiFetch]);
-    const fetchInquiries = useCallback(async () => { const res = await apiFetch("/api/admin/inquiries"); if (res) setInquiries(res); }, [apiFetch]);
+    const fetchInquiries = useCallback(async () => { const res = await apiFetch("/api/admin/inquiries"); if (res) setInquiries(res); }, [apiFetch]); const fetchTickets = useCallback(async () => { try { const res = await apiFetch("/api/admin/tickets"); if (res?.tickets) setTickets(res.tickets); } catch (e) {} }, [apiFetch]);
 
     const handleMaintenanceToggle = async (turnOn: boolean) => {
         if (!turnOn) {

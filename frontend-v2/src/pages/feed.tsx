@@ -1,3 +1,8 @@
+// TAILWIND SAFELIST FOR DYNAMIC CLASSES
+// bg-orange-500 bg-orange-500/15 text-orange-500 border-orange-500/50
+// bg-secondary bg-secondary/15 text-secondary border-secondary/50
+// bg-accent bg-accent/15 text-accent border-accent/50
+// bg-primary bg-primary/15 text-primary border-primary/50
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Zap, MessageSquare, Heart, Share2, MoreHorizontal, CheckCircle2, TrendingUp, Activity, Edit2, Archive, Trash2 } from "lucide-react";
@@ -281,9 +286,9 @@ export default function SwapFeed() {
                             <hr className="border-border/60 my-4" />
                             <div className="flex items-center justify-between">
                                 <div className="flex gap-2">
-                                    {(["UPDATE", "OFFER", "REQUEST"] as const).map(type => {
+                                    {(["UPDATE", "OFFER", "REQUEST", "BOUNTY"] as const).map(type => {
                                         const isActive = postType === type;
-                                        const typeColor = type === "OFFER" ? "secondary" : type === "REQUEST" ? "accent" : "primary";
+                                        const typeColor = type === "BOUNTY" ? "orange-500" : type === "OFFER" ? "secondary" : type === "REQUEST" ? "accent" : "primary";
                                         return (
                                             <button
                                                 key={type}
@@ -296,7 +301,7 @@ export default function SwapFeed() {
                                                 }`}
                                             >
                                                 {isActive && <motion.div layoutId="broadcast-dot" className={`w-1.5 h-1.5 rounded-full bg-${typeColor}`} />}
-                                                {type}
+                                                {type === "BOUNTY" ? "🚨 BOUNTY" : type}
                                             </button>
                                         );
                                     })}
@@ -334,8 +339,8 @@ export default function SwapFeed() {
                             </motion.div>
                         ) : posts.map(post => {
                             const isLiked = post.likes?.some((l: any) => l.userId === activeUser?.id) || false;
-                            const postColor = post.type === "OFFER" ? "text-secondary" : post.type === "REQUEST" ? "text-accent" : "text-primary";
-                            const bgGlowRef = post.type === "OFFER" ? "from-secondary/10" : post.type === "REQUEST" ? "from-accent/10" : "from-primary/10";
+                            const postColor = post.type === "BOUNTY" ? "text-orange-500" : post.type === "OFFER" ? "text-secondary" : post.type === "REQUEST" ? "text-accent" : "text-primary";
+                            const bgGlowRef = post.type === "BOUNTY" ? "from-orange-500/15" : post.type === "OFFER" ? "from-secondary/10" : post.type === "REQUEST" ? "from-accent/10" : "from-primary/10";
 
                             return (
                                 <motion.div
@@ -362,7 +367,7 @@ export default function SwapFeed() {
                                             <div className="flex items-center gap-3">
                                                 <div className={`px-2.5 py-1 rounded-[6px] flex items-center gap-1.5 text-[10px] font-tech bg-surface/50 border border-border/80 ${postColor} backdrop-blur-md`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full ${postColor.replace('text-', 'bg-')}`} />
-                                                    {post.type}
+                                                    {post.type === "BOUNTY" ? "🚨 BOUNTY" : post.type}
                                                 </div>
                                                 {activeUser?.id === post.userId && (
                                                     <div className="relative">

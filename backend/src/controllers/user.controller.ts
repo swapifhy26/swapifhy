@@ -266,10 +266,10 @@ export const markStreak = async (req: AuthRequest, res: Response): Promise<void>
 
         await prisma.user.update({
             where: { id: userId },
-            data: { currentStreak, highestStreak, lastStreakDate: now }
+            data: { currentStreak, highestStreak, lastStreakDate: new Date() }
         });
 
-        res.status(200).json({ currentStreak, highestStreak, lastStreakDate: now });
+        res.status(200).json({ currentStreak, highestStreak, lastStreakDate: new Date() });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to mark streak" });

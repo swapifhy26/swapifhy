@@ -36,22 +36,22 @@ export default function SwapFeed() {
         const token = localStorage.getItem("swapifhy_token");
         if (!token) { router.push("/auth"); return; }
 
-        // Users with no skills must finish onboarding first (so matching has data).
-        try {
-            const prof = await (await fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } })).json();
-            const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
-            if (!hasSkills) { router.replace("/onboarding"); return; }
-        } catch { /* if the check fails, don't block the feed */ }
-
         const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
         setActiveUser(user);
 
         try {
-            const res = await fetch(`${API_URL}/api/posts/stream`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
+            // Run profile check and feed stream concurrently for MUCH faster loading
+            const [profRes, streamRes] = await Promise.all([
+                fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }),
+                fetch(`${API_URL}/api/posts/stream`, { headers: { "Authorization": `Bearer ${token}` } })
+            ]);
+
+            const prof = await profRes.json();
+            const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
+            if (!hasSkills) { router.replace("/onboarding"); return; }
+
+            if (streamRes.ok) {
+                const data = await streamRes.json();
                 setPosts(Array.isArray(data) ? data : data.posts || []);
             }
         } catch (error) {

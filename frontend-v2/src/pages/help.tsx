@@ -178,8 +178,21 @@ export default function HelpPage() {
                                             </div>
                                         )}
 
+                                        
+                                        <div className="mb-6">
+                                            <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Email Address (For Updates)</label>
+                                            <input 
+                                                type="email" 
+                                                value={email} 
+                                                onChange={e => setEmail(e.target.value)}
+                                                required 
+                                                placeholder="where should we send updates?"
+                                                className="w-full px-4 py-3 rounded-xl bg-background/50 border border-border focus:border-emerald-500 outline-none font-medium text-sm"
+                                            />
+                                        </div>
                                         <div>
                                             <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Writing Space</label>
+
                                             <div className="relative">
                                                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJsaW5lcyIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyOCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMjhMMTAwIDI4IiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNsaW5lcykiLz48L3N2Zz4=')] opacity-20 pointer-events-none rounded-xl" />
                                                 <textarea 

@@ -25,7 +25,7 @@ const BADGE_DEFINITIONS = [
 
 export default function Progress() {
     const [activeTab, setActiveTab] = useState<"overview" | "learning" | "teaching">("overview");
-    const [stats, setStats] = useState({ totalSwaps: 0, hoursLearned: 0, hoursTaught: 0, avgRating: 0, studentsTaught: 0, currentStreak: 0, highestStreak: 0, xp: 0 });
+    const [stats, setStats] = useState({ totalSwaps: 0, hoursLearned: 0, hoursTaught: 0, avgRating: 0, studentsTaught: 0, currentStreak: 0, highestStreak: 0, xp: 0, lastStreakDate: "" });
     const [incomingSwaps, setIncomingSwaps] = useState<any[]>([]);
     const [outgoingSwaps, setOutgoingSwaps] = useState<any[]>([]);
     const [learning, setLearning] = useState<any[]>([]);
@@ -37,6 +37,38 @@ export default function Progress() {
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [activeMentorship, setActiveMentorship] = useState<any>(null);
     const [formData, setFormData] = useState<any>({});
+
+    
+    const isStreakMarkedToday = () => {
+        if (!stats.lastStreakDate) return false;
+        const now = new Date();
+        const last = new Date(stats.lastStreakDate);
+        return now.toISOString().split('T')[0] === last.toISOString().split('T')[0];
+    };
+
+    const handleMarkStreak = async () => {
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            const res = await fetch(`${API_URL}/api/user/streak/mark`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const d = await res.json();
+            if (res.ok) {
+                setStats(s => ({ ...s, currentStreak: d.currentStreak, highestStreak: d.highestStreak, lastStreakDate: d.lastStreakDate }));
+                // Trigger a confetti or bump effect here via state
+                const el = document.getElementById('streak-flame');
+                if (el) {
+                    el.classList.add('animate-bounce');
+                    setTimeout(() => el.classList.remove('animate-bounce'), 1000);
+                }
+            } else {
+                alert(d.error || "Failed to mark streak");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     const fetchData = async () => {
         const t = localStorage.getItem("swapifhy_token");
@@ -63,7 +95,8 @@ export default function Progress() {
                     studentsTaught: mentData.teaching?.length || 0,
                     currentStreak: profData.user.currentStreak ?? 0,
                     highestStreak: profData.user.highestStreak ?? 0,
-                    xp: profData.user.xp ?? 0
+                    xp: profData.user.xp ?? 0,
+                    lastStreakDate: profData.user.lastStreakDate || ""
                 });
             }
             if (reqData.incoming) setIncomingSwaps(reqData.incoming);
@@ -209,16 +242,31 @@ export default function Progress() {
                             <span className="text-4xl lg:text-5xl drop-shadow-md">🔥</span>
                         </div>
                         <div>
-                            <h2 className="text-3xl lg:text-4xl font-heading font-black tracking-tighter text-foreground mb-1">
-                                {stats.currentStreak}-Day Streak!
-                            </h2>
-                            <p className="text-muted-foreground font-sans text-sm lg:text-base font-medium">
-                                Come back tomorrow to keep your flame alive.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div className="relative flex-1 w-full max-w-md bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+                              <h2 className="text-3xl lg:text-4xl font-heading font-black tracking-tighter text-foreground mb-1">
+                                  {stats.currentStreak}-Day Streak!
+                              </h2>
+                              {!isStreakMarkedToday() ? (
+                                  <motion.button 
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
+                                      onClick={handleMarkStreak}
+                                      className="mt-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-black uppercase tracking-widest text-xs rounded-xl shadow-[0_4px_20px_rgba(249,115,22,0.4)] flex items-center gap-2 group"
+                                  >
+                                      <Flame className="w-4 h-4 group-hover:animate-pulse" />
+                                      Mark Today's Streak
+                                  </motion.button>
+                              ) : (
+                                  <p className="text-muted-foreground font-sans text-sm lg:text-base font-medium flex items-center gap-1.5 text-orange-500">
+                                      <CheckCircle2 className="w-4 h-4" /> Streak secured! Come back tomorrow.
+                                  </p>
+                              )}
+                          </div>
+                      </div>
+                      
+                      <div 
+                          className="relative flex-1 w-full max-w-md bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 cursor-pointer hover:border-orange-500/50 transition-colors"
+                          onClick={() => setActiveModal("streakCalendar")}
+                      >
                         <div className="flex justify-between items-end mb-4">
                             <span className="text-xs font-bold text-muted-foreground tracking-widest uppercase">Rewards Progress</span>
                             <span className="text-xs font-bold text-orange-500 bg-orange-500/10 px-2 py-1 rounded-md border border-orange-500/20">Next: Pro Badge (7 Days)</span>

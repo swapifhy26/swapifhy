@@ -130,6 +130,7 @@ model Swap {
   
   // CHAT HISTORY
   messages      ChatMessage[]
+  archivedChat  String?   @db.Text
   
   // GENERATED MENTORSHIPS
   mentorships   Mentorship[]

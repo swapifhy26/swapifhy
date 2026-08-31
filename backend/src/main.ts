@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { PrismaClient } from '@prisma/client';
 import app from './app';
+import './cron/archiveChats'; // Initialize chat archival cron job
 
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;

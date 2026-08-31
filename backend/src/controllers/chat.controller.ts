@@ -219,10 +219,20 @@ export const getMessages = async (req: AuthRequest, res: Response): Promise<void
             data: { isRead: true }
         });
 
-        const messages = await prisma.chatMessage.findMany({
+        const activeMessages = await prisma.chatMessage.findMany({
             where: { swapId },
             orderBy: { createdAt: 'asc' }
         });
+        
+        let messages = activeMessages;
+        if (swap.archivedChat) {
+            try {
+                const archivedMessages = JSON.parse(swap.archivedChat);
+                messages = [...archivedMessages, ...activeMessages];
+            } catch (e) {
+                console.error("Failed to parse archived chat for swap", swapId);
+            }
+        }
 
         const partner = swap.proposerId === userId ? swap.receiver : swap.proposer;
         const now = Date.now();

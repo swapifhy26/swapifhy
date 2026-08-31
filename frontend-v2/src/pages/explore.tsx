@@ -448,7 +448,7 @@ export default function Explore() {
                                                     <div className="absolute top-6 right-6 z-20">
                                                         <div className={`px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-transform duration-300 hover:scale-105 ${isHighMatch ? 'animate-pulse' : ''}`}
                                                             style={isHighMatch ? highStyle : goodStyle}>
-                                                            {isHighMatch ? "🔥" : "✨"} {matchScore}% Match
+                                                            <span dangerouslySetInnerHTML={{ __html: isHighMatch ? '&#x1F525;' : '&#x2728;' }} /> {matchScore}% Match
                                                         </div>
                                                     </div>
                                                 );
@@ -593,4 +593,23 @@ export default function Explore() {
                                                             <Zap className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                                                         </button>
                                                     );
-                                                
+                                                })()}
+                                            </div>
+                                        </div>
+                                    </GlowCard>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {activeSwapId && (
+                    <ChatPanel
+                        swapId={activeSwapId}
+                        onClose={() => setActiveSwapId(null)}
+                    />
+                )}
+            </motion.div>
+        </div>
+    );
+}

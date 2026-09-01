@@ -110,7 +110,7 @@ export default function Onboarding() {
         } catch (err) {
             console.error("Push subscription failed", err);
         }
-        setShowPushPrompt(true);
+        router.push("/feed");
     };
 
     const handleMagicSwap = async () => {

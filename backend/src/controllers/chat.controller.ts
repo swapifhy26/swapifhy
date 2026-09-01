@@ -1,3 +1,4 @@
+import { sendWebPush } from "../utils/push";
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
@@ -316,6 +317,33 @@ export const sendMessage = async (req: AuthRequest, res: Response): Promise<void
                     link: "/explore"
                 }
             });
+
+            // Get partner push subscription
+            console.log("Looking up Push Subscription for partner:", partnerId);
+            const partner = await prisma.user.findUnique({
+                where: { id: partnerId },
+                select: { pushSubscription: true, name: true }
+            });
+
+            if (partner && partner.pushSubscription) {
+                const sender = await prisma.user.findUnique({ where: { id: senderId }, select: { name: true }});
+                console.log("Sending Web Push to", partner.name);
+                const res = await sendWebPush(partner.pushSubscription, {
+                    title: `New Message from ${sender?.name || 'Someone'}`,
+                    body: type === "TEXT" ? content : "Shared an attachment/contact with you",
+                    url: "https://swapifhy.vercel.app/explore"
+                });
+
+                if (res === 'EXPIRED') {
+                    console.log("Subscription expired for", partner.name);
+                    await prisma.user.update({
+                        where: { id: partnerId },
+                        data: { pushSubscription: null as any }
+                    });
+                }
+            } else {
+                console.log("Partner does not have push subscription:", partner?.name);
+            }
         }
 
         await prisma.swap.update({ where: { id: swapId }, data: { updatedAt: new Date() } });

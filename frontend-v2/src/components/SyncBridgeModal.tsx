@@ -53,17 +53,17 @@ export const SyncBridgeModal = ({ isOpen, onClose, onShare, userProfile }: SyncB
                     />
                     
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                        initial={{ opacity: 0, scale: 0.95, y: 100 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 30 }}
                         transition={{ type: "spring", damping: 20, stiffness: 150 }}
-                        className="w-full max-w-2xl bg-slate-950 border border-white/10 rounded-[2.5rem] shadow-3xl overflow-hidden relative"
+                        className="w-full max-w-2xl bg-slate-950 sm:border border-white/10 rounded-t-3xl sm:rounded-[2.5rem] shadow-3xl overflow-hidden relative max-h-[90dvh] flex flex-col"
                     >
                         {/* DECORATIVE BACKGROUND LIGHT */}
                         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
                         
-                        <div className="p-10 relative z-10 flex flex-col h-full">
-                            <div className="flex items-center justify-between mb-10">
+                        <div className="p-6 sm:p-10 relative z-10 flex flex-col h-full overflow-y-auto custom-scrollbar">
+                            <div className="flex items-center justify-between mb-6 sm:mb-10">
                                 <div className="flex items-center gap-5">
                                     <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary shadow-xl">
                                         <Shield className="w-6 h-6" />
@@ -90,12 +90,12 @@ export const SyncBridgeModal = ({ isOpen, onClose, onShare, userProfile }: SyncB
                                         key={opt.id}
                                         onClick={() => opt.value && toggleOption(opt.id)}
                                         disabled={!opt.value}
-                                        className={`flex items-center gap-4 p-5 rounded-2xl border transition-all text-left relative overflow-hidden group ${
+                                        className={`flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-all text-left relative overflow-hidden group ${
                                             selected.includes(opt.id) 
                                                 ? "bg-primary/10 border-primary/40 text-white shadow-[0_0_20px_rgba(var(--primary-rgb),0.1)]" 
                                                 : opt.value 
                                                     ? "bg-white/[0.02] border-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/[0.04]" 
-                                                    : "bg-transparent border-white/5 opacity-10 cursor-not-allowed"
+                                                    : "bg-white/[0.01] border-white/5 opacity-40 cursor-not-allowed grayscale"
                                         }`}
                                     >
                                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${

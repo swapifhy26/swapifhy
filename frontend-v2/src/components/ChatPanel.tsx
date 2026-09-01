@@ -643,7 +643,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
 
                             <button
                                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                className={`p-3.5 rounded-2xl border transition-all group/emoji ${t.plusBtn}`}
+                                className={`w-11 h-11 flex items-center justify-center rounded-[1.25rem] border transition-all group/emoji shrink-0 ${t.plusBtn}`}
                                 title="Add Emoji"
                             >
                                 <Smile className="w-5 h-5 group-hover/emoji:scale-110 transition-transform" />
@@ -652,7 +652,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
 
                             <button
                                 onClick={() => setIsBridgeModalOpen(true)}
-                                className={`p-3.5 rounded-2xl border transition-all group/plus ${t.plusBtn}`}
+                                className={`w-11 h-11 flex items-center justify-center rounded-[1.25rem] border transition-all group/plus shrink-0 ${t.plusBtn}`}
                                 title="Share Contact Info"
                             >
                                 <Plus className="w-5 h-5 group-hover/plus:rotate-90 transition-transform" />

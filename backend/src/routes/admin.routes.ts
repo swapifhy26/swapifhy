@@ -527,16 +527,7 @@ router.patch("/tickets/:id/status", async (req: Request, res: Response) => {
 });
 
 
-import webpush from 'web-push';
-import { JWT_SECRET } from '../config/env'; // we need some way to get config
-
-// Configure web-push
-// We will set VAPID keys in .env
-webpush.setVapidDetails(
-  'mailto:swapifhy.official@gmail.com',
-  process.env.VAPID_PUBLIC_KEY || 'BEOJSVZHbTW5emyIBcvb9zEFaSAPjYniGwSDDOOV_3JX7CxPTlD4B1WKo8WmZT3-PR0TYglb1HSyTNdmxun-ed8',
-  process.env.VAPID_PRIVATE_KEY || 'qJKQOR3XPy6F4a8jY3lrEyj7FPcrZJJXUjdwSm-AD9E'
-);
+import { sendWebPush } from '../utils/push';
 
 // "?"? SEND MARKETING PUSH NOTIFICATION "?"?
 router.post("/push-broadcast", async (req: Request, res: Response) => {
@@ -561,7 +552,8 @@ router.post("/push-broadcast", async (req: Request, res: Response) => {
             const sub = user.pushSubscription as any;
             if (!sub) return;
             try {
-                await webpush.sendNotification(sub, payload);
+                const res = await sendWebPush(sub, JSON.parse(payload));
+                if (res === 'EXPIRED') throw { statusCode: 410 };
                 successCount++;
             } catch (e: any) {
                 failCount++;

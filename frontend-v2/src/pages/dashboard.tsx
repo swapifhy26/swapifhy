@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
-import { Settings, PenTool, BookOpen, ArrowRight, Zap, User, Globe, Sparkles } from "lucide-react";
+import { Settings, PenTool, BookOpen, ArrowRight, Zap, User, Globe, Sparkles, Activity, Heart, MessageSquare, Repeat } from "lucide-react";
 import { Loader } from "../components/ui/Loader";
 import { SwapifhyLogo } from "../components/SwapifhyLogo";
 import { API_URL } from "../lib/api";
@@ -36,6 +36,7 @@ export default function Dashboard() {
     const [suggestions, setSuggestions] = useState<any[]>([]);
     const [conversations, setConversations] = useState<any[]>([]);
     const [uploading, setUploading] = useState(false);
+    const [myPosts, setMyPosts] = useState<any[]>([]);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const router = useRouter();
 
@@ -46,9 +47,10 @@ export default function Dashboard() {
         const fetchProfile = fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchSuggestions = fetch(`${API_URL}/api/match/explore`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchConversations = fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
+        const fetchPosts = fetch(`${API_URL}/api/post/stream`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
 
-        Promise.all([fetchProfile, fetchSuggestions, fetchConversations])
-            .then(([profileData, matchData, chatData]) => {
+        Promise.all([fetchProfile, fetchSuggestions, fetchConversations, fetchPosts])
+            .then(([profileData, matchData, chatData, postsData]) => {
                 if (profileData.user) {
                     setName(profileData.user.name);
                     setBio(profileData.user.bio || "");
@@ -68,6 +70,9 @@ export default function Dashboard() {
                 }
                 if (chatData?.conversations) {
                     setConversations(chatData.conversations);
+                }
+                if (postsData && Array.isArray(postsData)) {
+                    setMyPosts(postsData.filter((p: any) => p.userId === profileData.user?.id));
                 }
                 setLoading(false);
             })
@@ -347,6 +352,37 @@ export default function Dashboard() {
                                 </div>
                                 <div className="text-secondary px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-[9px] font-black uppercase tracking-widest">Optimal</div>
                              </div>
+                        </div>
+                    </div>
+                    {/* Activity Section */}
+                    <div className="p-10 md:p-14 rounded-[3rem] glass-card border-border relative overflow-hidden shadow-2xl bg-gradient-to-br from-primary/5 to-transparent">
+                        <h2 className="text-sm font-tech font-black mb-8 flex items-center gap-4 text-foreground uppercase tracking-[0.4em] relative z-10">
+                            <Activity className="text-primary w-5 h-5" /> RECENT ACTIVITY
+                        </h2>
+
+                        <div className="flex items-center gap-6 border-b border-border mb-8">
+                            {['Posts', 'Comments', 'Images'].map(tab => (
+                                <button key={tab} className={`pb-3 text-xs font-bold uppercase tracking-widest border-b-2 transition-all ${tab === 'Posts' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="space-y-6">
+                            {myPosts.length > 0 ? myPosts.map(post => (
+                                <div key={post.id} className="p-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 relative">
+                                    <p className="text-sm text-foreground/80 font-medium mb-4 whitespace-pre-wrap">{post.content}</p>
+                                    <div className="flex items-center gap-6 text-xs font-bold text-muted-foreground">
+                                        <div className="flex items-center gap-1.5"><Heart className="w-4 h-4" /> {post.likes?.length || 0}</div>
+                                        <div className="flex items-center gap-1.5"><MessageSquare className="w-4 h-4" /> {post.comments?.length || 0}</div>
+                                        <div className="flex items-center gap-1.5"><Repeat className="w-4 h-4" /> {post.repostCount || 0}</div>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="text-center py-10 opacity-40">
+                                    <p className="text-[10px] font-black text-foreground uppercase tracking-[0.4em]">No recent activity detected</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

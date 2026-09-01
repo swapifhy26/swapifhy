@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.user?.id;
-        const { content, type } = req.body;
+        const { content, type, originalPostId } = req.body;
 
         if (!userId || !content) {
             res.status(400).json({ error: "Identity mismatch or empty broadcast content" });
@@ -19,7 +19,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
             include: { user: true }
         });
 
-        res.status(201).json(post);
+        if (originalPostId) { try { await prisma.post.update({ where: { id: originalPostId }, data: { repostCount: { increment: 1 } } }); } catch (e) {} }\n\n        res.status(201).json(post);
     } catch (error) {
         console.error("Post Creation Error:", error);
         res.status(500).json({ error: "Failed to broadcast synergy update" });

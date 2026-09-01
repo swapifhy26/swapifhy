@@ -45,7 +45,8 @@ export default function SwapFeed() {
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({
                     content: `🔁 Reposted from @${post.user.name}\n\n${post.content}`,
-                    type: post.type
+                    type: post.type,
+                    originalPostId: post.id
                 })
             });
             showToast("Successfully reposted to your feed!");
@@ -450,6 +451,7 @@ export default function SwapFeed() {
                                                 </button>
                                                 <button onClick={() => handleRepost(post)} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
                                                     <Repeat className="w-5 h-5" />
+                                                    {post.repostCount > 0 && <span>{post.repostCount}</span>}
                                                 </button>
                                                 <button onClick={() => handleShare(post)} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
                                                     <Share className="w-5 h-5" />
@@ -637,7 +639,7 @@ export default function SwapFeed() {
                                                 className="flex-1 flex items-center justify-center gap-2.5 py-2 rounded-xl text-[12px] font-bold transition-all border border-transparent text-muted-foreground hover:bg-surface hover:text-foreground hover:border-border/50"
                                             >
                                                 <Repeat className="w-4 h-4" />
-                                                <span>Repost</span>
+                                                <span>{post.repostCount > 0 ? post.repostCount : ""} Repost</span>
                                             </button>
 
                                             <button

@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  
 }
 
 model User {
@@ -173,6 +173,7 @@ model Post {
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   comments      Comment[]
   likes         Like[]
+  repostCount   Int       @default(0)
 }
 
 model Comment {

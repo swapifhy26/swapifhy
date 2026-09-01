@@ -15,6 +15,7 @@ export const sendWebPush = async (subscription: any, payload: object) => {
         if (e.statusCode === 404 || e.statusCode === 410) {
             return "EXPIRED";
         }
+        console.error("WebPush Error:", e);
         return false;
     }
 };

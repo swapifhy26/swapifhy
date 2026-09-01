@@ -40,7 +40,7 @@ export default function SwapFeed() {
     const handleRepost = async (post: any) => {
         try {
             const token = localStorage.getItem("swapifhy_token");
-            await fetch(`${API_URL}/api/post/broadcast`, {
+            await fetch(`${API_URL}/api/posts/broadcast`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({

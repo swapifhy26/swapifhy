@@ -47,7 +47,7 @@ export default function Dashboard() {
         const fetchProfile = fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchSuggestions = fetch(`${API_URL}/api/match/explore`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchConversations = fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
-        const fetchPosts = fetch(`${API_URL}/api/post/stream`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
+        const fetchPosts = fetch(`${API_URL}/api/posts/stream`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
 
         Promise.all([fetchProfile, fetchSuggestions, fetchConversations, fetchPosts])
             .then(([profileData, matchData, chatData, postsData]) => {

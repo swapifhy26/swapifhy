@@ -53,6 +53,21 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
             </Head>
 
+            {/* Ambient Brand Color Grading Background */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                {/* Subtle Grid overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                
+                {/* Radial glow 1 - Top Left (Primary/Blue) */}
+                <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/20 dark:bg-primary/10 blur-[120px] animate-pulse-slow"></div>
+                
+                {/* Radial glow 2 - Bottom Right (Accent/Pink) */}
+                <div className="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-accent/20 dark:bg-accent/10 blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+                
+                {/* Radial glow 3 - Center (Secondary/Lavender) */}
+                <div className="absolute top-[20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-secondary/15 dark:bg-secondary/5 blur-[150px] animate-pulse-slow" style={{ animationDelay: '4s' }}></div>
+            </div>
+
             {/* Global navbar — hidden on standalone pages like /auth */}
             {!isStandalone && <Navbar isDark={isDark} setIsDark={setIsDark} toggleChatList={() => setIsChatListOpen(!isChatListOpen)} />}
 

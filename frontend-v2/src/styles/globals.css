@@ -21,6 +21,8 @@
     --font-mono: "JetBrains Mono", monospace;
 
     /* SEMANTIC SYSTEM (LIGHT-FIRST NOW) */
+    --color-brand-obsidian: hsl(230, 25%, 12%);
+    --color-brand-onyx: hsl(230, 20%, 16%);
     --color-background: hsl(210, 40%, 98%);
     --color-foreground: hsl(232, 25%, 20%);
     --color-surface: hsl(0, 0%, 100%);
@@ -150,4 +152,12 @@ html.light .bg-grid {
 html.dark .bg-grid {
     background-image: radial-gradient(circle at 1px 1px, hsla(0, 0%, 100%, 0.03) 1px, transparent 0);
     background-size: 60px 60px;
+}
+
+@keyframes pulse-slow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

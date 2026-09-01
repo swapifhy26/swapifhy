@@ -5,7 +5,7 @@
 // bg-primary bg-primary/15 text-primary border-primary/50
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Zap, MessageSquare, Heart, Share2, MoreHorizontal, CheckCircle2, TrendingUp, Activity, Edit2, Archive, Trash2 } from "lucide-react";
+import { Send, Zap, MessageSquare, Heart, Share2, MoreHorizontal, CheckCircle2, TrendingUp, Activity, Edit2, Archive, Trash2, Bookmark, EyeOff, Download, Repeat, Share } from "lucide-react";
 import { useRouter } from "next/router";
 import { API_URL } from "../lib/api";
 import { ChatPanel } from "../components/ChatPanel";
@@ -354,6 +354,31 @@ export default function SwapFeed() {
                                         
                                         {/* Floating decorative elements */}
                                         <div className="absolute top-4 right-4 w-24 h-24 bg-white/20 blur-[40px] rounded-full"></div>
+                                        <div className="absolute top-4 right-4 z-20">
+                                            <button onClick={() => setActiveDropdownId(activeDropdownId === post.id ? null : post.id)} className="p-2 rounded-full bg-black/20 hover:bg-black/40 text-white/70 hover:text-white transition-all backdrop-blur-md">
+                                                <MoreHorizontal className="w-5 h-5" />
+                                            </button>
+                                            <AnimatePresence>
+                                                {activeDropdownId === post.id && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-black/80 backdrop-blur-xl rounded-xl border border-white/20 shadow-2xl overflow-hidden z-20 flex flex-col py-1"
+                                                    >
+                                                        <button onClick={() => { alert("Post saved!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                            <Bookmark className="w-4 h-4" /> Save Post
+                                                        </button>
+                                                        <button onClick={() => { alert("Post hidden!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                            <EyeOff className="w-4 h-4" /> Hide Post
+                                                        </button>
+                                                        <button onClick={() => { alert("Downloading PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                            <Download className="w-4 h-4" /> Download PDF
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                         <div className="absolute bottom-4 left-4 w-32 h-32 bg-pink-500/30 blur-[50px] rounded-full"></div>
 
                                         <div className="relative z-10 p-8 sm:p-10 flex flex-col items-center justify-center text-center">
@@ -384,6 +409,12 @@ export default function SwapFeed() {
                                                 <button onClick={() => setActiveDropdownId(activeDropdownId === post.id ? null : post.id)} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
                                                     <MessageSquare className="w-5 h-5" />
                                                     {post.comments?.length || 0}
+                                                </button>
+                                                <button onClick={() => alert("Reposting...")} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
+                                                    <Repeat className="w-5 h-5" />
+                                                </button>
+                                                <button onClick={() => alert("Sharing...")} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
+                                                    <Share className="w-5 h-5" />
                                                 </button>
                                             </div>
                                             <div className="text-xs font-bold text-white/50 tracking-wider">
@@ -480,8 +511,7 @@ export default function SwapFeed() {
                                                     <span className={`w-1.5 h-1.5 rounded-full ${postColor.replace('text-', 'bg-')}`} />
                                                     {post.type === "BOUNTY" ? "🚨 BOUNTY" : post.type}
                                                 </div>
-                                                {activeUser?.id === post.userId && (
-                                                    <div className="relative">
+                                                <div className="relative">
                                                         <button
                                                             onClick={() => setActiveDropdownId(activeDropdownId === post.id ? null : post.id)}
                                                             className="p-1.5 rounded-lg text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
@@ -496,9 +526,22 @@ export default function SwapFeed() {
                                                                     exit={{ opacity: 0, scale: 0.95, y: -5 }}
                                                                     className="absolute right-0 top-full mt-2 w-40 glass-elite rounded-xl border border-white/10 shadow-xl overflow-hidden z-20 flex flex-col py-1"
                                                                 >
-                                                                    <button onClick={() => { setEditingPostId(post.id); setEditContent(post.content); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 hover:text-primary transition-all text-left">
-                                                                        <Edit2 className="w-3.5 h-3.5" /> Edit Post
+                                                                    <button onClick={() => { alert("Post saved!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                        <Bookmark className="w-3.5 h-3.5" /> Save Post
                                                                     </button>
+                                                                    <button onClick={() => { alert("Post hidden!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                        <EyeOff className="w-3.5 h-3.5" /> Hide Post
+                                                                    </button>
+                                                                    <button onClick={() => { alert("Downloading PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                        <Download className="w-3.5 h-3.5" /> Download PDF
+                                                                    </button>
+
+                                                                    {activeUser?.id === post.userId && (
+                                                                        <>
+                                                                            <hr className="border-t border-white/5 my-1" />
+                                                                            <button onClick={() => { setEditingPostId(post.id); setEditContent(post.content); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 hover:text-primary transition-all text-left">
+                                                                                <Edit2 className="w-3.5 h-3.5" /> Edit Post
+                                                                            </button>
                                                                     <button onClick={() => handleArchive(post.id)} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 hover:text-secondary transition-all text-left">
                                                                         <Archive className="w-3.5 h-3.5" /> Archive
                                                                     </button>
@@ -506,11 +549,12 @@ export default function SwapFeed() {
                                                                     <button onClick={() => handleDelete(post.id)} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-red-400 hover:bg-red-500/10 transition-all text-left">
                                                                         <Trash2 className="w-3.5 h-3.5" /> Delete
                                                                     </button>
+                                                                        </>
+                                                                    )}
                                                                 </motion.div>
                                                             )}
                                                         </AnimatePresence>
                                                     </div>
-                                                )}
                                             </div>
                                         </div>
 
@@ -548,6 +592,22 @@ export default function SwapFeed() {
                                             >
                                                 <MessageSquare className="w-4 h-4" />
                                                 <span>{post.comments?.length > 0 ? post.comments.length : ""} Comment</span>
+                                            </button>
+
+                                            <button
+                                                onClick={() => alert("Reposting...")}
+                                                className="flex-1 flex items-center justify-center gap-2.5 py-2 rounded-xl text-[12px] font-bold transition-all border border-transparent text-muted-foreground hover:bg-surface hover:text-foreground hover:border-border/50"
+                                            >
+                                                <Repeat className="w-4 h-4" />
+                                                <span>Repost</span>
+                                            </button>
+
+                                            <button
+                                                onClick={() => alert("Sharing...")}
+                                                className="flex-1 flex items-center justify-center gap-2.5 py-2 rounded-xl text-[12px] font-bold transition-all border border-transparent text-muted-foreground hover:bg-surface hover:text-foreground hover:border-border/50"
+                                            >
+                                                <Share className="w-4 h-4" />
+                                                <span>Share</span>
                                             </button>
 
                                             {activeUser?.id !== post.userId && (

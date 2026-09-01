@@ -82,7 +82,7 @@ export const ChatListPanel = ({ onClose, onSelectChat, currentUserId }: ChatList
 
     return (
         <AnimatePresence>
-            <div className="fixed top-[85px] right-0 h-[calc(100vh-85px)] w-[100vw] lg:w-[380px] z-[160] shadow-3xl">
+            <div className="fixed top-0 sm:top-[85px] right-0 h-[100dvh] sm:h-[calc(100dvh-85px)] w-[100vw] sm:w-[380px] z-[200] sm:z-[160] shadow-3xl">
                 <motion.div
                     initial={{ x: "100%", opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}

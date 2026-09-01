@@ -423,7 +423,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
 
     return (
         <AnimatePresence>
-            <div className={`fixed top-[85px] right-0 h-[calc(100dvh-85px)] z-[150] shadow-3xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isExpanded ? "w-[100vw] lg:w-[65%]" : "w-[100vw] lg:w-[440px]"}`}>
+            <div className={`fixed top-0 sm:top-[85px] right-0 h-[100dvh] sm:h-[calc(100dvh-85px)] z-[200] sm:z-[150] shadow-3xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isExpanded ? "w-[100vw] lg:w-[65%]" : "w-[100vw] lg:w-[440px]"}`}>
                 <motion.div
                     initial={{ x: "100%", opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -557,7 +557,7 @@ export const ChatPanel = ({ swapId, onClose }: ChatPanelProps) => {
                                     ) : msg.senderId === "SYSTEM" ? (
                                         <div className="w-full py-4 flex justify-center items-center relative">
                                             <div className={`absolute left-0 right-0 h-px ${t.systemLine}`} />
-                                            <span className={`relative z-10 text-[9px] font-black uppercase tracking-[0.5em] px-6 py-2 rounded-full border ${t.systemMsg}`}>
+                                            <span className={`relative z-10 text-[11px] font-bold uppercase tracking-wide px-6 py-3 rounded-2xl border max-w-[85%] text-center leading-relaxed ${t.systemMsg}`}>
                                                 {cleanJargon(msg.content)}
                                             </span>
                                         </div>

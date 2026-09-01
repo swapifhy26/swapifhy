@@ -1,8 +1,9 @@
+import prisma from '../prisma';
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 import { AuthRequest } from '../middleware/auth.middleware';
 
-const prisma = new PrismaClient();
+
 
 export const getExplore = async (req: AuthRequest, res: Response): Promise<void> => {
     try {

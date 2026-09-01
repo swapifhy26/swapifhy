@@ -1,11 +1,12 @@
+import prisma from '../prisma';
 import { sendWebPush } from "../utils/push";
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 
 const BANNED_WORDS = ["porn", "sex", "nude", "nudes", "dick", "pussy", "whore", "slut", "bitch"];
 import { AuthRequest } from '../middleware/auth.middleware';
 
-const prisma = new PrismaClient();
+
 
 // ── In-memory presence store (resets on server restart, fine for MVP) ──
 const onlineUsers = new Map<string, number>(); // userId → last heartbeat timestamp

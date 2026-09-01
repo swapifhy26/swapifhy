@@ -1,8 +1,9 @@
+import prisma from '../prisma';
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+
 
 export const getSwapRequests = async (req: AuthRequest, res: Response): Promise<void> => {
     try {

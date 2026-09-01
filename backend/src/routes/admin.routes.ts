@@ -1,11 +1,12 @@
+import prisma from '../prisma';
 // src/routes/admin.routes.ts
 // Fully corrected — all prisma model names, field names, and relation counts fixed
 
 import { Router, Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 
 const router = Router();
-const prisma = new PrismaClient();
+
 
 // ── ADMIN SECURITY MIDDLEWARE ──
 const verifyAdminKey = (req: Request, res: Response, next: NextFunction) => {

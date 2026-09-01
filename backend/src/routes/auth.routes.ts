@@ -1,12 +1,13 @@
+import prisma from '../prisma';
 // src/routes/auth.routes.ts
 // FIX: prisma.settings → prisma.systemSettings throughout
 
 import { Router, Request, Response, NextFunction } from 'express';
 import { register, login, joinWaitlist } from '../controllers/auth.controller';
-import { PrismaClient } from '@prisma/client';
+
 
 const router  = Router();
-const prisma  = new PrismaClient();
+
 
 // ── PLATFORM STATE CONTROL MIDDLEWARE ──
 // Reads the SystemSettings record managed by the admin panel and enforces

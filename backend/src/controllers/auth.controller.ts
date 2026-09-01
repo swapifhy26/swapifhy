@@ -1,10 +1,11 @@
+import prisma from '../prisma';
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env';
 
-const prisma = new PrismaClient();
+
 
 export const joinWaitlist = async (req: Request, res: Response): Promise<void> => {
     try {

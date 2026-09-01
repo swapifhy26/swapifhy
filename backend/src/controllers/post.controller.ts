@@ -1,8 +1,9 @@
+import prisma from '../prisma';
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 import { AuthRequest } from '../middleware/auth.middleware';
 
-const prisma = new PrismaClient();
+
 
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -19,7 +20,9 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
             include: { user: true }
         });
 
-        if (originalPostId) { try { await prisma.post.update({ where: { id: originalPostId }, data: { repostCount: { increment: 1 } } }); } catch (e) {} }\n\n        res.status(201).json(post);
+        if (originalPostId) { try { await prisma.post.update({ where: { id: originalPostId }, data: { repostCount: { increment: 1 } } }); } catch (e) {} }
+
+        res.status(201).json(post);
     } catch (error) {
         console.error("Post Creation Error:", error);
         res.status(500).json({ error: "Failed to broadcast synergy update" });

@@ -1,3 +1,4 @@
+import prisma from './prisma';
 // 📂 src/app.ts
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -23,10 +24,10 @@ import { swaggerDocument } from './swagger';
 import { UPLOADS_DIR } from './config/env';
 
 // Import PrismaClient to check platform states
-import { PrismaClient } from '@prisma/client';
+
 
 const app = express();
-const prisma = new PrismaClient();
+
 
 // Render/Cloud Run sit behind one proxy hop; required for express-rate-limit
 // to see real client IPs instead of the proxy's.

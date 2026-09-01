@@ -1,8 +1,9 @@
+import prisma from '../prisma';
 import { Response } from 'express';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth.middleware';
 
-const prisma = new PrismaClient();
+
 
 export const toggleLike = async (req: AuthRequest, res: Response): Promise<void> => {
     try {

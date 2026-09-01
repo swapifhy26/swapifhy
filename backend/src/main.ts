@@ -1,10 +1,11 @@
+import prisma from './prisma';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { PrismaClient } from '@prisma/client';
+
 import app from './app';
 import throng from 'throng';
 
-const prisma = new PrismaClient();
+
 const PORT = process.env.PORT || 3001;
 const WORKERS = process.env.WEB_CONCURRENCY || 2; // Default to 2 workers minimum on VMs to leverage multi-core concurrency
 

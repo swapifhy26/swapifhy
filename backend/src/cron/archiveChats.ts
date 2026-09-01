@@ -1,7 +1,8 @@
+import prisma from '../prisma';
 import cron from 'node-cron';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+
+
 
 // Schedule a job to run every day at midnight (0 0 * * *)
 cron.schedule('0 0 * * *', async () => {

@@ -1,9 +1,10 @@
+import prisma from '../prisma';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+
 import { JWT_SECRET } from '../config/env';
 
-const prisma = new PrismaClient();
+
 
 // Extend the Express Request to hold our User Payload
 export interface AuthRequest extends Request {

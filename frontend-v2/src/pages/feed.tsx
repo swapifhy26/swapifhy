@@ -31,6 +31,44 @@ export default function SwapFeed() {
 
     const router = useRouter();
 
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const showToast = (msg: string) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(null), 3000);
+    };
+
+    const handleRepost = async (post: any) => {
+        try {
+            const token = localStorage.getItem("swapifhy_token");
+            await fetch(`${API_URL}/api/post/broadcast`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({
+                    content: `🔁 Reposted from @${post.user.name}\n\n${post.content}`,
+                    type: post.type
+                })
+            });
+            showToast("Successfully reposted to your feed!");
+            fetchFeed();
+        } catch (e) {
+            showToast("Failed to repost.");
+        }
+    };
+
+    const handleShare = (post: any) => {
+        const url = `https://swapifhy.com/post/${post.id}`;
+        if (navigator.share) {
+            navigator.share({
+                title: `Swapifhy Post by ${post.user.name}`,
+                text: post.content,
+                url: url
+            }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(url);
+            showToast("Link copied to clipboard!");
+        }
+    };
+
     const fetchFeed = async () => {
         setLoading(true);
         const token = localStorage.getItem("swapifhy_token");
@@ -366,13 +404,13 @@ export default function SwapFeed() {
                                                         exit={{ opacity: 0, scale: 0.95, y: -5 }}
                                                         className="absolute right-0 top-full mt-2 w-48 bg-black/80 backdrop-blur-xl rounded-xl border border-white/20 shadow-2xl overflow-hidden z-20 flex flex-col py-1"
                                                     >
-                                                        <button onClick={() => { alert("Post saved!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                        <button onClick={() => { showToast("Post saved to bookmarks!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
                                                             <Bookmark className="w-4 h-4" /> Save Post
                                                         </button>
-                                                        <button onClick={() => { alert("Post hidden!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                        <button onClick={() => { showToast("Post hidden from your feed."); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
                                                             <EyeOff className="w-4 h-4" /> Hide Post
                                                         </button>
-                                                        <button onClick={() => { alert("Downloading PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
+                                                        <button onClick={() => { showToast("Generating PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[13px] font-bold text-white/90 hover:bg-white/10 hover:text-white transition-all text-left">
                                                             <Download className="w-4 h-4" /> Download PDF
                                                         </button>
                                                     </motion.div>
@@ -410,10 +448,10 @@ export default function SwapFeed() {
                                                     <MessageSquare className="w-5 h-5" />
                                                     {post.comments?.length || 0}
                                                 </button>
-                                                <button onClick={() => alert("Reposting...")} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
+                                                <button onClick={() => handleRepost(post)} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
                                                     <Repeat className="w-5 h-5" />
                                                 </button>
-                                                <button onClick={() => alert("Sharing...")} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
+                                                <button onClick={() => handleShare(post)} className="flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-all">
                                                     <Share className="w-5 h-5" />
                                                 </button>
                                             </div>
@@ -526,13 +564,13 @@ export default function SwapFeed() {
                                                                     exit={{ opacity: 0, scale: 0.95, y: -5 }}
                                                                     className="absolute right-0 top-full mt-2 w-40 glass-elite rounded-xl border border-white/10 shadow-xl overflow-hidden z-20 flex flex-col py-1"
                                                                 >
-                                                                    <button onClick={() => { alert("Post saved!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                    <button onClick={() => { showToast("Post saved to bookmarks!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
                                                                         <Bookmark className="w-3.5 h-3.5" /> Save Post
                                                                     </button>
-                                                                    <button onClick={() => { alert("Post hidden!"); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                    <button onClick={() => { showToast("Post hidden from your feed."); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
                                                                         <EyeOff className="w-3.5 h-3.5" /> Hide Post
                                                                     </button>
-                                                                    <button onClick={() => { alert("Downloading PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
+                                                                    <button onClick={() => { showToast("Generating PDF..."); window.print(); setActiveDropdownId(null); }} className="flex items-center gap-3 w-full px-4 py-2 text-[12px] font-semibold text-foreground hover:bg-white/5 transition-all text-left">
                                                                         <Download className="w-3.5 h-3.5" /> Download PDF
                                                                     </button>
 
@@ -595,7 +633,7 @@ export default function SwapFeed() {
                                             </button>
 
                                             <button
-                                                onClick={() => alert("Reposting...")}
+                                                onClick={() => handleRepost(post)}
                                                 className="flex-1 flex items-center justify-center gap-2.5 py-2 rounded-xl text-[12px] font-bold transition-all border border-transparent text-muted-foreground hover:bg-surface hover:text-foreground hover:border-border/50"
                                             >
                                                 <Repeat className="w-4 h-4" />
@@ -603,7 +641,7 @@ export default function SwapFeed() {
                                             </button>
 
                                             <button
-                                                onClick={() => alert("Sharing...")}
+                                                onClick={() => handleShare(post)}
                                                 className="flex-1 flex items-center justify-center gap-2.5 py-2 rounded-xl text-[12px] font-bold transition-all border border-transparent text-muted-foreground hover:bg-surface hover:text-foreground hover:border-border/50"
                                             >
                                                 <Share className="w-4 h-4" />
@@ -763,6 +801,20 @@ export default function SwapFeed() {
                 </div>
 
             </div>
+
+            <AnimatePresence>
+                {toastMessage && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50, scale: 0.9, x: "-50%" }}
+                        animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+                        exit={{ opacity: 0, y: 50, scale: 0.9, x: "-50%" }}
+                        className="fixed bottom-6 left-1/2 z-50 bg-black/90 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full shadow-2xl flex items-center gap-3"
+                    >
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <span className="text-sm font-bold text-white shadow-sm whitespace-nowrap">{toastMessage}</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Chat overlay */}
             {isChatOpen && activeSwapId && (

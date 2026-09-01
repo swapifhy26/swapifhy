@@ -42,7 +42,7 @@
     }
     
     html {
-        scroll-behavior: smooth;
+        /* scroll-behavior: smooth removed for faster native scrolling */
         @apply bg-background text-foreground antialiased selection:bg-primary/40 selection:text-white transition-colors duration-500;
         text-rendering: optimizeLegibility;
     }

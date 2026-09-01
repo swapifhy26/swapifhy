@@ -544,7 +544,7 @@ router.post("/push-broadcast", async (req: Request, res: Response) => {
         const { title, body, url, icon } = req.body;
         
         const users = await prisma.user.findMany({
-            where: { pushSubscription: { not: null } }
+            where: { pushSubscription: { not: null as any } }
         });
         
         const payload = JSON.stringify({
@@ -569,7 +569,7 @@ router.post("/push-broadcast", async (req: Request, res: Response) => {
                     // Subscription expired or unsubscribed
                     await prisma.user.update({
                         where: { id: user.id },
-                        data: { pushSubscription: null }
+                        data: { pushSubscription: null as any }
                     });
                 }
             }

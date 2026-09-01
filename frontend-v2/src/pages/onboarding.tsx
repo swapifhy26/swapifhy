@@ -55,6 +55,7 @@ export default function Onboarding() {
     const [error, setError] = useState("");
     const [magicMatch, setMagicMatch] = useState<any>(null);
     const [showMagicMatch, setShowMagicMatch] = useState(false);
+    const [showPushPrompt, setShowPushPrompt] = useState(false);
     const [requestingSwap, setRequestingSwap] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
@@ -67,7 +68,7 @@ export default function Onboarding() {
             .then(data => {
                 const t = data?.user?.teachSkills?.length || 0;
                 const l = data?.user?.learnSkills?.length || 0;
-                if (t > 0 || l > 0) { router.replace("/feed"); return; }
+                if (t > 0 || l > 0) { router.replace("/feed"); return; } // keeping this direct for existing users
                 setReady(true);
             })
             .catch(() => setReady(true));
@@ -76,6 +77,42 @@ export default function Onboarding() {
     const canContinue = teach.length >= 1 && learn.length >= 1;
 
     
+    
+    const VAPID_PUBLIC_KEY = "BEOJSVZHbTW5emyIBcvb9zEFaSAPjYniGwSDDOOV_3JX7CxPTlD4B1WKo8WmZT3-PR0TYglb1HSyTNdmxun-ed8";
+    function urlBase64ToUint8Array(base64String: string) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) { outputArray[i] = rawData.charCodeAt(i); }
+        return outputArray;
+    }
+
+    const handleEnablePush = async () => {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            router.push("/feed");
+            return;
+        }
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+            const token = localStorage.getItem("swapifhy_token");
+            if (token) {
+                await fetch(`${API_URL}/api/user/push-subscribe`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({ subscription })
+                });
+            }
+        } catch (err) {
+            console.error("Push subscription failed", err);
+        }
+        setShowPushPrompt(true);
+    };
+
     const handleMagicSwap = async () => {
         if (!magicMatch) return;
         setRequestingSwap(true);
@@ -89,7 +126,7 @@ export default function Onboarding() {
             // We can just redirect them to their matches/chat so they see it!
             router.push("/matches");
         } catch (err) {
-            router.push("/feed");
+            setShowPushPrompt(true);
         }
     };
 
@@ -131,7 +168,7 @@ export default function Onboarding() {
                     if (foundMatch) {
                         setShowMagicMatch(true);
                     } else {
-                        router.push("/feed");
+                        setShowPushPrompt(true);
                     }
                 }, 3500);
 
@@ -149,6 +186,46 @@ export default function Onboarding() {
     if (!ready) {
         
     
+    
+    if (showPushPrompt) {
+        return (
+            <div className="min-h-screen bg-[#0B0F1A] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10" />
+                <motion.div 
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ type: "spring", damping: 20 }}
+                    className="relative z-10 w-full max-w-sm"
+                >
+                    <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-[0_0_50px_rgba(99,102,241,0.5)] mb-8 transform rotate-12">
+                        <MessageSquare className="w-10 h-10 text-white" />
+                    </div>
+                    <h1 className="text-3xl font-heading font-black text-white tracking-tight mb-4">
+                        Never Miss a <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Match!</span>
+                    </h1>
+                    <p className="text-white/70 text-sm font-medium mb-8 leading-relaxed">
+                        Stay connected with your mentors and swap partners. Get instant alerts when someone accepts your request, shares resources, or sends you a message. 
+                    </p>
+                    
+                    <div className="flex flex-col gap-3">
+                        <button
+                            onClick={handleEnablePush}
+                            className="w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(99,102,241,0.3)] bg-white text-indigo-900"
+                        >
+                            Enable Real-time Alerts
+                        </button>
+                        <button
+                            onClick={() => router.push("/feed")}
+                            className="w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center text-white/50 hover:text-white hover:bg-white/5 transition-all"
+                        >
+                            Maybe Later
+                        </button>
+                    </div>
+                </motion.div>
+            </div>
+        );
+    }
+
     if (showMagicMatch && magicMatch) {
         return (
             <div className="min-h-screen bg-[#0B0F1A] flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
@@ -232,7 +309,7 @@ export default function Onboarding() {
                             {requestingSwap ? "Sending..." : <>Send Swap Request <Zap className="w-4 h-4" /></>}
                         </button>
                         <button
-                            onClick={() => router.push("/feed")}
+                            onClick={() => setShowPushPrompt(true)}
                             className="w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center text-white/50 hover:text-white hover:bg-white/5 transition-all"
                         >
                             Skip to Feed

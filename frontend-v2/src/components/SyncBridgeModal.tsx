@@ -102,41 +102,69 @@ export const SyncBridgeModal = ({ isOpen, onClose, onShare, userProfile }: SyncB
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {options.map(opt => (
-                                    <button
+                                {options.map(opt => {
+                                    const val = localValues[opt.id] || opt.value;
+                                    const isSelected = selected.includes(opt.id);
+                                    const isEditing = editingId === opt.id;
+
+                                    return (
+                                    <div
                                         key={opt.id}
-                                        onClick={() => opt.value && toggleOption(opt.id)}
-                                        disabled={!opt.value}
-                                        className={`flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-all text-left relative overflow-hidden group ${
-                                            selected.includes(opt.id) 
+                                        onClick={(e) => {
+                                            if (isEditing) return;
+                                            if (val) toggleOption(opt.id);
+                                            else setEditingId(opt.id);
+                                        }}
+                                        className={`flex items-center gap-4 p-4 sm:p-5 rounded-2xl border transition-all text-left relative overflow-hidden group cursor-pointer ${
+                                            isSelected 
                                                 ? "bg-primary/10 border-primary/40 text-white shadow-[0_0_20px_rgba(var(--primary-rgb),0.1)]" 
-                                                : opt.value 
-                                                    ? "bg-white/[0.02] border-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/[0.04]" 
-                                                    : "bg-white/[0.01] border-white/5 opacity-40 cursor-not-allowed grayscale"
+                                                : val || isEditing
+                                                    ? "bg-white/[0.02] border-white/5 text-zinc-300 hover:border-white/20 hover:bg-white/[0.04]" 
+                                                    : "bg-white/[0.01] border-white/5 opacity-60 hover:opacity-100 hover:bg-white/[0.03]"
                                         }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                                            selected.includes(opt.id) ? "bg-primary text-white" : "bg-white/5 text-zinc-600"
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                                            isSelected ? "bg-primary text-white" : "bg-white/5 text-zinc-500"
                                         }`}>
                                             {opt.icon}
                                         </div>
-                                        <div className="flex-1 overflow-hidden">
-                                            <p className={`text-[10px] font-bold uppercase tracking-widest ${selected.includes(opt.id) ? "text-primary" : "text-zinc-500"}`}>
+                                        <div className="flex-1 overflow-hidden w-full">
+                                            <p className={`text-[10px] font-bold uppercase tracking-widest ${isSelected ? "text-primary" : "text-zinc-500"}`}>
                                                 {opt.label}
                                             </p>
-                                            {opt.value && (
-                                                <p className="text-[11px] truncate opacity-60 font-medium mt-0.5 text-white">
-                                                    {opt.value}
+                                            {isEditing ? (
+                                                <input
+                                                    autoFocus
+                                                    value={localValues[opt.id] || ""}
+                                                    onChange={e => setLocalValues({...localValues, [opt.id]: e.target.value})}
+                                                    onBlur={() => {
+                                                        setEditingId(null);
+                                                        if (localValues[opt.id] && !selected.includes(opt.id)) {
+                                                            toggleOption(opt.id);
+                                                        }
+                                                    }}
+                                                    onKeyDown={e => {
+                                                        if (e.key === 'Enter') {
+                                                            setEditingId(null);
+                                                            if (localValues[opt.id] && !selected.includes(opt.id)) toggleOption(opt.id);
+                                                        }
+                                                    }}
+                                                    className="w-[95%] bg-transparent border-b border-primary/50 text-white text-[11px] font-medium mt-0.5 focus:outline-none placeholder:text-zinc-600"
+                                                    placeholder={`Add ${opt.label}...`}
+                                                />
+                                            ) : (
+                                                <p className={`text-[11px] truncate font-medium mt-0.5 ${val ? "text-white opacity-60" : "text-primary/70 italic"}`}>
+                                                    {val || "+ Click to add"}
                                                 </p>
                                             )}
                                         </div>
-                                        {selected.includes(opt.id) && (
+                                        {isSelected && (
                                             <div className="absolute top-2 right-2">
                                                 <Check className="w-3 h-3 text-primary" />
                                             </div>
                                         )}
-                                    </button>
-                                ))}
+                                    </div>
+                                )})}
                             </div>
 
                             <div className="mt-8 pt-8 border-t border-white/5 space-y-6">

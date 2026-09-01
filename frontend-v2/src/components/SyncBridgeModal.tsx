@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Shield, Globe, Github, Linkedin, Instagram, Phone, Mail, Link as LinkIcon, Zap, Check } from "lucide-react";
 
@@ -13,6 +13,22 @@ export const SyncBridgeModal = ({ isOpen, onClose, onShare, userProfile }: SyncB
     const [selected, setSelected] = useState<string[]>([]);
     const [customLink, setCustomLink] = useState("");
     const [customLabel, setCustomLabel] = useState("");
+    const [localValues, setLocalValues] = useState<Record<string, string>>({});
+    const [editingId, setEditingId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (userProfile) {
+            setLocalValues({
+                email: userProfile.email || "",
+                phone: userProfile.phoneNumber || "",
+                github: userProfile.github || "",
+                linkedin: userProfile.linkedin || "",
+                instagram: userProfile.instagram || "",
+                other: userProfile.otherLink || ""
+            });
+        }
+    }, [userProfile]);
+
 
     const options = [
         { id: "email", label: "Professional Email", value: userProfile?.email, icon: <Mail className="w-4 h-4" /> },
@@ -31,7 +47,8 @@ export const SyncBridgeModal = ({ isOpen, onClose, onShare, userProfile }: SyncB
         const sharedDetails: any = {};
         selected.forEach(id => {
             const opt = options.find(o => o.id === id);
-            if (opt && opt.value) sharedDetails[id] = opt.value;
+            const val = localValues[id] || (opt && opt.value);
+              if (val) sharedDetails[id] = val;
         });
         if (customLink) {
             sharedDetails.custom = { label: customLabel || "Meeting Link", url: customLink };

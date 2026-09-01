@@ -59,13 +59,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.02] dark:opacity-[0.015]"></div>
                 
                 {/* Ultra-soft Radial glow 1 - Top Left */}
-                <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-primary/10 dark:bg-primary/[0.04] blur-[150px] animate-pulse-slow transform-gpu"></div>
+                <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-primary/10 dark:bg-primary/[0.04] blur-[150px] transform-gpu"></div>
                 
                 {/* Ultra-soft Radial glow 2 - Bottom Right */}
-                <div className="absolute -bottom-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/[0.04] blur-[150px] animate-pulse-slow transform-gpu" style={{ animationDelay: '2s' }}></div>
+                <div className="absolute -bottom-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/[0.04] blur-[150px] transform-gpu" style={{ animationDelay: '2s' }}></div>
                 
                 {/* Ultra-soft Radial glow 3 - Center */}
-                <div className="absolute top-[25%] left-[25%] w-[50vw] h-[50vw] rounded-full bg-secondary/10 dark:bg-secondary/[0.03] blur-[180px] animate-pulse-slow transform-gpu" style={{ animationDelay: '4s' }}></div>
+                <div className="absolute top-[25%] left-[25%] w-[50vw] h-[50vw] rounded-full bg-secondary/10 dark:bg-secondary/[0.03] blur-[180px] transform-gpu" style={{ animationDelay: '4s' }}></div>
             </div>
 
             {/* Global navbar — hidden on standalone pages like /auth */}

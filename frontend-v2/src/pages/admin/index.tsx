@@ -928,6 +928,31 @@ export default function AdminDashboard() {
                                 </div>
                             </Card>
 
+                            
+                            {/* Marketing Push */}
+                            <Card title="Marketing Push">
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className={`block text-xs font-bold mb-2 ${subtext}`}>Notification Title</label>
+                                        <input id="pushTitle" type="text" placeholder="e.g. Free Swapifhy Premium!" className={`w-full px-4 py-2.5 rounded-xl border focus:border-purple-500 outline-none text-sm ${dark ? "bg-gray-800 border-gray-700 text-white" : "bg-gray-50 border-gray-200"}`} />
+                                    </div>
+                                    <div>
+                                        <label className={`block text-xs font-bold mb-2 ${subtext}`}>Notification Body</label>
+                                        <textarea id="pushBody" rows={2} placeholder="e.g. Check out the latest updates!" className={`w-full px-4 py-2.5 rounded-xl border focus:border-purple-500 outline-none text-sm resize-none ${dark ? "bg-gray-800 border-gray-700 text-white" : "bg-gray-50 border-gray-200"}`} />
+                                    </div>
+                                    <button onClick={async () => {
+                                        const title = (document.getElementById('pushTitle') as HTMLInputElement).value;
+                                        const body = (document.getElementById('pushBody') as HTMLTextAreaElement).value;
+                                        if(!title || !body) return alert("Fill in title and body");
+                                        const res = await apiFetch("/api/admin/push-broadcast", { method: "POST", body: JSON.stringify({ title, body }) });
+                                        if(res?.success) alert(`Sent to ${res.successCount} users. (${res.failCount} failed)`);
+                                    }} className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold transition-colors">
+                                        Send Broadcast
+                                    </button>
+                                </div>
+                            </Card>
+
+
                             {/* Security */}
                             <Card dark={dark} title="Security">
                                 <div className={`flex items-center justify-between py-4 border-b ${dark ? "border-gray-700" : "border-gray-100"}`}>

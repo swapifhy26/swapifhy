@@ -312,3 +312,26 @@ export const submitTicket = async (req: any, res: any): Promise<void> => {
         res.status(500).json({ error: "Failed to create ticket" });
     }
 };
+
+
+export const savePushSubscription = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user!.id;
+        const { subscription } = req.body;
+        
+        if (!subscription) {
+            res.status(400).json({ error: "Missing subscription object" });
+            return;
+        }
+        
+        await prisma.user.update({
+            where: { id: userId },
+            data: { pushSubscription: subscription }
+        });
+        
+        res.status(200).json({ success: true, message: "Push subscription saved." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to save push subscription" });
+    }
+};

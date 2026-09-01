@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getProfile, updateProfile, changePassword, markStreak, submitTicket } from '../controllers/user.controller';
+import { getProfile, updateProfile, changePassword, markStreak, submitTicket, savePushSubscription } from '../controllers/user.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -14,5 +14,6 @@ router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.put('/password', changePassword);
 router.post('/streak/mark', markStreak);
+router.post('/push-subscribe', savePushSubscription);
 
 export default router;

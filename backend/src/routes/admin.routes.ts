@@ -526,5 +526,63 @@ router.patch("/tickets/:id/status", async (req: Request, res: Response) => {
     }
 });
 
+
+import webpush from 'web-push';
+import { JWT_SECRET } from '../config/env'; // we need some way to get config
+
+// Configure web-push
+// We will set VAPID keys in .env
+webpush.setVapidDetails(
+  'mailto:swapifhy.official@gmail.com',
+  process.env.VAPID_PUBLIC_KEY || 'BEOJSVZHbTW5emyIBcvb9zEFaSAPjYniGwSDDOOV_3JX7CxPTlD4B1WKo8WmZT3-PR0TYglb1HSyTNdmxun-ed8',
+  process.env.VAPID_PRIVATE_KEY || 'qJKQOR3XPy6F4a8jY3lrEyj7FPcrZJJXUjdwSm-AD9E'
+);
+
+// "?"? SEND MARKETING PUSH NOTIFICATION "?"?
+router.post("/push-broadcast", async (req: Request, res: Response) => {
+    try {
+        const { title, body, url, icon } = req.body;
+        
+        const users = await prisma.user.findMany({
+            where: { pushSubscription: { not: null } }
+        });
+        
+        const payload = JSON.stringify({
+            title: title || "New Update from Swapifhy",
+            body: body || "Check out what's new on Swapifhy!",
+            url: url || "https://swapifhy.vercel.app/explore",
+            icon: icon || "https://swapifhy.vercel.app/icon-192x192.png"
+        });
+        
+        let successCount = 0;
+        let failCount = 0;
+        
+        const promises = users.map(async (user) => {
+            const sub = user.pushSubscription as any;
+            if (!sub) return;
+            try {
+                await webpush.sendNotification(sub, payload);
+                successCount++;
+            } catch (e: any) {
+                failCount++;
+                if (e.statusCode === 404 || e.statusCode === 410) {
+                    // Subscription expired or unsubscribed
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { pushSubscription: null }
+                    });
+                }
+            }
+        });
+        
+        await Promise.all(promises);
+        
+        res.status(200).json({ success: true, successCount, failCount });
+    } catch (err) {
+        console.error("Push Broadcast Error:", err);
+        res.status(500).json({ error: "Failed to broadcast notifications" });
+    }
+});
+
 export default router;
 

@@ -25,6 +25,7 @@ model User {
   lastActiveAt DateTime?
   avatarUrl    String?
   isBanned     Boolean   @default(false)
+  pushSubscription Json?
 
   // GAMIFICATION
   currentStreak   Int       @default(0)

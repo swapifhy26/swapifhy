@@ -69,6 +69,49 @@ const SkillTagManager = ({ tags, onUpdate, title, color }: {
 };
 
 // ✅ Main Settings Page
+
+const VAPID_PUBLIC_KEY = "BEOJSVZHbTW5emyIBcvb9zEFaSAPjYniGwSDDOOV_3JX7CxPTlD4B1WKo8WmZT3-PR0TYglb1HSyTNdmxun-ed8";
+
+function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+const subscribeUserToPush = async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    
+    try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        });
+        
+        const token = localStorage.getItem("swapifhy_token");
+        if (token) {
+            await fetch("https://swapifhy-backend-iu0x.onrender.com/api/user/push-subscribe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ subscription })
+            });
+        }
+    } catch (err) {
+        console.error("Push subscription failed", err);
+    }
+};
+
+
 export default function Settings() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [marketingEmails, setMarketingEmails] = useState(false);
@@ -406,7 +449,7 @@ export default function Settings() {
                                     <p className="text-xs text-muted-foreground mt-1">Receive real-time alerts for new matches and messages</p>
                                 </div>
                                 <button
-                                    onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+                                    onClick={() => { setNotificationsEnabled(!notificationsEnabled); if (!notificationsEnabled) subscribeUserToPush(); }}
                                     className={`w-14 h-7 rounded-full p-1 transition-colors ${notificationsEnabled ? 'bg-primary' : 'bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20'}`}
                                 >
                                     <div className={`w-5 h-5 rounded-full bg-white transition-transform ${notificationsEnabled ? 'translate-x-7' : 'translate-x-0'}`} />
@@ -419,7 +462,7 @@ export default function Settings() {
                                     <p className="text-xs text-muted-foreground mt-1">Receive platform updates, feature drops, and ecosystem news</p>
                                 </div>
                                 <button
-                                    onClick={() => setMarketingEmails(!marketingEmails)}
+                                    onClick={() => { setMarketingEmails(!marketingEmails); if (!marketingEmails) subscribeUserToPush(); }}
                                     className={`w-14 h-7 rounded-full p-1 transition-colors ${marketingEmails ? 'bg-primary' : 'bg-black/10 dark:bg-white/10 border border-black/20 dark:border-white/20'}`}
                                 >
                                     <div className={`w-5 h-5 rounded-full bg-white transition-transform ${marketingEmails ? 'translate-x-7' : 'translate-x-0'}`} />

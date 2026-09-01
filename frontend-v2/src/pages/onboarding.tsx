@@ -183,10 +183,8 @@ export default function Onboarding() {
         }
     };
 
-    if (!ready) {
-        
-    
-    
+    if (!ready) return null;
+
     if (showPushPrompt) {
         return (
             <div className="min-h-screen bg-[#0B0F1A] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
@@ -343,12 +341,6 @@ export default function Onboarding() {
         );
     }
 
-    return (
-        <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="w-10 h-10 border-2 border-border border-t-primary rounded-full animate-spin" />
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">

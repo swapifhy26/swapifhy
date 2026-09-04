@@ -1,8 +1,8 @@
 import confetti from 'canvas-confetti';
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { X, ArrowRight, Sparkles, Zap, MessageSquare, Camera, Upload } from "lucide-react";
+import { X, ArrowRight, Sparkles, Zap, MessageSquare } from "lucide-react";
 import { API_URL } from "../lib/api";
 
 // Local, theme-aware tag input (the shared SkillTagManager hardcodes dark colors).
@@ -48,45 +48,8 @@ function TagField({ label, hint, placeholder, tags, setTags }: {
 export default function Onboarding() {
     const router = useRouter();
     const [ready, setReady] = useState(false);
-    
     const [teach, setTeach] = useState<string[]>([]);
     const [learn, setLearn] = useState<string[]>([]);
-    const [photoData, setPhotoData] = useState<string | null>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [streamActive, setStreamActive] = useState(false);
-
-    useEffect(() => {
-        let stream: MediaStream | null = null;
-        const startCamera = async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    setStreamActive(true);
-                }
-            } catch (err) {
-                console.error("Camera error:", err);
-            }
-        };
-        startCamera();
-        return () => {
-            if (stream) stream.getTracks().forEach(track => track.stop());
-        };
-    }, []);
-
-    const capturePhoto = () => {
-        if (videoRef.current && canvasRef.current) {
-            const context = canvasRef.current.getContext('2d');
-            if (context) {
-                canvasRef.current.width = videoRef.current.videoWidth;
-                canvasRef.current.height = videoRef.current.videoHeight;
-                context.drawImage(videoRef.current, 0, 0);
-                setPhotoData(canvasRef.current.toDataURL('image/jpeg'));
-            }
-        }
-    };
-
     const [saving, setSaving] = useState(false);
     const [completed, setCompleted] = useState(false);
     const [error, setError] = useState("");
@@ -111,7 +74,7 @@ export default function Onboarding() {
             .catch(() => setReady(true));
     }, []);
 
-    const canContinue = teach.length >= 1 && learn.length >= 1 && photoData !== null;
+    const canContinue = teach.length >= 1 && learn.length >= 1;
 
     
     
@@ -408,58 +371,7 @@ export default function Onboarding() {
                     />
                 </div>
 
-                
-                {/* Mandatory Biometric Photo (Platform Capture) */}
-                <div className="mt-6 border-t border-border pt-6">
-                    <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                        📸 Mandatory Biometric Photo (Platform Capture)
-                    </h3>
-                    
-                    <div className="relative w-full aspect-video bg-[#0B1120] rounded-xl overflow-hidden shadow-inner flex items-center justify-center">
-                        {!photoData ? (
-                            <>
-                                {/* Video element MUST have autoPlay, playsInline, and muted to start correctly */}
-                                <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover opacity-60" />
-                                
-                                {/* Overlay UI */}
-                                <div className="absolute top-4 left-4 bg-black/60 border border-green-500/30 px-3 py-1 rounded-full flex items-center gap-2 z-10">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                    <span className="text-xs font-bold text-green-400 tracking-wider">LIVE WEBCAM</span>
-                                </div>
-                                
-                                {/* Face Alignment Oval */}
-                                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
-                                    <div className="w-[200px] h-[280px] border-2 border-cyan-400/80 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.3)] relative flex flex-col justify-between items-center py-4">
-                                        <span className="text-[10px] font-bold text-cyan-400 tracking-widest bg-black/50 px-2 rounded">ALIGN FACE</span>
-                                        <span className="text-[10px] font-bold text-green-400 tracking-widest bg-black/50 px-2 rounded">READY</span>
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <img src={photoData} alt="Captured biometric" className="w-full h-full object-cover" />
-                        )}
-                        <canvas ref={canvasRef} className="hidden" />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 mt-4">
-                        <button 
-                            onClick={capturePhoto}
-                            className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition"
-                        >
-                            <Camera className="w-4 h-4" />
-                            {photoData ? "Retake Photo" : "Take Official Photo"}
-                        </button>
-                        <button 
-                            className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition"
-                        >
-                            <Upload className="w-4 h-4 text-orange-400" />
-                            Upload Photo
-                        </button>
-                    </div>
-                </div>
-
                 {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
-
 
                 <button
                     onClick={handleSubmit}
@@ -469,7 +381,7 @@ export default function Onboarding() {
                     {saving ? "Saving…" : <>Continue <ArrowRight className="w-4 h-4" /></>}
                 </button>
                 {!canContinue && (
-                    <p className="text-center text-xs text-muted-foreground mt-3">Add your skills and capture your mandatory biometric photo to continue.</p>
+                    <p className="text-center text-xs text-muted-foreground mt-3">Add at least one skill to teach and one to learn.</p>
                 )}
             </div>
         </div>

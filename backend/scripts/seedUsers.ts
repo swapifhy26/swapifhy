@@ -6,11 +6,20 @@ import * as path from 'path';
 const prisma = new PrismaClient();
 
 async function main() {
-    const csvPath = path.join(__dirname, 'users.csv');
+    const possiblePaths = [
+        path.join(__dirname, '../../credentials (1).csv'),
+        path.join(__dirname, 'credentials (1).csv'),
+        path.join(__dirname, 'credentials.csv'),
+        path.join(__dirname, 'users.csv')
+    ];
+    const csvPath = possiblePaths.find(p => fs.existsSync(p)) || path.join(__dirname, 'users.csv');
+    console.log(`Using credentials file: ${csvPath}`);
     const content = fs.readFileSync(csvPath, 'utf8');
     const lines = content.split('\n').filter(line => line.trim().length > 0);
     
-    // Skip header
+    // Detect header format
+    const headerLine = lines[0].toLowerCase();
+    const isCredentialsFormat = headerLine.includes('temppassword');
     const dataLines = lines.slice(1);
     
     console.log(`Starting import of ${dataLines.length} users...`);
@@ -19,12 +28,26 @@ async function main() {
     let failed = 0;
 
     for (const line of dataLines) {
-        const parts = line.split(',');
-        if (parts.length < 3) continue;
-        
-        const password = parts.pop()?.trim() || '';
-        const email = parts.pop()?.trim() || '';
-        const name = parts.join(',').trim();
+        let name = '';
+        let email = '';
+        let password = '';
+
+        if (isCredentialsFormat) {
+            // Format: email,name,tempPassword (handling quotes)
+            const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+            const cleaned = matches.map(s => s.replace(/^"|"$/g, '').trim());
+            email = cleaned[0]?.toLowerCase().trim() || '';
+            name = cleaned[1]?.trim() || '';
+            password = cleaned[2]?.trim() || '';
+        } else {
+            const parts = line.split(',');
+            if (parts.length < 3) continue;
+            password = parts.pop()?.trim() || '';
+            email = parts.pop()?.trim() || '';
+            name = parts.join(',').trim();
+        }
+
+        if (!email || !password) continue;
 
         try {
             const passwordHash = await bcrypt.hash(password, 10);

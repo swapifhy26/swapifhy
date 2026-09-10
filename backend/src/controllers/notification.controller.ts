@@ -13,15 +13,16 @@ export const getNotifications = async (req: AuthRequest, res: Response): Promise
         const userId = req.user?.id;
         if (!userId) { res.status(401).json({ error: "Unauthorized" }); return; }
 
-        const notifications = await prisma.notification.findMany({
-            where: { userId },
-            orderBy: { createdAt: 'desc' },
-            take: 50 // Limit to recent 50
-        });
-
-        const unreadCount = await prisma.notification.count({
-            where: { userId, isRead: false }
-        });
+        const [notifications, unreadCount] = await Promise.all([
+            prisma.notification.findMany({
+                where: { userId },
+                orderBy: { createdAt: 'desc' },
+                take: 30
+            }),
+            prisma.notification.count({
+                where: { userId, isRead: false }
+            })
+        ]);
 
         res.status(200).json({ notifications, unreadCount });
     } catch (error) {

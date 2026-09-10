@@ -38,7 +38,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                 .catch(() => {});
             };
             fetchNotifs();
-            const interval = setInterval(fetchNotifs, 15000); // 15s poll
+            const interval = setInterval(fetchNotifs, 30000); // 30s poll
             return () => clearInterval(interval);
         }
     }, [userName]);
@@ -101,17 +101,30 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
     useEffect(() => {
         const token = localStorage.getItem("swapifhy_token");
         if (token) {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:3001");
-            fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } })
-                .then(res => res.ok ? res.json() : null)
-                .then(data => { 
-                    if (data?.user) {
-                        setUserName(data.user.name);
-                        setAvatarUrl(data.user.avatarUrl);
-                        setUserXp(data.user.xp || 0);
-                    }
-                })
-                .catch(console.error);
+            // Instantly hydrate from localStorage without network lag
+            try {
+                const saved = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
+                if (saved.name) setUserName(saved.name);
+                if (saved.avatarUrl) setAvatarUrl(saved.avatarUrl);
+                if (saved.xp !== undefined) setUserXp(saved.xp);
+            } catch (e) {}
+
+            // Only fetch from network if user data is missing in state and storage
+            const saved = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
+            if (!saved.name) {
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:3001");
+                fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } })
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => { 
+                        if (data?.user) {
+                            setUserName(data.user.name);
+                            setAvatarUrl(data.user.avatarUrl);
+                            setUserXp(data.user.xp || 0);
+                            localStorage.setItem("swapifhy_user", JSON.stringify({ ...saved, ...data.user }));
+                        }
+                    })
+                    .catch(() => {});
+            }
         } else {
             setUserName(null);
         }

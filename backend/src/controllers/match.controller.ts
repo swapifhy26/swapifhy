@@ -50,6 +50,7 @@ export const getExplore = async (req: AuthRequest, res: Response): Promise<void>
             isPerfectMatch: false
         }));
 
+        res.setHeader('Cache-Control', 'private, max-age=15, stale-while-revalidate=30');
         res.status(200).json({ matches: formattedUsers });
     } catch (error) {
         console.error("Explore Error:", error);
@@ -134,7 +135,8 @@ export const getMatches = async (req: AuthRequest, res: Response): Promise<void>
         });
 
         formattedMatches.sort((a, b) => b.matchScore - a.matchScore);
-        res.status(200).json({ matches: formattedMatches });
+        res.setHeader('Cache-Control', 'private, max-age=15, stale-while-revalidate=30');
+        res.status(200).json({ matches: formattedMatches, hasSkills: !emptySkills });
     } catch (error) {
         console.error("Match Error:", error);
         res.status(500).json({ error: "Failed to fetch matches" });
@@ -186,6 +188,7 @@ export const getAllUsers = async (req: AuthRequest, res: Response): Promise<void
             learningCategories: user.skillsLearning.map((sl: any) => sl.skill.category),
         }));
 
+        res.setHeader('Cache-Control', 'private, max-age=15, stale-while-revalidate=30');
         res.status(200).json({ matches: formatted });
     } catch (error) {
         console.error("getAllUsers Error:", error);

@@ -77,6 +77,8 @@ model Follow {
   following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followingId])
+  @@index([followingId])
+  @@index([followerId])
 }
 
 model Skill {
@@ -99,6 +101,8 @@ model SkillTeaching {
   skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
 
   @@unique([userId, skillId])
+  @@index([skillId])
+  @@index([userId])
 }
 
 model SkillLearning {
@@ -136,6 +140,10 @@ model Swap {
   
   // GENERATED MENTORSHIPS
   mentorships   Mentorship[]
+
+  @@index([proposerId])
+  @@index([receiverId])
+  @@index([updatedAt(sort: Desc)])
 }
 
 model ChatMessage {
@@ -153,6 +161,9 @@ model ChatMessage {
   createdAt     DateTime @default(now())
   
   swap          Swap     @relation(fields: [swapId], references: [id], onDelete: Cascade)
+
+  @@index([swapId, createdAt(sort: Desc)])
+  @@index([swapId, senderId, isRead])
 }
 
 model Waitlist {
@@ -174,6 +185,9 @@ model Post {
   comments      Comment[]
   likes         Like[]
   repostCount   Int       @default(0)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
 }
 
 model Comment {

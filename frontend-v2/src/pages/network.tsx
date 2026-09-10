@@ -7,7 +7,8 @@ import { ChatPanel } from "../components/ChatPanel";
 
 export default function SwapNetwork() {
     const [view, setView] = useState<"FOLLOWING" | "FOLLOWERS">("FOLLOWING");
-    const [networkNodes, setNetworkNodes] = useState<any[]>([]);
+    const [followingNodes, setFollowingNodes] = useState<any[] | null>(null);
+    const [followerNodes, setFollowerNodes] = useState<any[] | null>(null);
     const [stats, setStats] = useState({ followerCount: 0, followingCount: 0 });
     const [loading, setLoading] = useState(true);
     
@@ -18,31 +19,23 @@ export default function SwapNetwork() {
 
     const router = useRouter();
 
-    const fetchNetwork = async () => {
-        setLoading(true);
+    const fetchNodesForView = async (targetView: "FOLLOWING" | "FOLLOWERS", force = false) => {
         const token = localStorage.getItem("swapifhy_token");
         if (!token) { router.push("/auth"); return; }
-        
-        const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
-        if (user.id) setCurrentUserId(user.id);
 
-        
+        if (targetView === "FOLLOWING" && followingNodes !== null && !force) return;
+        if (targetView === "FOLLOWERS" && followerNodes !== null && !force) return;
+
         try {
-            const endpoint = view === "FOLLOWING" ? "/api/follow/following" : "/api/follow/cloud";
-            
-            const [nodesRes, statsRes] = await Promise.all([
-                fetch(`${API_URL}${endpoint}`, { headers: { "Authorization": `Bearer ${token}` } }),
-                fetch(`${API_URL}/api/follow/stats`, { headers: { "Authorization": `Bearer ${token}` } })
-            ]);
-
-            const nodesData = await nodesRes.json();
-            const statsData = await statsRes.json();
-
-            if (nodesRes.ok) {
-                setNetworkNodes(view === "FOLLOWING" ? nodesData.following : nodesData.followers);
-            }
-            if (statsRes.ok) {
-                setStats(statsData);
+            const endpoint = targetView === "FOLLOWING" ? "/api/follow/following" : "/api/follow/cloud";
+            const res = await fetch(`${API_URL}${endpoint}`, { headers: { "Authorization": `Bearer ${token}` } });
+            const data = await res.json();
+            if (res.ok) {
+                if (targetView === "FOLLOWING") {
+                    setFollowingNodes(data.following || []);
+                } else {
+                    setFollowerNodes(data.followers || []);
+                }
             }
         } catch (error) {
             console.error("Network sync failed", error);
@@ -51,9 +44,36 @@ export default function SwapNetwork() {
         }
     };
 
+    // Initial load: Fetch stats + initial following nodes
     useEffect(() => {
-        fetchNetwork();
+        const token = localStorage.getItem("swapifhy_token");
+        if (!token) { router.push("/auth"); return; }
+        const user = JSON.parse(localStorage.getItem("swapifhy_user") || "{}");
+        if (user.id) setCurrentUserId(user.id);
+
+        // Fetch stats once
+        fetch(`${API_URL}/api/follow/stats`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(r => r.ok ? r.json() : null)
+            .then(d => { if (d) setStats(d); })
+            .catch(() => {});
+
+        fetchNodesForView("FOLLOWING");
+    }, []);
+
+    // When view tab switches, fetch on demand if not cached
+    useEffect(() => {
+        if (view === "FOLLOWING" && followingNodes === null) {
+            setLoading(true);
+            fetchNodesForView("FOLLOWING");
+        } else if (view === "FOLLOWERS" && followerNodes === null) {
+            setLoading(true);
+            fetchNodesForView("FOLLOWERS");
+        } else {
+            setLoading(false);
+        }
     }, [view]);
+
+    const networkNodes = view === "FOLLOWING" ? (followingNodes || []) : (followerNodes || []);
 
     // Handle unfollow logic directly from the Network Cloud
     const handleUnfollow = async (targetId: string) => {
@@ -67,7 +87,7 @@ export default function SwapNetwork() {
             });
 
             // Optimistically shrink the cloud
-            setNetworkNodes(prev => prev.filter(n => n.id !== targetId));
+            setFollowingNodes(prev => prev ? prev.filter(n => n.id !== targetId) : []);
             setStats(s => ({ ...s, followingCount: Math.max(0, s.followingCount - 1) }));
         } catch (error) {
             console.error("Failed to sever node", error);

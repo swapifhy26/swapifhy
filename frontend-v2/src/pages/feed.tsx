@@ -79,19 +79,31 @@ export default function SwapFeed() {
         setActiveUser(user);
 
         try {
-            // Run profile check and feed stream concurrently for MUCH faster loading
-            const [profRes, streamRes] = await Promise.all([
-                fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }),
-                fetch(`${API_URL}/api/posts/stream`, { headers: { "Authorization": `Bearer ${token}` } })
-            ]);
+            // Check if skills status is already verified in storage
+            const hasVerifiedSkills = localStorage.getItem("swapifhy_has_skills") === "true";
 
-            const prof = await profRes.json();
-            const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
-            if (!hasSkills) { router.replace("/onboarding"); return; }
+            if (!hasVerifiedSkills) {
+                const [profRes, streamRes] = await Promise.all([
+                    fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }),
+                    fetch(`${API_URL}/api/posts/stream`, { headers: { "Authorization": `Bearer ${token}` } })
+                ]);
 
-            if (streamRes.ok) {
-                const data = await streamRes.json();
-                setPosts(Array.isArray(data) ? data : data.posts || []);
+                const prof = await profRes.json();
+                const hasSkills = (prof?.user?.teachSkills?.length || 0) > 0 || (prof?.user?.learnSkills?.length || 0) > 0;
+                if (!hasSkills) { router.replace("/onboarding"); return; }
+                localStorage.setItem("swapifhy_has_skills", "true");
+
+                if (streamRes.ok) {
+                    const data = await streamRes.json();
+                    setPosts(Array.isArray(data) ? data : data.posts || []);
+                }
+            } else {
+                // High-speed direct stream load
+                const streamRes = await fetch(`${API_URL}/api/posts/stream`, { headers: { "Authorization": `Bearer ${token}` } });
+                if (streamRes.ok) {
+                    const data = await streamRes.json();
+                    setPosts(Array.isArray(data) ? data : data.posts || []);
+                }
             }
         } catch (error) {
             console.error("Feed sync failed", error);

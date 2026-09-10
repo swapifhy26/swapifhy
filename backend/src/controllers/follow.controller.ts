@@ -66,14 +66,20 @@ export const getFollowers = async (req: AuthRequest, res: Response): Promise<voi
 
         const followers = await prisma.follow.findMany({
             where: { followingId: userId },
-            include: { follower: true }
+            select: {
+                follower: {
+                    select: { id: true, name: true, avatarUrl: true, bio: true, reputation: true }
+                }
+            }
         });
 
+        res.setHeader('Cache-Control', 'private, max-age=10, stale-while-revalidate=30');
         res.status(200).json({ followers: followers.map(f => f.follower) });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch follower cloud" });
     }
 };
+
 export const getFollowing = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const userId = req.user?.id;
@@ -84,9 +90,14 @@ export const getFollowing = async (req: AuthRequest, res: Response): Promise<voi
 
         const following = await prisma.follow.findMany({
             where: { followerId: userId },
-            include: { following: true }
+            select: {
+                following: {
+                    select: { id: true, name: true, avatarUrl: true, bio: true, reputation: true }
+                }
+            }
         });
 
+        res.setHeader('Cache-Control', 'private, max-age=10, stale-while-revalidate=30');
         res.status(200).json({ following: following.map(f => f.following) });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch following cloud" });
@@ -108,6 +119,7 @@ export const getFollowStats = async (req: AuthRequest, res: Response): Promise<v
             prisma.follow.count({ where: { followerId: userId } })
         ]);
 
+        res.setHeader('Cache-Control', 'private, max-age=10, stale-while-revalidate=30');
         res.status(200).json({ followerCount, followingCount });
     } catch (error) {
         res.status(500).json({ error: "Failed to calculate network telemetry" });

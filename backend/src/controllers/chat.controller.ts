@@ -163,14 +163,15 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
             include: {
                 proposer: { select: { id: true, name: true, avatarUrl: true } },
                 receiver: { select: { id: true, name: true, avatarUrl: true } },
-                messages: { orderBy: { createdAt: 'desc' }, take: 10 },
+                messages: { orderBy: { createdAt: 'desc' }, take: 3 },
                 _count: {
                     select: {
                         messages: { where: { senderId: { not: userId }, isRead: false } }
                     }
                 }
             },
-            orderBy: { updatedAt: 'desc' }
+            orderBy: { updatedAt: 'desc' },
+            take: 30
         });
 
         const now = Date.now();
@@ -194,6 +195,7 @@ export const getConversations = async (req: AuthRequest, res: Response): Promise
             };
         });
 
+        res.setHeader('Cache-Control', 'private, max-age=5, stale-while-revalidate=15');
         res.status(200).json({ conversations: formattedConversations });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch conversations" });

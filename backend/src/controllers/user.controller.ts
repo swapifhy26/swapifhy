@@ -28,30 +28,30 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Calculate Gamification & Mentorship stats dynamically
-        const totalSwapsCount = await prisma.mentorship.count({
-            where: { OR: [{ teacherId: userId }, { studentId: userId }] }
-        });
+        // Calculate Gamification & Mentorship stats concurrently
+        const [totalSwapsCount, taughtClasses, learnedClasses, ratings] = await Promise.all([
+            prisma.mentorship.count({
+                where: { OR: [{ teacherId: userId }, { studentId: userId }] }
+            }),
+            prisma.mentorshipClass.aggregate({
+                where: { mentorship: { teacherId: userId }, isCompleted: true },
+                _sum: { durationMinutes: true }
+            }),
+            prisma.mentorshipClass.aggregate({
+                where: { mentorship: { studentId: userId }, isCompleted: true },
+                _sum: { durationMinutes: true }
+            }),
+            prisma.mentorshipRating.aggregate({
+                where: { mentorship: { teacherId: userId } },
+                _avg: { rating: true }
+            })
+        ]);
 
-        const taughtClasses = await prisma.mentorshipClass.aggregate({
-            where: { mentorship: { teacherId: userId }, isCompleted: true },
-            _sum: { durationMinutes: true }
-        });
         const hoursTaught = Math.round((taughtClasses._sum.durationMinutes || 0) / 60 * 10) / 10;
-
-        const learnedClasses = await prisma.mentorshipClass.aggregate({
-            where: { mentorship: { studentId: userId }, isCompleted: true },
-            _sum: { durationMinutes: true }
-        });
         const hoursLearned = Math.round((learnedClasses._sum.durationMinutes || 0) / 60 * 10) / 10;
-
-        const ratings = await prisma.mentorshipRating.aggregate({
-            where: { mentorship: { teacherId: userId } },
-            _avg: { rating: true }
-        });
         const avgRating = ratings._avg.rating ? Math.round(ratings._avg.rating * 10) / 10 : 0;
 
-
+        res.setHeader('Cache-Control', 'private, max-age=10, stale-while-revalidate=30');
         res.status(200).json({
             user: {
                 id: user.id,

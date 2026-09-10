@@ -41,6 +41,7 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
         const posts: any = await prisma.post.findMany({
             where: { isArchived: false } as any,
             orderBy: { createdAt: 'desc' },
+            take: 40,
             include: {
                 user: {
                     select: {
@@ -60,7 +61,8 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
                             select: { id: true, name: true, avatarUrl: true }
                         }
                     },
-                    orderBy: { createdAt: 'asc' }
+                    orderBy: { createdAt: 'asc' },
+                    take: 10
                 },
                 _count: { select: { comments: true, likes: true } }
             }
@@ -72,10 +74,11 @@ export const getFeed = async (req: AuthRequest, res: Response): Promise<void> =>
             isLiked: post.likes.some((like: any) => like.userId === userId)
         }));
 
+        res.setHeader('Cache-Control', 'private, max-age=5, stale-while-revalidate=15');
         res.status(200).json(feedWithMeta);
     } catch (error) {
-        console.error("Feed Fetch Error:", error);
-        res.status(500).json({ error: "Failed to synchronize Synergy Feed" });
+        console.error("Get Feed Error:", error);
+        res.status(500).json({ error: "Failed to fetch neural stream" });
     }
 };
 

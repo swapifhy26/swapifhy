@@ -32,15 +32,15 @@ export default function MatchMatrix() {
 
         const fetchMatches = fetch(`${API_URL}/api/match/sync-matrix`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
         const fetchConvs = fetch(`${API_URL}/api/chat/conversations`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
-        const fetchProfile = fetch(`${API_URL}/api/user/profile`, { headers: { "Authorization": `Bearer ${token}` } }).then(res => res.json());
 
-        Promise.all([fetchMatches, fetchConvs, fetchProfile])
-            .then(([matchData, chatData, profData]) => {
+        // Fast parallel fetch without redundant profile blocking
+        Promise.all([fetchMatches, fetchConvs])
+            .then(([matchData, chatData]) => {
                 if (matchData.matches) setMatches(matchData.matches);
                 if (chatData.conversations) setConversations(chatData.conversations);
-                const t = profData?.user?.teachSkills?.length || 0;
-                const l = profData?.user?.learnSkills?.length || 0;
-                setNeedsSkills(t === 0 && l === 0);
+                if (matchData.hasSkills !== undefined) {
+                    setNeedsSkills(!matchData.hasSkills);
+                }
                 setLoading(false);
             })
             .catch((err) => {

@@ -609,10 +609,16 @@ async function main() {
     const dryRun = args.includes('--dry-run');
     const limitArg = args.find(a => a.startsWith('--limit='));
     const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : Infinity;
+    const filterArg = args.find(a => a.startsWith('--filter='));
+    const filterTerm = filterArg ? filterArg.split('=')[1].toLowerCase() : null;
+
+    const emailsArg = args.find(a => a.startsWith('--emails='));
+    const filterEmails = emailsArg ? emailsArg.split('=')[1].toLowerCase().split(',').map(e => e.trim()) : null;
+
     const csvPath = args.find(a => !a.startsWith('--'));
 
     if (!csvPath || !fs.existsSync(csvPath)) {
-        console.error('Usage: npx tsx scripts/send-credentials.ts <credentials.csv> [--dry-run] [--limit=N]');
+        console.error('Usage: npx tsx scripts/send-credentials.ts <credentials.csv> [--dry-run] [--limit=N] [--filter=query] [--emails=a@x.com,b@y.com]');
         process.exit(1);
     }
 
@@ -623,7 +629,13 @@ async function main() {
         process.exit(1);
     }
 
-    const rows = parseRows(csvPath).slice(0, limit);
+    let rows = parseRows(csvPath);
+    if (filterEmails && filterEmails.length > 0) {
+        rows = rows.filter(r => filterEmails.includes(r.email.toLowerCase()));
+    } else if (filterTerm) {
+        rows = rows.filter(r => r.email.toLowerCase().includes(filterTerm) || r.name.toLowerCase().includes(filterTerm));
+    }
+    rows = rows.slice(0, limit);
     console.log(`${dryRun ? '[DRY RUN] ' : ''}Will send to ${rows.length} recipient(s). Login: ${LOGIN_URL}`);
     if (!TERMS_URL) console.log('  NOTE: TERMS_URL not set — terms link will read "(no link)".');
     if (!BANNER_URL) console.log('  NOTE: BANNER_URL not set — sending without the banner image.');

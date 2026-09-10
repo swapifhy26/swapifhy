@@ -5,45 +5,151 @@ import { useRouter } from "next/router";
 import { X, ArrowRight, Sparkles, Zap, MessageSquare } from "lucide-react";
 import { API_URL } from "../lib/api";
 
-// Local, theme-aware tag input (the shared SkillTagManager hardcodes dark colors).
-function TagField({ label, hint, placeholder, tags, setTags }: {
-    label: string; hint: string; placeholder: string; tags: string[]; setTags: (t: string[]) => void;
+// Enhanced, mobile-friendly tag input with quick-tap suggestions and +Add button
+function TagField({ label, hint, placeholder, tags, setTags, suggestions = [] }: {
+    label: string;
+    hint: string;
+    placeholder: string;
+    tags: string[];
+    setTags: (t: string[]) => void;
+    suggestions?: string[];
 }) {
     const [input, setInput] = useState("");
-    const add = (e: React.KeyboardEvent) => {
-        if ((e.key === "Enter" || e.key === ",") && input.trim()) {
-            e.preventDefault();
-            const val = input.trim();
-            if (!tags.some(t => t.toLowerCase() === val.toLowerCase())) setTags([...tags, val]);
-            setInput("");
+
+    const addTag = (val: string) => {
+        const trimmed = val.trim();
+        if (!trimmed) return;
+        if (!tags.some(t => t.toLowerCase() === trimmed.toLowerCase())) {
+            setTags([...tags, trimmed]);
+        }
+        setInput("");
+    };
+
+    const toggleSuggestion = (skill: string) => {
+        const exists = tags.some(t => t.toLowerCase() === skill.toLowerCase());
+        if (exists) {
+            setTags(tags.filter(t => t.toLowerCase() !== skill.toLowerCase()));
+        } else {
+            setTags([...tags, skill]);
         }
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if ((e.key === "Enter" || e.key === ",") && input.trim()) {
+            e.preventDefault();
+            addTag(input);
+        }
+    };
+
+    const handleBlur = () => {
+        if (input.trim()) {
+            addTag(input);
+        }
+    };
+
     return (
-        <div className="space-y-2">
+        <div className="space-y-3">
             <div>
-                <label className="block text-sm font-semibold text-foreground">{label}</label>
-                <p className="text-xs text-muted-foreground">{hint}</p>
+                <label className="block text-sm font-semibold text-foreground flex items-center justify-between">
+                    <span>{label}</span>
+                    {tags.length > 0 && (
+                        <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                            {tags.length} added
+                        </span>
+                    )}
+                </label>
+                <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>
             </div>
-            <div className="flex flex-wrap gap-2 p-3 min-h-[92px] bg-background border border-border rounded-xl content-start focus-within:border-primary/50 transition-colors">
-                {tags.map((tag, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-                        {tag}
-                        <button type="button" onClick={() => setTags(tags.filter(t => t !== tag))} className="hover:opacity-60">
-                            <X className="w-3 h-3" />
+
+            {/* Input & Active Tags Box */}
+            <div className="p-3 bg-background border border-border rounded-xl focus-within:border-primary/60 transition-all shadow-inner">
+                {/* Active Tag Chips */}
+                {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-2.5">
+                        {tags.map((tag, i) => (
+                            <span
+                                key={i}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 shadow-sm"
+                            >
+                                {tag}
+                                <button
+                                    type="button"
+                                    onClick={() => setTags(tags.filter(t => t !== tag))}
+                                    className="p-0.5 hover:bg-primary/20 rounded-full transition-colors"
+                                    aria-label={`Remove ${tag}`}
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {/* Input row with explicit Add button */}
+                <div className="flex items-center gap-2">
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={e => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        onBlur={handleBlur}
+                        enterKeyHint="done"
+                        placeholder={tags.length === 0 ? placeholder : "Type another skill..."}
+                        className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-foreground text-sm py-1 placeholder:text-muted-foreground/60"
+                    />
+                    {input.trim().length > 0 && (
+                        <button
+                            type="button"
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => addTag(input)}
+                            className="shrink-0 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:opacity-90 active:scale-95 transition-all shadow-sm"
+                        >
+                            + Add
                         </button>
-                    </span>
-                ))}
-                <input
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    onKeyDown={add}
-                    placeholder={tags.length === 0 ? placeholder : "Add another…"}
-                    className="flex-1 min-w-[140px] bg-transparent border-none outline-none text-foreground text-sm p-1 placeholder:text-muted-foreground/60"
-                />
+                    )}
+                </div>
+            </div>
+
+            {/* Quick-Tap Popular Skill Pills */}
+            <div className="pt-0.5">
+                <p className="text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-primary" /> Popular (Tap to add):
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                    {suggestions.map((skill, idx) => {
+                        const isSelected = tags.some(t => t.toLowerCase() === skill.toLowerCase());
+                        return (
+                            <button
+                                key={idx}
+                                type="button"
+                                onClick={() => toggleSuggestion(skill)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all select-none active:scale-95 touch-manipulation ${
+                                    isSelected
+                                        ? "bg-primary text-white border border-primary shadow-sm"
+                                        : "bg-surface hover:bg-muted/40 text-muted-foreground hover:text-foreground border border-border/80"
+                                }`}
+                            >
+                                {isSelected ? `✓ ${skill}` : `+ ${skill}`}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
 }
+
+const TEACH_SUGGESTIONS = [
+    "Python", "Web Development", "UI/UX Design", "Graphic Design",
+    "English", "Public Speaking", "Video Editing", "Data Science",
+    "Digital Marketing", "Guitar", "Mathematics", "Finance"
+];
+
+const LEARN_SUGGESTIONS = [
+    "UI/UX Design", "AI & Machine Learning", "Fullstack Dev", "Spanish",
+    "Stock Trading", "Content Creation", "Photography", "Piano",
+    "SEO & Marketing", "Product Management", "French", "Public Speaking"
+];
 
 export default function Onboarding() {
     const router = useRouter();
@@ -343,8 +449,8 @@ export default function Onboarding() {
 
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
-            <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-8 shadow-sm">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 font-sans">
+            <div className="w-full max-w-lg bg-surface border border-border rounded-2xl p-5 sm:p-8 shadow-sm">
                 <div className="flex items-center gap-2 text-primary mb-3">
                     <Sparkles className="w-5 h-5" />
                     <span className="text-xs font-semibold uppercase tracking-wider">Welcome to Swapifhy</span>
@@ -361,6 +467,7 @@ export default function Onboarding() {
                         placeholder="e.g. Python, Guitar, Public speaking…"
                         tags={teach}
                         setTags={setTeach}
+                        suggestions={TEACH_SUGGESTIONS}
                     />
                     <TagField
                         label="Skills you want to learn"
@@ -368,6 +475,7 @@ export default function Onboarding() {
                         placeholder="e.g. UI design, Spanish, Chess…"
                         tags={learn}
                         setTags={setLearn}
+                        suggestions={LEARN_SUGGESTIONS}
                     />
                 </div>
 

@@ -67,18 +67,35 @@ function buildHtml(name: string, email: string, passcode: string) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="color-scheme" content="light">
   <meta name="supported-color-schemes" content="light">
-  <title>Welcome to the New Swapifhy — Your Founding Access &amp; Updates</title>
+  <title>Welcome to the New Era of Swapifhy</title>
+  
+  <!-- Apple / Modern Silicon Valley Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+
   <style>
+    /* Reset & Base Rules */
     html, body {
       margin: 0 auto !important;
       padding: 0 !important;
       height: 100% !important;
       width: 100% !important;
-      background-color: #F5F5F7 !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #F6F8FC !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      color: #1D1D1F;
+      color: #0B0F19;
     }
     * {
       -ms-text-size-adjust: 100%;
@@ -101,17 +118,23 @@ function buildHtml(name: string, email: string, passcode: string) {
     a {
       text-decoration: none;
     }
+
+    /* Mobile Responsive Rules */
     @media only screen and (max-width: 620px) {
+      .email-wrapper {
+        padding: 12px 6px 32px 6px !important;
+      }
       .email-container {
         width: 100% !important;
         max-width: 100% !important;
+        border-radius: 24px !important;
       }
       .mobile-padding {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
+        padding-left: 18px !important;
+        padding-right: 18px !important;
       }
-      .mobile-card-padding {
-        padding: 24px 18px !important;
+      .mobile-pass-padding {
+        padding: 20px 16px !important;
       }
       .mobile-bento {
         display: block !important;
@@ -125,76 +148,116 @@ function buildHtml(name: string, email: string, passcode: string) {
         width: 100% !important;
         display: block !important;
         text-align: center !important;
+        padding: 16px 20px !important;
       }
       .mobile-hero-title {
         font-size: 30px !important;
         line-height: 36px !important;
-        letter-spacing: -0.5px !important;
+        letter-spacing: -0.8px !important;
+      }
+      .mobile-hero-sub {
+        font-size: 14.5px !important;
+        line-height: 23px !important;
+      }
+      .mobile-stat-col {
+        display: block !important;
+        width: 100% !important;
+        padding-bottom: 14px !important;
+        border-right: none !important;
+        border-bottom: 1px solid #E2E8F0 !important;
+      }
+      .mobile-stat-col:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
       }
     }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F5F5F7; color: #1D1D1F;">
+<body style="margin: 0; padding: 0; background-color: #F6F8FC; color: #0B0F19;">
 
+  <!-- Preheader Preview Text -->
   <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
-    Major updates are live on Swapifhy! ⚡ 10x faster speed, 1-tap mobile onboarding, AI matchmaking &amp; your founding credentials inside...
+    Major upgrades are live on Swapifhy! ⚡ 10x faster speeds, 1-tap skill selection, AI matchmaking &amp; your VIP Founding Credentials inside...
     &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
   </div>
 
-  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F5F5F7; table-layout: fixed;">
+  <!-- Ambient Outer Canvas with Subtle Gradient -->
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="email-wrapper" style="background: linear-gradient(180deg, #EDF2F9 0%, #F6F8FC 25%, #F8FAFC 100%); table-layout: fixed;">
     <tr>
-      <td align="center" style="padding: 40px 14px 60px 14px;">
+      <td align="center" style="padding: 40px 12px 60px 12px;">
         
-        <table role="presentation" class="email-container" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border-radius: 28px; border: 1px solid #E5E5EA; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02); overflow: hidden;">
+        <!-- Apple Ultra-Card Container (600px Max Width) -->
+        <table role="presentation" class="email-container" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border-radius: 32px; border: 1px solid #E2E8F0; box-shadow: 0 30px 70px -15px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.02); overflow: hidden;">
           
+          <!-- Apple Intelligence / Holographic Glow Beam Header -->
           <tr>
-            <td height="4" style="background: linear-gradient(90deg, #F07060 0%, #4F46E5 50%, #5BC4C0 100%); font-size: 0px; line-height: 0px;">&nbsp;</td>
+            <td height="6" style="background: linear-gradient(90deg, #F43F5E 0%, #8B5CF6 28%, #4F46E5 50%, #06B6D4 78%, #10B981 100%); font-size: 0px; line-height: 0px;">&nbsp;</td>
           </tr>
 
+          <!-- Top Brand Bar -->
           <tr>
-            <td align="center" style="padding: 36px 40px 20px 40px;" class="mobile-padding">
+            <td align="center" style="padding: 34px 40px 16px 40px;" class="mobile-padding">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
+                  <!-- Official Logo & Wordmark -->
                   <td align="left" valign="middle">
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td valign="middle" style="padding-right: 12px;">
-                          <img src="https://swapifhy.com/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" width="38" height="38" style="display: block; width: 38px; height: 38px; border-radius: 10px; object-fit: contain;" />
+                          <!-- Real High-DPI Swapifhy Logo in Glass Pod -->
+                          <div style="width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(145deg, #FFFFFF 0%, #F1F5F9 100%); border: 1px solid #E2E8F0; padding: 4px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06); display: block;">
+                            <img src="https://swapifhy.com/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" width="34" height="34" style="display: block; width: 34px; height: 34px; border-radius: 10px; object-fit: contain;" />
+                          </div>
                         </td>
                         <td valign="middle">
-                          <span style="font-size: 21px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.5px; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;">
+                          <span style="font-size: 24px; font-weight: 800; color: #0B0F19; letter-spacing: -0.8px; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; display: inline-block;">
                             Swap<span style="color: #4F46E5;">ifhy</span>
                           </span>
                         </td>
                       </tr>
                     </table>
                   </td>
+
+                  <!-- VIP Cohort Badge -->
                   <td align="right" valign="middle">
-                    <span style="display: inline-block; padding: 6px 14px; border-radius: 999px; background-color: #F5F5F7; border: 1px solid #E5E5EA; color: #1D1D1F; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;">
-                      ★ Founding 415
-                    </span>
+                    <div style="display: inline-block; padding: 6px 14px; border-radius: 999px; background: linear-gradient(135deg, #FAF5FF 0%, #EEF2FF 100%); border: 1px solid #DDD6FE; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.06);">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; color: #6D28D9;">
+                            ✦ FOUNDING 415
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
+          <!-- Hero Announcement Section -->
           <tr>
             <td align="center" style="padding: 16px 40px 28px 40px;" class="mobile-padding">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center">
                     
-                    <div style="display: inline-block; padding: 5px 14px; border-radius: 999px; background-color: #EEF2FF; border: 1px solid #E0E7FF; color: #4F46E5; font-size: 12px; font-weight: 600; margin-bottom: 18px;">
-                      Major Platform Evolution • v2.0 Live
+                    <!-- Luminous Category Capsule -->
+                    <div style="display: inline-block; padding: 5px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.2); margin-bottom: 18px;">
+                      <span style="font-size: 11px; font-weight: 700; color: #4338CA; letter-spacing: 0.08em; text-transform: uppercase;">
+                        ⚡ MAJOR SYSTEM UPGRADE &bull; v2.0 LIVE
+                      </span>
                     </div>
 
-                    <h1 class="mobile-hero-title" style="margin: 0 0 14px 0; font-size: 34px; line-height: 40px; font-weight: 800; color: #1D1D1F; letter-spacing: -0.8px;">
-                      Welcome to the new <span style="color: #4F46E5;">Swapifhy.</span>
+                    <!-- Main Apple Headline -->
+                    <h1 class="mobile-hero-title" style="margin: 0 0 16px 0; font-size: 38px; line-height: 44px; font-weight: 800; color: #0B0F19; letter-spacing: -1.2px; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;">
+                      The Future of Skill Exchange <br/>
+                      <span style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #2563EB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #4F46E5;">Has Just Landed.</span>
                     </h1>
 
-                    <p style="margin: 0; font-size: 15px; line-height: 24px; color: #6E6E73; max-width: 480px;">
-                      Hi <strong style="color: #1D1D1F;">${displayName}</strong>, you are one of our <strong>415 exclusive founding pioneers</strong>. We have completely re-engineered Swapifhy from the ground up to bring you the fastest, cleanest, and smartest skill exchange experience yet.
+                    <!-- Hero Subtitle -->
+                    <p class="mobile-hero-sub" style="margin: 0 auto; font-size: 15.5px; line-height: 25px; color: #475569; max-width: 480px; font-weight: 500;">
+                      Hi <strong style="color: #0F172A; font-weight: 700;">${displayName}</strong>, as one of our <strong>415 founding pioneers</strong>, we’ve rebuilt Swapifhy from the ground up for you: 10x faster speeds, instant 1-tap mobile skills, and smart AI matching.
                     </p>
 
                   </td>
@@ -203,131 +266,198 @@ function buildHtml(name: string, email: string, passcode: string) {
             </td>
           </tr>
 
+          <!-- Apple Wallet / Digital Pass Card (VIP Access Pass) -->
           <tr>
             <td style="padding: 0 40px 32px 40px;" class="mobile-padding">
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FBFBFC; border: 1px solid #E5E5EA; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);" class="mobile-card-padding">
+              
+              <!-- Pass Outer Frame with Apple-Style Depth & Border -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background: linear-gradient(180deg, #0F172A 0%, #1E1B4B 100%); border: 1px solid #334155; border-radius: 26px; box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.35); overflow: hidden;">
+                
+                <!-- Card Top Accent Header -->
                 <tr>
-                  <td>
-                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px;">
+                  <td style="padding: 24px 28px 18px 28px;" class="mobile-pass-padding">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td align="left" valign="middle">
-                          <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #86868B;">
-                            YOUR FOUNDING LOGIN CREDENTIALS
-                          </span>
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td valign="middle" style="padding-right: 8px;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; background-color: #10B981; box-shadow: 0 0 10px #10B981;"></div>
+                              </td>
+                              <td valign="middle">
+                                <span style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #94A3B8; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;">
+                                  VIP FOUNDING ACCESS PASS &bull; COHORT #1
+                                </span>
+                              </td>
+                            </tr>
+                          </table>
                         </td>
                         <td align="right" valign="middle">
-                          <span style="font-size: 11px; color: #059669; font-weight: 600; background-color: #ECFDF5; border: 1px solid #D1FAE5; padding: 3px 9px; border-radius: 999px;">
-                            ● Active
+                          <span style="font-size: 11px; font-weight: 700; color: #38BDF8; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px;">
+                            PRIORITY TIER
                           </span>
                         </td>
                       </tr>
                     </table>
+                  </td>
+                </tr>
 
-                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 10px; background-color: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 14px; padding: 12px 18px;">
+                <!-- Hairline Card Divider -->
+                <tr>
+                  <td style="padding: 0 28px;" class="mobile-pass-padding">
+                    <div style="height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.2), rgba(255,255,255,0.05)); width: 100%;"></div>
+                  </td>
+                </tr>
+
+                <!-- Credential Values Area -->
+                <tr>
+                  <td style="padding: 22px 28px 26px 28px;" class="mobile-pass-padding">
+                    
+                    <!-- Member Name Badge -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 16px;">
                       <tr>
-                        <td width="36%" style="font-size: 13px; color: #6E6E73; font-weight: 500;">Login Email</td>
-                        <td align="right" style="font-size: 14px; color: #1D1D1F; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, monospace;">${displayEmail}</td>
+                        <td>
+                          <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94A3B8; margin-bottom: 4px;">
+                            FOUNDING CITIZEN
+                          </div>
+                          <div style="font-size: 20px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.4px;">
+                            ${displayName}
+                          </div>
+                        </td>
                       </tr>
                     </table>
 
-                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 22px; background-color: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 14px; padding: 12px 18px;">
+                    <!-- Glass Sub-Cards for Email and Password -->
+                    <!-- Email Sub-Card -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 10px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 16px;">
                       <tr>
-                        <td width="36%" style="font-size: 13px; color: #6E6E73; font-weight: 500;">Temporary Passcode</td>
+                        <td width="38%" style="font-size: 12px; color: #94A3B8; font-weight: 600;">Registered Email</td>
+                        <td align="right" style="font-size: 13.5px; color: #FFFFFF; font-weight: 600; font-family: 'JetBrains Mono', monospace;">${displayEmail}</td>
+                      </tr>
+                    </table>
+
+                    <!-- Temp Password Sub-Card -->
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 22px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 16px;">
+                      <tr>
+                        <td width="38%" style="font-size: 12px; color: #94A3B8; font-weight: 600;">One-Time Passcode</td>
                         <td align="right">
-                          <span style="display: inline-block; background-color: #F5F5F7; border: 1px solid #E5E5EA; padding: 4px 10px; border-radius: 8px; font-size: 14px; color: #4F46E5; font-weight: 700; font-family: monospace; letter-spacing: 0.5px;">
+                          <span style="display: inline-block; background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); border: 1px solid #818CF8; padding: 5px 14px; border-radius: 8px; font-size: 14px; color: #FFFFFF; font-weight: 800; font-family: 'JetBrains Mono', monospace; letter-spacing: 1.5px; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);">
                             ${displayPass}
                           </span>
                         </td>
                       </tr>
                     </table>
 
+                    <!-- Apple Luminescent Access Button -->
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td align="center">
-                          <a href="${LOGIN_URL}" class="mobile-btn" target="_blank" style="display: block; width: 100%; background-color: #1D1D1F; color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center; text-decoration: none; padding: 15px 28px; border-radius: 980px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); letter-spacing: -0.2px;">
-                            Log In &amp; Claim Your Profile &rarr;
+                          <a href="https://swapifhy.com/auth" class="mobile-btn" target="_blank" style="display: block; width: 100%; background: #FFFFFF; color: #0F172A; font-size: 15px; font-weight: 800; text-align: center; text-decoration: none; padding: 16px 28px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); letter-spacing: -0.2px; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;">
+                            ✦ Log In &amp; Claim Founding Account &rarr;
                           </a>
                         </td>
                       </tr>
                     </table>
 
-                    <p style="margin: 14px 0 0 0; font-size: 12px; line-height: 18px; color: #86868B; text-align: center;">
-                      For your privacy, update your passcode anytime in <em>Settings &rarr; Update Password</em>.
-                    </p>
+                    <!-- Micro Security Label -->
+                    <div style="margin-top: 14px; text-align: center; font-size: 11.5px; color: #94A3B8; font-weight: 500;">
+                      🔒 Instant 1-click activation &bull; Update password anytime in Settings
+                    </div>
 
                   </td>
                 </tr>
+
               </table>
             </td>
           </tr>
 
+          <!-- Subtle Divider -->
           <tr>
             <td style="padding: 0 40px;" class="mobile-padding">
-              <div style="height: 1px; background-color: #E5E5EA; width: 100%;"></div>
+              <div style="height: 1px; background-color: #E2E8F0; width: 100%;"></div>
             </td>
           </tr>
 
+          <!-- What's New Title -->
           <tr>
-            <td style="padding: 36px 40px 18px 40px;" class="mobile-padding">
-              <h2 style="margin: 0 0 6px 0; font-size: 21px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.4px;">
-                Designed for progress. Built for you.
+            <td style="padding: 34px 40px 18px 40px;" class="mobile-padding">
+              <div style="display: inline-block; padding: 4px 10px; border-radius: 6px; background-color: #F1F5F9; color: #475569; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">
+                ENGINEERED WITH DIRECT TESTER FEEDBACK
+              </div>
+              <h2 style="margin: 0 0 6px 0; font-size: 23px; font-weight: 800; color: #0B0F19; letter-spacing: -0.6px; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;">
+                Built for speed. Designed for mastery.
               </h2>
-              <p style="margin: 0; font-size: 14px; color: #6E6E73; line-height: 20px;">
-                Here is what’s new in our latest release, crafted directly from community feedback:
+              <p style="margin: 0; font-size: 14px; color: #64748B; line-height: 22px; font-weight: 500;">
+                Every interaction was rebuilt to give you an effortless, instant experience:
               </p>
             </td>
           </tr>
 
+          <!-- Apple Bento Grid 2.0 (2x2 Cards) -->
           <tr>
             <td style="padding: 0 40px 30px 40px;" class="mobile-padding">
               
+              <!-- Bento Row 1 -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 12px;">
                 <tr>
-                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F5F5F7; border: 1px solid #EBEBF0; border-radius: 18px; padding: 22px 20px;">
-                    <div style="font-size: 22px; margin-bottom: 10px;">⚡</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.2px;">
+                  <!-- Card 1: 10x Faster Speeds -->
+                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 22px 20px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);">
+                    <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); text-align: center; line-height: 36px; font-size: 18px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.15);">
+                      ⚡
+                    </div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 15.5px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                       10x Faster Speeds
                     </h3>
-                    <p style="margin: 0; font-size: 13px; line-height: 19px; color: #6E6E73;">
-                      Engineered with database query caching. Network, Feed, and Matches now load with sub-second responsiveness.
+                    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748B; font-weight: 500;">
+                      Database caching &amp; hardware acceleration. Network, Feed, and Matches now load with sub-second, zero-lag response.
                     </p>
                   </td>
                   
                   <td width="4%" class="mobile-bento" style="font-size: 0px; line-height: 0px;">&nbsp;</td>
 
-                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F5F5F7; border: 1px solid #EBEBF0; border-radius: 18px; padding: 22px 20px;">
-                    <div style="font-size: 22px; margin-bottom: 10px;">📱</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.2px;">
+                  <!-- Card 2: 1-Tap Mobile Selection -->
+                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 22px 20px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);">
+                    <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%); text-align: center; line-height: 36px; font-size: 18px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(79, 70, 229, 0.15);">
+                      📱
+                    </div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 15.5px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                       1-Tap Skill Selection
                     </h3>
-                    <p style="margin: 0; font-size: 13px; line-height: 19px; color: #6E6E73;">
-                      Mobile-first onboarding: Tap popular skill chips (Python, UI/UX, AI, Music) to complete your profile in under 30 seconds.
+                    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748B; font-weight: 500;">
+                      Redesigned mobile onboarding: Tap curated skill chips (Python, UI/UX, AI, Music) to complete setup in under 30 seconds.
                     </p>
                   </td>
                 </tr>
               </table>
 
+              <!-- Bento Row 2 -->
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F5F5F7; border: 1px solid #EBEBF0; border-radius: 18px; padding: 22px 20px;">
-                    <div style="font-size: 22px; margin-bottom: 10px;">🎯</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.2px;">
+                  <!-- Card 3: Smart AI Matchmaking -->
+                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 22px 20px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);">
+                    <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%); text-align: center; line-height: 36px; font-size: 18px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(236, 72, 153, 0.15);">
+                      🎯
+                    </div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 15.5px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                       Smart AI Matchmaking
                     </h3>
-                    <p style="margin: 0; font-size: 13px; line-height: 19px; color: #6E6E73;">
-                      Our algorithm pairs you with mentors and peers based on real skill complement: learn what you want from who can teach it.
+                    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748B; font-weight: 500;">
+                      Our recommendation algorithm pairs you with peers based on genuine skill synergy: learn what you want from vetted creators.
                     </p>
                   </td>
                   
                   <td width="4%" class="mobile-bento" style="font-size: 0px; line-height: 0px;">&nbsp;</td>
 
-                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F5F5F7; border: 1px solid #EBEBF0; border-radius: 18px; padding: 22px 20px;">
-                    <div style="font-size: 22px; margin-bottom: 10px;">🔔</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.2px;">
+                  <!-- Card 4: Live Push Notifications -->
+                  <td class="mobile-bento" width="48%" valign="top" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 22px 20px; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);">
+                    <div style="width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); text-align: center; line-height: 36px; font-size: 18px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15);">
+                      🔔
+                    </div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 15.5px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                       Live Notifications
                     </h3>
-                    <p style="margin: 0; font-size: 13px; line-height: 19px; color: #6E6E73;">
-                      Never miss a message, swap proposal, or scheduled class with instant real-time alerts on mobile and desktop.
+                    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748B; font-weight: 500;">
+                      Never miss a message, swap proposal, or scheduled session with instant real-time socket alerts on mobile and desktop.
                     </p>
                   </td>
                 </tr>
@@ -336,64 +466,85 @@ function buildHtml(name: string, email: string, passcode: string) {
             </td>
           </tr>
 
+          <!-- Modern Stats / 100,000 Milestone Banner -->
           <tr>
             <td style="padding: 0 40px 32px 40px;" class="mobile-padding">
-              <div style="background-color: #EEF2FF; border: 1px solid #E0E7FF; border-radius: 20px; padding: 24px 26px; text-align: center;">
-                <p style="margin: 0 0 6px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4F46E5;">
-                  THE ROAD TO OFFICIAL LAUNCH
-                </p>
-                <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.3px;">
-                  Gearing up for 100,000+ (1 Lakh+) Learners
+              <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px dashed #BFDBFE; border-radius: 22px; padding: 24px 26px; text-align: center;">
+                <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #2563EB; margin-bottom: 6px;">
+                  🚀 THE ROAD TO PUBLIC LAUNCH
+                </div>
+                <h3 style="margin: 0 0 8px 0; font-size: 19px; font-weight: 800; color: #0F172A; letter-spacing: -0.4px;">
+                  Gearing up for 100,000+ (1 Lakh+) Members
                 </h3>
-                <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4B5563;">
-                  Our hardware and servers are currently being scaled to support our public launch. As one of our <strong>415 Founding Cohort</strong>, you enjoy lifetime Pioneer recognition, priority match indexing, and early feature access.
+                <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 22px; color: #475569; font-weight: 500;">
+                  Our servers are being scaled for public rollout. As a member of our <strong>415 Founding Cohort</strong>, you enjoy lifetime VIP status, highest match priority, and exclusive early feature drops.
                 </p>
+
+                <!-- Stats 3-Column Pill Strip -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 12px 6px;">
+                  <tr>
+                    <td class="mobile-stat-col" width="33.33%" align="center" style="border-right: 1px solid #F1F5F9; padding: 6px 10px;">
+                      <div style="font-size: 18px; font-weight: 800; color: #4F46E5; font-family: 'JetBrains Mono', monospace;">415</div>
+                      <div style="font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Founding VIPs</div>
+                    </td>
+                    <td class="mobile-stat-col" width="33.33%" align="center" style="border-right: 1px solid #F1F5F9; padding: 6px 10px;">
+                      <div style="font-size: 18px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace;">&lt; 30s</div>
+                      <div style="font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Setup Time</div>
+                    </td>
+                    <td class="mobile-stat-col" width="33.33%" align="center" style="padding: 6px 10px;">
+                      <div style="font-size: 18px; font-weight: 800; color: #10B981; font-family: 'JetBrains Mono', monospace;">FREE</div>
+                      <div style="font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Lifetime VIP</div>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </td>
           </tr>
 
+          <!-- 3-Step Simple Flow -->
           <tr>
             <td style="padding: 0 40px 34px 40px;" class="mobile-padding">
-              <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.2px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 16.5px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px;">
                 Get started in 3 simple steps:
               </h3>
               
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                  <td valign="top" width="32" style="padding-bottom: 14px;">
-                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #1D1D1F; color: #FFFFFF; font-size: 12px; font-weight: 700;">1</span>
+                  <td valign="top" width="34" style="padding-bottom: 12px;">
+                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #0F172A; color: #FFFFFF; font-size: 11.5px; font-weight: 800;">1</span>
                   </td>
-                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #4B5563; padding-bottom: 14px;">
-                    <strong style="color: #1D1D1F;">Sign In:</strong> Use your registered email and temporary passcode above.
-                  </td>
-                </tr>
-                <tr>
-                  <td valign="top" width="32" style="padding-bottom: 14px;">
-                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #1D1D1F; color: #FFFFFF; font-size: 12px; font-weight: 700;">2</span>
-                  </td>
-                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #4B5563; padding-bottom: 14px;">
-                    <strong style="color: #1D1D1F;">Pick Your Skills:</strong> Tap 1 skill you can share and 1 you want to master.
+                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #475569; padding-bottom: 12px; font-weight: 500;">
+                    <strong style="color: #0F172A; font-weight: 700;">Sign In:</strong> Log in with your registered email and temporary passcode above.
                   </td>
                 </tr>
                 <tr>
-                  <td valign="top" width="32">
-                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #4F46E5; color: #FFFFFF; font-size: 12px; font-weight: 700;">3</span>
+                  <td valign="top" width="34" style="padding-bottom: 12px;">
+                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #0F172A; color: #FFFFFF; font-size: 11.5px; font-weight: 800;">2</span>
                   </td>
-                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #4B5563;">
-                    <strong style="color: #1D1D1F;">Swap &amp; Grow:</strong> Connect with your first partner and start learning.
+                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #475569; padding-bottom: 12px; font-weight: 500;">
+                    <strong style="color: #0F172A; font-weight: 700;">Pick Skills:</strong> Tap 1 skill you can share and 1 skill you want to learn.
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" width="34">
+                    <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); color: #FFFFFF; font-size: 11.5px; font-weight: 800;">3</span>
+                  </td>
+                  <td valign="top" style="font-size: 14px; line-height: 22px; color: #475569; font-weight: 500;">
+                    <strong style="color: #0F172A; font-weight: 700;">Connect &amp; Learn:</strong> Chat with matched creators and schedule your first swap.
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
+          <!-- Big Primary Call to Action Button -->
           <tr>
             <td align="center" style="padding: 0 40px 40px 40px;" class="mobile-padding">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center">
-                    <a href="${LOGIN_URL}" class="mobile-btn" target="_blank" style="display: inline-block; background-color: #4F46E5; color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center; text-decoration: none; padding: 15px 36px; border-radius: 980px; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.28); letter-spacing: -0.2px;">
-                      Jump into Swapifhy Now &rarr;
+                    <a href="https://swapifhy.com/auth" class="mobile-btn" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); color: #FFFFFF; font-size: 16px; font-weight: 800; text-align: center; text-decoration: none; padding: 16px 42px; border-radius: 999px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35); letter-spacing: -0.2px; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;">
+                      🚀 Enter Swapifhy Now &rarr;
                     </a>
                   </td>
                 </tr>
@@ -401,31 +552,34 @@ function buildHtml(name: string, email: string, passcode: string) {
             </td>
           </tr>
 
+          <!-- Minimalist Apple Footer -->
           <tr>
-            <td style="background-color: #FBFBFC; border-top: 1px solid #E5E5EA; padding: 30px 40px; text-align: center;" class="mobile-padding">
-              <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #1D1D1F;">
+            <td style="background-color: #FAFAFC; border-top: 1px solid #EDEEF2; padding: 30px 40px; text-align: center;" class="mobile-padding">
+              <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 700; color: #0F172A;">
                 Swapifhy &bull; The Modern Skill Exchange Network
               </p>
-              <p style="margin: 0 0 14px 0; font-size: 12px; line-height: 18px; color: #86868B;">
-                You received this priority invitation because you are one of the 415 founding members on the Swapifhy waitlist.<br>
-                Questions, thoughts, or ideas? Reply directly to this email—our team reads and responds to every message.
+              <p style="margin: 0 0 14px 0; font-size: 12px; line-height: 19px; color: #64748B; font-weight: 500;">
+                You received this exclusive invitation because you are one of the 415 founding members on the Swapifhy waitlist.<br>
+                Questions or feedback? Reply directly to this email—our core team reads every single note.
               </p>
-              <p style="margin: 0; font-size: 12px; color: #86868B;">
-                <a href="https://swapifhy.com" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 500;">Website</a> &bull;
-                <a href="https://swapifhy.com/help" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 500;">Help Center</a> &bull;
-                <a href="https://tally.so/r/GxbXkk" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 500;">Feedback Form</a>
+              <p style="margin: 0; font-size: 12px; color: #64748B;">
+                <a href="https://swapifhy.com" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 600;">Website</a> &bull;
+                <a href="https://swapifhy.com/help" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 600;">Help Center</a> &bull;
+                <a href="https://tally.so/r/GxbXkk" style="color: #4F46E5; text-decoration: none; margin: 0 8px; font-weight: 600;">Feedback Form</a>
               </p>
             </td>
           </tr>
 
         </table>
+        <!-- End Main Container -->
 
       </td>
     </tr>
   </table>
 
 </body>
-</html>`;
+</html>
+`;
 }
 
 function parseRows(csvPath: string) {

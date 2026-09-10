@@ -336,3 +336,31 @@ export const savePushSubscription = async (req: AuthRequest, res: Response): Pro
         res.status(500).json({ error: "Failed to save push subscription" });
     }
 };
+
+export const deleteAccount = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+
+        await prisma.$transaction(async (tx) => {
+            await tx.swap.deleteMany({
+                where: { OR: [{ proposerId: userId }, { receiverId: userId }] }
+            });
+            await tx.mentorship.deleteMany({
+                where: { OR: [{ teacherId: userId }, { studentId: userId }] }
+            });
+            await tx.user.delete({
+                where: { id: userId }
+            });
+        });
+
+        res.status(200).json({ success: true, message: "Account deleted successfully." });
+    } catch (err) {
+        console.error("Delete Account Error:", err);
+        res.status(500).json({ error: "Failed to delete account. Please try again." });
+    }
+};
+

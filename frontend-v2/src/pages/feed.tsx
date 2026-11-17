@@ -398,13 +398,12 @@ export default function SwapFeed() {
                                     <motion.div
                                         key={post.id}
                                         variants={itemVariants}
-                                        className="relative rounded-[2rem] overflow-hidden transition-all duration-300 hover:scale-[1.01] shadow-2xl group/post border border-white/10 mb-6"
+                                        className="relative rounded-[2rem] overflow-hidden transition-transform duration-200 hover:scale-[1.01] shadow-2xl group/post border border-white/10 mb-6 performance-card"
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 opacity-90"></div>
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                         
                                         {/* Floating decorative elements */}
-                                        <div className="absolute top-4 right-4 w-24 h-24 bg-white/20 blur-[40px] rounded-full"></div>
                                         <div className="absolute top-4 right-4 z-20">
                                             <button onClick={() => setActiveDropdownId(activeDropdownId === post.id ? null : post.id)} className="p-2 rounded-full bg-black/20 hover:bg-black/40 text-white/70 hover:text-white transition-all backdrop-blur-md">
                                                 <MoreHorizontal className="w-5 h-5" />
@@ -430,12 +429,10 @@ export default function SwapFeed() {
                                                 )}
                                             </AnimatePresence>
                                         </div>
-                                        <div className="absolute bottom-4 left-4 w-32 h-32 bg-pink-500/30 blur-[50px] rounded-full"></div>
 
                                         <div className="relative z-10 p-8 sm:p-10 flex flex-col items-center justify-center text-center">
                                             {/* Trophy Icon */}
                                             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6 border border-white/30 shadow-[0_0_40px_rgba(255,255,255,0.4)] relative">
-                                                <div className="absolute inset-0 bg-white/40 rounded-full animate-ping opacity-20"></div>
                                                 <span className="text-3xl sm:text-4xl" dangerouslySetInnerHTML={{ __html: '&#x1F3C6;' }} />
                                             </div>
                                             
@@ -540,7 +537,7 @@ export default function SwapFeed() {
                                 <motion.div
                                     key={post.id}
                                     variants={itemVariants}
-                                    className="relative rounded-2xl glass-elite overflow-hidden transition-all duration-300 hover:border-border/80 group/post"
+                                    className="relative rounded-2xl glass-elite overflow-hidden transition-all duration-300 hover:border-border/80 group/post performance-card"
                                 >
                                     <div className={`absolute top-0 left-0 w-full h-24 bg-gradient-to-b ${bgGlowRef} to-transparent opacity-50 pointer-events-none`} />
 

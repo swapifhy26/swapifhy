@@ -49,24 +49,12 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             <Head>
                 <title>Swapifhy | Learn with people. Not from them.</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
             </Head>
 
-            {/* Ambient Brand Color Grading Background - Relaxed for Eye Comfort */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 transition-opacity duration-1000 transform-gpu will-change-transform">
-                {/* Gentle, larger grid overlay to prevent moire/astigmatism eye strain */}
+            {/* Ambient Brand Color Grading Background - Zero-Lag CSS-accelerated */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 ambient-bg">
+                {/* Gentle, larger grid overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.02] dark:opacity-[0.015]"></div>
-                
-                {/* Ultra-soft Radial glow 1 - Top Left */}
-                <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-primary/10 dark:bg-primary/[0.04] blur-[150px] transform-gpu"></div>
-                
-                {/* Ultra-soft Radial glow 2 - Bottom Right */}
-                <div className="absolute -bottom-[10%] -right-[10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 dark:bg-accent/[0.04] blur-[150px] transform-gpu" style={{ animationDelay: '2s' }}></div>
-                
-                {/* Ultra-soft Radial glow 3 - Center */}
-                <div className="absolute top-[25%] left-[25%] w-[50vw] h-[50vw] rounded-full bg-secondary/10 dark:bg-secondary/[0.03] blur-[180px] transform-gpu" style={{ animationDelay: '4s' }}></div>
             </div>
 
             {/* Mobile PWA Install Glass Banner */}

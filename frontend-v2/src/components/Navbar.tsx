@@ -94,8 +94,11 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
     }, []);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 10);
-        window.addEventListener("scroll", handleScroll);
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 10;
+            setScrolled(prev => (prev !== isScrolled ? isScrolled : prev));
+        };
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 

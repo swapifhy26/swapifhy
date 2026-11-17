@@ -30,8 +30,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Let API requests and dynamic mutations pass directly through
-  if (event.request.url.includes('/api/') || event.request.method !== 'GET') {
+  // Let API requests, Next.js script chunks, and non-GET mutations pass directly through
+  if (
+    event.request.url.includes('/api/') || 
+    event.request.url.includes('/_next/') ||
+    event.request.method !== 'GET'
+  ) {
     return;
   }
 

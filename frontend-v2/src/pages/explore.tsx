@@ -24,72 +24,11 @@ const DOMAIN_OPTIONS = [
     { value: "general", label: "General" },
 ];
 
-// ── Swapifhy logo colours: coral #F07060, teal #5BC4C0, blue #6B8FD4 ──
-const GLOW_COLORS = ["#5BC4C0", "#6B8FD4", "#F07060", "#5BC4C0"];
-
-// ── Animated border card ──
+// ── High Performance GPU-accelerated Card (0ms JS overhead) ──
 const GlowCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-    const [hovered, setHovered] = useState(false);
-    const [angle, setAngle] = useState(0);
-    const rafRef = useRef<number | null>(null);
-    const startRef = useRef<number | null>(null);
-    const DURATION = 2400;
-
-    useEffect(() => {
-        if (!hovered) {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            setAngle(0);
-            return;
-        }
-        startRef.current = null;
-        const tick = (now: number) => {
-            if (!startRef.current) startRef.current = now;
-            const elapsed = now - startRef.current;
-            const progress = Math.min(elapsed / DURATION, 1);
-            setAngle(progress * 360);
-            if (progress < 1) {
-                rafRef.current = requestAnimationFrame(tick);
-            }
-        };
-        rafRef.current = requestAnimationFrame(tick);
-        return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-    }, [hovered]);
-
-    const gradient = `conic-gradient(from ${angle}deg at 50% 50%, ${GLOW_COLORS.join(", ")})`;
-
     return (
-        <div
-            className={`relative rounded-[3.5rem] ${className ?? ""}`}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-        >
-            {/* Glow layer behind the card */}
-            <div
-                className="absolute inset-0 rounded-[3.5rem] transition-opacity duration-500 pointer-events-none"
-                style={{
-                    background: gradient,
-                    opacity: hovered ? 0.18 : 0,
-                    filter: "blur(18px)",
-                    transform: "scale(1.04)",
-                }}
-            />
-
-            {/* Spinning border ring */}
-            <div
-                className="absolute inset-0 rounded-[3.5rem] pointer-events-none transition-opacity duration-300"
-                style={{
-                    padding: "1.5px",
-                    background: hovered ? gradient : "transparent",
-                    opacity: hovered ? 1 : 0,
-                    WebkitMask:
-                        "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                    WebkitMaskComposite: "xor",
-                    maskComposite: "exclude",
-                }}
-            />
-
-            {/* Card content */}
-            <div className="relative z-10 h-full rounded-[3.5rem] overflow-hidden">
+        <div className={`relative rounded-[2.5rem] md:rounded-[3.5rem] group/card transition-transform duration-200 hover:-translate-y-1 ${className ?? ""}`}>
+            <div className="relative z-10 h-full rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden">
                 {children}
             </div>
         </div>
@@ -111,6 +50,13 @@ export default function Explore() {
     const [sortBy, setSortBy] = useState("newest");
     const [filterDomain, setFilterDomain] = useState("all");
     const [xpToast, setXpToast] = useState<{show: boolean, amount: number, text: string}>({show: false, amount: 0, text: ""});
+    const [visibleCount, setVisibleCount] = useState(24);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    // Reset pagination when search query or filter changes
+    useEffect(() => {
+        setVisibleCount(24);
+    }, [searchQuery, filterDomain, sortBy]);
 
     const router = useRouter();
 
@@ -319,6 +265,21 @@ export default function Explore() {
         return result;
     }, [matches, searchQuery, sortBy, filterDomain]);
 
+    // Progressive infinite scrolling for 60/120fps performance
+    useEffect(() => {
+        if (!loadMoreRef.current) return;
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && visibleCount < processedMatches.length) {
+                    setVisibleCount(prev => Math.min(prev + 24, processedMatches.length));
+                }
+            },
+            { rootMargin: "400px" }
+        );
+        observer.observe(loadMoreRef.current);
+        return () => observer.disconnect();
+    }, [visibleCount, processedMatches.length]);
+
     const Skeleton = () => (
         <div className="flex flex-col gap-6 md:gap-10 w-full animate-pulse mt-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
@@ -331,11 +292,6 @@ export default function Explore() {
 
     return (
         <div className="w-full min-h-screen bg-background relative overflow-hidden pb-36 md:pb-24">
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="mesh-orb orb-blue opacity-10 top-[-10%] left-[-10%]" />
-                <div className="mesh-orb orb-pink opacity-5 bottom-[-10%] right-[-10%]" />
-            </div>
-
             <motion.div
                 initial={{ opacity: 0, scale: 0.99 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -458,15 +414,15 @@ export default function Explore() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full">
-                        {processedMatches.map((m, i) => {
+                        {processedMatches.slice(0, visibleCount).map((m, i) => {
                             const matched = isSkillMatch(m);
                             return (
                                 <motion.div
                                     key={m.id}
-                                    initial={{ opacity: 0, y: 30 }}
+                                    initial={{ opacity: 0, y: 15 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: Math.min(i * 0.05, 0.5) }}
-                                    className="h-full"
+                                    transition={{ duration: 0.2, delay: i < 12 ? i * 0.02 : 0 }}
+                                    className="h-full performance-card"
                                 >
                                     <GlowCard className="h-full">
                                         <div className="p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] glass-elite flex flex-col h-full group relative">
@@ -650,6 +606,16 @@ export default function Explore() {
                                 </motion.div>
                             );
                         })}
+                        <div ref={loadMoreRef} className="col-span-full py-8 flex flex-col items-center justify-center">
+                            {visibleCount < processedMatches.length && (
+                                <button
+                                    onClick={() => setVisibleCount(prev => Math.min(prev + 24, processedMatches.length))}
+                                    className="px-6 py-3 rounded-2xl bg-surface border border-border/80 text-xs font-bold text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all active:scale-95 shadow-sm"
+                                >
+                                    Explore More Members ({processedMatches.length - visibleCount} remaining)
+                                </button>
+                            )}
+                        </div>
                     </div>
                 )}
 

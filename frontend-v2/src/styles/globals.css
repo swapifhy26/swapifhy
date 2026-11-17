@@ -80,7 +80,10 @@
 /* HIGH-FIDELITY UTILITIES (COMPACT REFINEMENT) */
 @layer utilities {
     .glass-elite {
-        @apply bg-surface/80 backdrop-blur-[30px] border border-border shadow-lg;
+        @apply bg-surface/90 border border-border/80 shadow-sm;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transform: translateZ(0);
     }
 
     html.dark #sync-btn {
@@ -88,15 +91,15 @@
     }
     
     html.dark .glass-elite {
-        background: hsla(232, 14%, 16%, 0.65);
-        border-color: hsla(210, 20%, 80%, 0.08);
-        box-shadow: 0 4px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 hsla(0, 0%, 100%, 0.06);
+        background: hsla(230, 20%, 16%, 0.90);
+        border-color: hsla(210, 20%, 80%, 0.10);
+        box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4), inset 0 1px 0 hsla(0, 0%, 100%, 0.06);
     }
 
     html.light .glass-elite {
-        background: hsla(0, 0%, 100%, 0.75);
-        border-color: hsla(232, 20%, 12%, 0.10);
-        box-shadow: 0 2px 16px -4px rgba(30, 30, 60, 0.08);
+        background: hsla(0, 0%, 100%, 0.90);
+        border-color: hsla(232, 20%, 12%, 0.08);
+        box-shadow: 0 2px 16px -4px rgba(30, 30, 60, 0.06);
     }
 
     /* .btn-elite {
@@ -163,12 +166,39 @@ html.dark .bg-grid {
 }
 
 /* ==========================================================================
-   SWAPIFHY LIQUID GLASS & MOBILE NATIVE SYSTEM
+   SWAPIFHY LIQUID GLASS & MOBILE NATIVE SYSTEM (ULTRA-SMOOTH 60/120 FPS)
    ========================================================================== */
 
-/* Universal mobile touch tap highlight kill */
+/* Universal mobile touch tap highlight kill & momentum scrolling */
 * {
     -webkit-tap-highlight-color: transparent !important;
+}
+
+html, body {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ambient color background - Zero-cost GPU radial gradients (replaces expensive SVG/CSS blurs) */
+.ambient-bg {
+    background: 
+        radial-gradient(circle 800px at 0% 0%, hsla(189, 45%, 62%, 0.08), transparent 70%),
+        radial-gradient(circle 700px at 100% 100%, hsla(330, 43%, 62%, 0.08), transparent 70%),
+        radial-gradient(circle 600px at 50% 30%, hsla(255, 45%, 88%, 0.06), transparent 70%);
+    contain: strict;
+}
+
+html.dark .ambient-bg {
+    background: 
+        radial-gradient(circle 800px at 0% 0%, hsla(189, 45%, 62%, 0.04), transparent 70%),
+        radial-gradient(circle 700px at 100% 100%, hsla(330, 43%, 62%, 0.04), transparent 70%),
+        radial-gradient(circle 600px at 50% 30%, hsla(255, 45%, 88%, 0.03), transparent 70%);
+    contain: strict;
+}
+
+/* Card virtualization / render performance optimization */
+.performance-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 420px;
 }
 
 /* Safe area insets for iPhone Dynamic Island / Notch and Android Nav bar */
@@ -187,38 +217,44 @@ html.dark .bg-grid {
     padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Liquid Glass Premium Tokens */
+/* Liquid Glass Premium Tokens - Tuned for maximum FPS */
 .glass-liquid {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(24px) saturate(190%);
-    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateZ(0);
 }
 
 html.dark .glass-liquid {
-    background: rgba(15, 23, 42, 0.72);
-    backdrop-filter: blur(24px) saturate(190%);
-    -webkit-backdrop-filter: blur(24px) saturate(190%);
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateZ(0);
 }
 
-/* Frosted floating bottom dock */
+/* Frosted floating bottom dock - Isolated GPU layer */
 .glass-dock {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 12px 35px -5px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateZ(0);
+    contain: paint;
 }
 
 html.dark .glass-dock {
-    background: rgba(15, 23, 42, 0.82);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    background: rgba(15, 23, 42, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transform: translateZ(0);
+    contain: paint;
 }
 
 /* Tactile press effect for buttons and interactive cards */

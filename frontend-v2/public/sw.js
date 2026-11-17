@@ -1,8 +1,9 @@
-const CACHE_NAME = 'swapifhy-v1';
+const CACHE_NAME = 'swapifhy-v2';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
-  '/images/features/swapifhy-logo-DPxPDdg-.png'
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -65,8 +66,8 @@ self.addEventListener('push', function(event) {
     
     const options = {
       body: data.body,
-      icon: data.icon || '/images/features/swapifhy-logo-DPxPDdg-.png',
-      badge: '/images/features/swapifhy-logo-DPxPDdg-.png',
+      icon: data.icon || '/icon-192.png',
+      badge: '/favicon.png',
       vibrate: [80, 40, 80],
       data: { url: data.url || '/explore' }
     };

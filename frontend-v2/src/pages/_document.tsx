@@ -6,12 +6,16 @@ export default function Document() {
             <Head>
                 <meta name="description" content="Learn with people. Not from them. Swapifhy peer skill exchange." />
                 <link rel="manifest" href="/manifest.json" />
-                <meta name="theme-color" content="#4F46E5" />
+                <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+                <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#090d16" />
+                <meta name="theme-color" content="#090d16" />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
                 <meta name="apple-mobile-web-app-title" content="Swapifhy" />
-                <link rel="apple-touch-icon" href="/images/features/swapifhy-logo-DPxPDdg-.png" />
-                <link rel="icon" type="image/png" href="/images/features/swapifhy-logo-DPxPDdg-.png" />
+                <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+                <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+                <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+                <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
                 
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

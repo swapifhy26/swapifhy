@@ -42,6 +42,11 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             document.documentElement.classList.remove('dark');
             document.documentElement.classList.add('light');
         }
+
+        // Dynamically update theme-color so the Android & iOS status bar blends with dark & light theme
+        const themeColor = isDark ? '#090d16' : '#ffffff';
+        const metaTags = document.querySelectorAll('meta[name="theme-color"]');
+        metaTags.forEach(tag => tag.setAttribute('content', themeColor));
     }, [isDark]);
 
     return (

@@ -143,7 +143,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
 
     return (
         <>
-        <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${scrolled ? "bg-surface/80 backdrop-blur-2xl border-b border-border py-4 shadow-xl" : "bg-transparent py-8"}`}>
+        <nav className={`fixed top-0 w-full z-[100] transition-all duration-300 pt-safe ${scrolled ? "bg-surface/90 backdrop-blur-md border-b border-border/80 py-3 md:py-4 shadow-md" : "bg-transparent py-4 md:py-7"}`}>
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-[1.02] group">
                     <img src="/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" className="h-[22px] w-auto drop-shadow-sm dark:brightness-125 transition-transform duration-500 group-hover:rotate-6" />

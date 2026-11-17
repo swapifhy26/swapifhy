@@ -120,13 +120,7 @@ export default function MatchMatrix() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-background relative overflow-hidden flex flex-col p-6 pt-32 pb-36 md:pb-24">
-            {/* Obsidian Elite Background Details */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="mesh-orb orb-blue opacity-10 top-[-10%] left-[-10%]" />
-                <div className="mesh-orb orb-pink opacity-5 bottom-[-10%] right-[-10%]" />
-            </div>
-
+        <div className="w-full min-h-screen bg-background relative overflow-hidden flex flex-col p-6 pt-28 pb-36 md:pb-24">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-7xl mx-auto z-10">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-20">
                     <div>

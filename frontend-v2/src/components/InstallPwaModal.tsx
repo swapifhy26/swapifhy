@@ -58,11 +58,11 @@ export const InstallPwaModal: React.FC<InstallPwaModalProps> = ({
                     {/* Header */}
                     <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-primary p-0.5 shadow-lg shadow-indigo-500/25">
+                            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-black/40 shrink-0 border border-white/10">
                                 <img 
-                                    src="/images/features/swapifhy-logo-DPxPDdg-.png" 
+                                    src="/icon-192.png" 
                                     alt="Swapifhy Logo" 
-                                    className="w-full h-full object-contain rounded-[14px] bg-white p-1"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                             <div>

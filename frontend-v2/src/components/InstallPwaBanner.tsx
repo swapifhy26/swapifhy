@@ -97,11 +97,11 @@ export const InstallPwaBanner: React.FC = () => {
                         className="glass-dock bg-surface/90 dark:bg-slate-900/90 rounded-2xl p-2.5 sm:p-3 shadow-xl border border-white/20 flex items-center justify-between cursor-pointer active-press"
                     >
                         <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-primary p-0.5 shadow-md shrink-0">
+                            <div className="w-9 h-9 rounded-xl overflow-hidden shadow-md shrink-0 border border-white/10">
                                 <img 
-                                    src="/images/features/swapifhy-logo-DPxPDdg-.png" 
+                                    src="/icon-192.png" 
                                     alt="Swapifhy Logo" 
-                                    className="w-full h-full object-contain rounded-[10px] bg-white p-0.5"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                             <div className="min-w-0">

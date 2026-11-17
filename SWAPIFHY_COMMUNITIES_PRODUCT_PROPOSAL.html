@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swapifhy Communities — Product Proposal & RFC (v2.1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #3730A3;
+      --primary-light: #EEF2FF;
+      --accent: #06B6D4;
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .top-banner {
+      height: 6px;
+      background: linear-gradient(90deg, #F43F5E 0%, #8B5CF6 30%, #4F46E5 60%, #06B6D4 100%);
+    }
+
+    .header {
+      padding: 48px 56px 36px 56px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF5FF 100%);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 3px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
+    .brand-name span {
+      color: var(--primary);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .badge-status {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      color: #0F172A;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 17px;
+      color: var(--text-muted);
+      font-weight: 500;
+      max-width: 720px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-item {
+      font-size: 12.5px;
+    }
+
+    .meta-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      font-size: 10.5px;
+    }
+
+    .meta-value {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .content {
+      padding: 48px 56px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin: 40px 0 16px 0;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2:first-of-type {
+      margin-top: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 24px 0 10px 0;
+      color: #1E293B;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .callout {
+      background: #F1F5F9;
+      border-left: 4px solid var(--primary);
+      padding: 18px 22px;
+      border-radius: 0 12px 12px 0;
+      margin: 20px 0;
+      font-size: 14.5px;
+      color: #1E293B;
+    }
+
+    .callout-highlight {
+      background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 100%);
+      border: 1px solid #C7D2FE;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin: 20px 0;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .card-icon {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #0F172A;
+    }
+
+    .card-text {
+      font-size: 13.5px;
+      color: #64748B;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #F8FAFC;
+      color: #475569;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .wireframe-box {
+      background: #0F172A;
+      color: #F8FAFC;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 24px;
+      border-radius: 16px;
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid #334155;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+    }
+
+    .pill-step {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      line-height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .footer {
+      padding: 32px 56px;
+      border-top: 1px solid var(--border);
+      background: #F8FAFC;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .print-btn {
+      background: #0F172A;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .print-btn:hover {
+      background: #1E293B;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+      }
+      .print-btn {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header, .content, .footer {
+        padding: 28px 24px;
+      }
+      .meta-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .title {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-banner"></div>
+
+    <header class="header">
+      <div class="brand-row">
+        <div class="brand">
+          <img src="https://swapifhy.com/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy Logo" class="logo-img">
+          <div class="brand-name">Swap<span>ifhy</span></div>
+        </div>
+        <div class="badge badge-status">🟡 PROPOSAL / READY FOR REVIEW</div>
+      </div>
+
+      <h1 class="title">
+        Next-Gen Learning Communities &amp; <span>Democratic Governance</span>
+      </h1>
+      <p class="subtitle">
+        A comprehensive product specification to 3x Day-30 retention, eliminate the "empty room" cold-start problem, and establish community-led skill exchange hubs.
+      </p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Document Version</div>
+          <div class="meta-value">RFC v2.1.0</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Proposed Target</div>
+          <div class="meta-value">Q3 Platform Release</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Audience</div>
+          <div class="meta-value">Founders &amp; Tech Team</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Primary Metric</div>
+          <div class="meta-value">+300% D-30 Retention</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Section 1: Executive Summary -->
+      <h2>🎯 1. Executive Summary &amp; Thesis</h2>
+      <p>
+        While Swapifhy’s 1-on-1 skill exchange works seamlessly, <strong>pure 1-to-1 matching suffers from high friction and asynchronous drop-off</strong>. After a user finishes onboarding, waiting hours for a peer response makes the platform feel quiet and leads to churn.
+      </p>
+      <div class="callout-highlight">
+        <strong>The Strategic Vision:</strong> Transform Swapifhy from an isolated matchmaking directory into an active network of <strong>specialized learning micro-communities</strong>. Combining the instant communication of WhatsApp, the channel organization of Discord, and a self-governing <strong>Democratic Election Engine</strong> where community members vote for their own leaders.
+      </div>
+
+      <!-- Section 2: Core Architecture -->
+      <h2>🏛️ 2. The Community Room Architecture</h2>
+      <p>
+        Each community (e.g. <em>Founders &amp; Indie Builders</em>, <em>Full-Stack &amp; AI Engineers</em>, <em>UI/UX Designers</em>) features a unified, high-dopamine multi-space hub:
+      </p>
+
+      <div class="wireframe-box">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🚀 FOUNDERS COMMUNITY   [● 64 Online]   Admin: @Aditya (Elected)   [Vote]  │
+├──────────────────────────┬─────────────────────────────────┬────────────────┤
+│ CHANNELS                 │ MAIN INTERACTIVE STAGE          │ COMMUNITY      │
+│                          │                                 │ LEADERBOARD    │
+│ 📢 #announcements        │ 🎙️ Live Audio Stage (Active)    │                │
+│    (Admin Broadcasts)    │    "SaaS MVP Feedback Session"  │ 🥇 @Elena      │
+│                          │    [Join Stage]  [✋ Raise Hand] │ 🥈 @Rahul      │
+│ 💬 #general-discussion   │ ─────────────────────────────── │ 🥉 @Alex       │
+│    (WhatsApp-Style Chat) │                                 │                │
+│                          │ 💬 Real-Time Discussion Stream  │ RECENT SWAPS   │
+│ 🤝 #swap-requests        │    (Typing indicators, voice    │ ⚡ 4 Swaps     │
+│    (Instant SOS Needs)   │     notes, code snippets)       │    Completed   │
+│                          │                                 │    Today       │
+│ 🎯 #bounty-board         │ ─────────────────────────────── │                │
+│    (Mini Challenges)     │                                 │ ONLINE MEMBERS │
+│                          │ 📊 Daily Hot Take Debate:       │ ● Sarah (Figma)│
+│ 📚 #resource-vault       │    "Bootstrapped vs VC in 2026" │ ● Kevin (Node) │
+│    (Top Upvoted Links)   │    [Vote: 62% vs 38%]           │                │
+└──────────────────────────┴─────────────────────────────────┴────────────────┘
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon">📢</div>
+          <div class="card-title">#announcements</div>
+          <p class="card-text">Broadcast-only channel restricted to Super Admins and the Elected Community Admin. Triggers push notifications for events and milestones.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <div class="card-title">#general-discussion</div>
+          <p class="card-text">WhatsApp-speed real-time chat powered by Socket.IO. Supports instant messages, code blocks, voice notes, and image attachments.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">#swap-requests</div>
+          <p class="card-text">Rapid barter board where members post urgent 10-minute needs. 1-click "Accept Swap" immediately establishes private DM sessions.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <div class="card-title">#resource-vault</div>
+          <p class="card-text">Chat messages receiving 5+ ⭐ reactions are automatically filed here to create a permanent, crowd-curated knowledge library.</p>
+        </div>
+      </div>
+
+      <!-- Section 3: Democratic Elections -->
+      <h2>🗳️ 3. Democratic Governance: Community-Led Elections</h2>
+      <p>
+        Instead of requiring the Swapifhy team to manually manage and moderate every group, each community elects its own <strong>Community Leader / Admin</strong> on a rolling 30-day term.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Appointed By</th>
+            <th>Core Permissions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>👑 Super Admin</strong></td>
+            <td>Swapifhy Core Team</td>
+            <td>Global platform control, safety overrides, global ban, community creation.</td>
+          </tr>
+          <tr>
+            <td><strong>⭐ Elected Admin</strong></td>
+            <td>Community Vote (Top Ballot)</td>
+            <td>Post in #announcements, host Live Stages, pin resources, assign moderators.</td>
+          </tr>
+          <tr>
+            <td><strong>🛡️ Moderator</strong></td>
+            <td>Appointed by Admin</td>
+            <td>Delete spam, mute bad actors, curate the Resource Vault.</td>
+          </tr>
+          <tr>
+            <td><strong>👤 Member</strong></td>
+            <td>Open Registration</td>
+            <td>Chat, post swap requests, vote on polls, cast votes during elections.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>The Automated 30-Day Cycle:</strong><br>
+        1. <strong>Day 27:</strong> Nomination window opens. Qualified members submit a 2-sentence manifesto.<br>
+        2. <strong>Day 29–30:</strong> 48-hour election banner appears at the top of the room. Members cast 1 vote.<br>
+        3. <strong>Midnight Day 30:</strong> The winner is announced and admin privileges automatically transfer!
+      </div>
+
+      <!-- Section 4: Interactive Engagement -->
+      <h2>⚡ 4. High-Dopamine Features (Never-Boring Engine)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon">🎙️</div>
+          <div class="card-title">The Live Audio Stage</div>
+          <p class="card-text">1-click drop-in audio lounge (like Discord Stage). The Admin hosts live AMAs while members listen in background tabs or raise hands to speak.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Friday 15-Min Speed Mixer</div>
+          <p class="card-text">Automated virtual mixer that splits online members into 3-minute 1-on-1 audio breakout chats to introduce themselves and exchange skills.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏆</div>
+          <div class="card-title">Community MVP Podium</div>
+          <p class="card-text">Top 3 weekly contributors (answers given, swaps completed) receive Gold/Silver/Bronze badges and a boost on the global explore feed.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Daily Hot Take Polls</div>
+          <p class="card-text">Interactive community debates with live animated percentages and attached debate threads that drive immediate daily logins.</p>
+        </div>
+      </div>
+
+      <!-- Section 5: Technical Feasibility -->
+      <h2>⚙️ 5. Technical Feasibility &amp; Existing Stack</h2>
+      <p>
+        Swapifhy’s existing architecture (Next.js, Node.js/Express, PostgreSQL via Prisma, Socket.IO, Web Push) is already <strong>90% ready</strong> for this implementation. We only need to add three Prisma models (<code>Community</code>, <code>CommunityMember</code>, <code>CommunityMessage</code>) and socket room handlers.
+      </p>
+
+      <!-- Section 6: Key Discussion Questions -->
+      <h2>❓ 6. Agenda Questions for the Team Discussion</h2>
+      <p>During our team review, we should align on these 4 strategic decisions:</p>
+      <div class="callout">
+        <strong>1. Launch Communities:</strong> Should we launch with 4 curated official groups (Founders, Developers, Designers, Language Exchange) before opening custom community creation?<br><br>
+        <strong>2. Election Cadence:</strong> Is a <strong>30-day term</strong> ideal for maximum engagement, or <strong>60 days</strong> for greater continuity?<br><br>
+        <strong>3. Voter Eligibility:</strong> Should voting require email verification + at least 1 completed swap to prevent sockpuppeting?<br><br>
+        <strong>4. Live Stage Rollout:</strong> Should audio rooms be part of Phase 1 or reserved for Phase 2 once text chat engagement is proven?
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      <div>Swapifhy &bull; Product &amp; Engineering Specification</div>
+      <button class="print-btn" onclick="window.print()">🖨️ Print or Save as PDF</button>
+    </footer>
+  </div>
+
+</body>
+</html>

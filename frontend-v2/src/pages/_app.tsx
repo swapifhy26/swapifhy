@@ -19,6 +19,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
+            // Register PWA Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').catch((err) => {
+                    console.log('SW registration skipped:', err);
+                });
+            }
+
             setIsOffline(!navigator.onLine);
             const handleOnline = () => setIsOffline(false);
             const handleOffline = () => setIsOffline(true);

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swapifhy Retention Strategy & Platform Upgrade Proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 14mm 16mm 14mm;
+      @bottom-right {
+        content: counter(page);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 9pt;
+        color: #94A3B8;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #FFFFFF;
+      color: #0F172A;
+      line-height: 1.55;
+      font-size: 10pt;
+    }
+
+    .page {
+      padding: 0;
+      background: #FFFFFF;
+    }
+
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Top Brand Beam */
+    .top-beam {
+      height: 6px;
+      background: linear-gradient(90deg, #F43F5E 0%, #8B5CF6 25%, #4F46E5 50%, #06B6D4 75%, #10B981 100%);
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+
+    /* Cover / Header Section */
+    .cover-card {
+      background: linear-gradient(180deg, #FAF5FF 0%, #F8FAFC 100%);
+      border: 1.5px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 22px;
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-pod {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .logo-pod img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .brand-title {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title span {
+      color: #4F46E5;
+    }
+
+    .badge-doc {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #C7D2FE;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 8.5pt;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .report-title {
+      font-size: 18pt;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #0F172A;
+      letter-spacing: -0.6px;
+      margin-bottom: 8px;
+    }
+
+    .report-title span {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .report-subtitle {
+      font-size: 10.5pt;
+      color: #475569;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .meta-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    .meta-item {
+      font-size: 8.5pt;
+    }
+
+    .meta-lbl {
+      color: #64748B;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 7pt;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .meta-val {
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 12.5pt;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 18px 0 10px 0;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1.5px solid #F1F5F9;
+      padding-bottom: 6px;
+    }
+
+    h3 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1E293B;
+      margin: 12px 0 6px 0;
+    }
+
+    p {
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 9.5pt;
+      line-height: 1.55;
+    }
+
+    /* Stat Highlight Banner */
+    .stat-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #FFFFFF;
+      margin: 14px 0 18px 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 18pt;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #38BDF8;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+
+    .stat-number.warn {
+      color: #F87171;
+    }
+
+    .stat-number.good {
+      color: #34D399;
+    }
+
+    .stat-label {
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94A3B8;
+      font-weight: 600;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px 0;
+      font-size: 8.5pt;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border: 1px solid #E2E8F0;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #F8FAFC;
+      color: #334155;
+      font-weight: 700;
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #FAFAFC;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tag-p1 {
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+
+    .tag-p2 {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    .tag-p3 {
+      background: #E0E7FF;
+      color: #3730A3;
+      border: 1px solid #C7D2FE;
+    }
+
+    .tag-yes {
+      background: #DCFCE7;
+      color: #166534;
+      font-weight: 700;
+    }
+
+    /* Cards Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0 14px 0;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .card-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-desc {
+      font-size: 8.5pt;
+      color: #475569;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Callout Box */
+    .callout {
+      background: #F8FAFC;
+      border-left: 4px solid #4F46E5;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-size: 9pt;
+      color: #1E293B;
+    }
+
+    .callout-purple {
+      background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 100%);
+      border: 1px solid #C7D2FE;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 9pt;
+    }
+
+    /* Wireframe ASCII Block */
+    .wireframe-block {
+      background: #0F172A;
+      color: #E2E8F0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.2pt;
+      line-height: 1.45;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      margin: 10px 0 14px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .signoff-box {
+      border: 1.5px dashed #CBD5E1;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      background: #F8FAFC;
+    }
+
+    .signoff-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .signoff-item {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .signoff-role {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .signoff-line {
+      height: 24px;
+      border-bottom: 1px solid #94A3B8;
+      margin-top: 8px;
+    }
+
+    .footer-stamp {
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #94A3B8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+    <div class="top-beam"></div>
+
+    <div class="cover-card">
+      <div class="brand-row">
+        <div class="brand-box">
+          <div class="logo-pod">
+            <img src="https://swapifhy.com/images/features/swapifhy-logo-DPxPDdg-.png" alt="Swapifhy">
+          </div>
+          <div class="brand-title">Swap<span>ifhy</span></div>
+        </div>
+        <div class="badge-doc">OFFICIAL PROPOSAL &bull; PLATFORM v2.1</div>
+      </div>
+
+      <h1 class="report-title">
+        Retention Strategy &amp; Platform Upgrade: <br>
+        <span>The Implementation &amp; Execution Plan</span>
+      </h1>
+      <p class="report-subtitle">
+        A definitive, evidence-backed strategy addressing onboarding drop-offs, the 10–20 user cold-start dilemma, and building high-retention democratic learning communities.
+      </p>
+
+      <div class="meta-bar">
+        <div class="meta-item">
+          <div class="meta-lbl">Target Audience</div>
+          <div class="meta-val">Founders &amp; Core Dev Team</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-lbl">Document Type</div>
+          <div class="meta-val">RFC &amp; Action Plan</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-lbl">Current Status</div>
+          <div class="meta-val">Pending Final Sign-Off</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-lbl">Target Pilot</div>
+          <div class="meta-val">20–25 Active Members</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Telemetry / Audit -->
+    <h2>📊 1. Live Database Telemetry (The Ground Truth)</h2>
+    <p>
+      An audit of Swapifhy's live PostgreSQL production database provides exact verification of why the platform currently feels quiet. The data confirms the growth team's #1 hypothesis:
+    </p>
+
+    <div class="stat-banner">
+      <div>
+        <div class="stat-number">415</div>
+        <div class="stat-label">Registered Accounts</div>
+      </div>
+      <div>
+        <div class="stat-number warn">8</div>
+        <div class="stat-label">Profiles with Skills (1.9%)</div>
+      </div>
+      <div>
+        <div class="stat-number warn">407</div>
+        <div class="stat-label">Incomplete Ghost Accounts (98.1%)</div>
+      </div>
+      <div>
+        <div class="stat-number good">25</div>
+        <div class="stat-label">Target Pilot Size</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Core Diagnostic Finding:</strong> Swapifhy does <em>not</em> have a traffic generation problem (415 real people joined!). The leak is 100% inside <strong>Activation</strong>: because onboarding historically allowed users to proceed without mandatory skills, <strong>98.1% of accounts currently sit with "Not specified" and "Bio pending update"</strong>. When a new user opens Explore, they see empty cards, assume the platform is broken or abandoned, and churn immediately.
+    </div>
+
+    <!-- Section 2: Product Fixes Matrix -->
+    <h2>🛠️ 2. Comprehensive Product Fixes Matrix (All 9 Addressed)</h2>
+    <p>
+      Every single issue raised in the team's Retention Implementation Plan can be <strong>100% addressed by the development team</strong> with low-to-medium implementation effort.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th width="10%">Priority</th>
+          <th width="28%">Issue Identified</th>
+          <th width="42%">Engineering Fix / Action Plan</th>
+          <th width="10%">Feasibility</th>
+          <th width="10%">Timeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-p1">P1</span></td>
+          <td><strong>Match badges on empty profiles</strong> (cards show 60–78% with "Not specified")</td>
+          <td>Set match score to 0% or hide match badge if either user has no skills listed. Never display artificial match percentages.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 1</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p1">P1</span></td>
+          <td><strong>Empty profiles fill Explore</strong> (new users only see empty cards)</td>
+          <td>Sort &amp; rank algorithm: Float complete profiles (avatar + bio + skills) to the top. Hide or collapse the 407 empty profiles by default.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 1</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p1">P1</span></td>
+          <td><strong>Unclear metrics &amp; test data</strong> (0 active users vs streaks; 5 test swaps)</td>
+          <td>Add <code>isTest: Boolean</code> tag to test records in DB. Define "Active User" strictly as user active within the last 7 days. Exclude test records from dashboards.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 1</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p2">P2</span></td>
+          <td><strong>No clear next step after onboarding</strong> (screen celebration, then silence)</td>
+          <td>Implement an interactive <strong>3-Step Checklist &amp; Tour</strong>: (1) Add 1-line bio &amp; photo, (2) View top 3 matches, (3) Send 1st swap request.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 2</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p2">P2</span></td>
+          <td><strong>Free text skills prevent matching</strong> ("UI" vs "UI/UX Design")</td>
+          <td>Standardized skill chips + autocomplete during onboarding. Add backend alias normalization mapping common terms.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 2</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p2">P2</span></td>
+          <td><strong>XP rewards logins, not swaps</strong> (streak active while swaps are 0)</td>
+          <td>Rebalance XP: +100 XP for completed swap, +25 XP for swap proposal, +5 XP for login. Put "Complete 1st Swap" as #1 hero quest on <code>/progress</code>.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 3</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p3">P3</span></td>
+          <td><strong>Push prompt appears before value</strong> ("Never miss a match" at signup)</td>
+          <td>Move Web Push permission prompt to a contextual moment: trigger <em>after</em> sending or receiving a swap request ("Get notified when they reply?").</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 3</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p3">P3</span></td>
+          <td><strong>Chat safety notice feels intimidating</strong> (legalistic recording warnings)</td>
+          <td>Replace warning with a warm community trust banner + 3 one-tap icebreakers: <em>"Hey! Want to do a 15-min intro swap?", "How's your learning going?"</em>.</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 3</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-p3">P3</span></td>
+          <td><strong>No visible way to confirm swap completion</strong></td>
+          <td>Two-sided confirmation modal + <strong>Proof of Swap:</strong> Allow users to post a meeting screenshot / camera selfie with a caption that auto-publishes to Feed!</td>
+          <td><span class="tag tag-yes">100%</span></td>
+          <td>Day 4</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer-stamp">
+      <div>Swapifhy Technologies &bull; Confidential &bull; For Internal Team Review</div>
+      <div>Page 1 of 3</div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div class="top-beam"></div>
+
+    <h2>🧩 3. Solving the Real-World "10–20 User Cold-Start" Dilemma</h2>
+    <p>
+      <strong>The Problem:</strong> Even after filtering out empty cards, displaying only 15–20 active users on a global explore page makes users feel: <em>"This app doesn't have enough users, it's a ghost town."</em>
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">1. Rebrand as "Founding Alpha Cohort #1"</div>
+        <p class="card-desc">
+          Shift perception from <em>"an empty public marketplace"</em> to an <strong>exclusive, hand-picked private club</strong>. Show a progress bar: <em>"21/25 Spots Filled in Founding Cohort #1"</em>. Users feel privileged to be early pioneers.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2. Curated "Top 3 Daily Matches" Drop</div>
+        <p class="card-desc">
+          Never display a flat global directory that ends in 2 scrolls. Follow Hinge's model: present <strong>3 high-synergy personalized matches per day</strong> with a countdown timer. Users care about relevance, not total count.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3. Divide into Niche "Learning Pods"</div>
+        <p class="card-desc">
+          20 users in a giant directory looks tiny. But 20 users split into 3 focused circles (<em>Founders Guild: 7</em>, <em>Web Dev: 8</em>, <em>UI/UX: 5</em>) feels intimate, buzzing, and organized.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4. Awaken the 407 Sleeping Accounts</div>
+        <p class="card-desc">
+          When the 407 users log in via our new email invite, present a mandatory 1-step modal: <em>"Pick 2 skills to unlock your founding access"</em>. Converting just 20% immediately yields 80+ rich profiles!
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">5. Platform Momentum &amp; Activity Ticker</div>
+        <p class="card-desc">
+          Add an active pulse banner: <em>"⚡ Aditya &amp; Priya completed a 45-min Python swap" &bull; "🔥 415 Founding Waitlist Members"</em>. Activity and movement create trust.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">6. Hand-Curate 20 Pioneer Spotlights</div>
+        <p class="card-desc">
+          Ensure the 20 visible pilot users have 10/10 profiles: real photos, sharp 1-line bios, and high-demand skills. High quality beats thousands of dead profiles every single time.
+        </p>
+      </div>
+    </div>
+
+    <!-- Section 4: Communities & Governance -->
+    <h2>🏛️ 4. The Retention Multiplier: Swapifhy Communities &amp; Democratic Hubs</h2>
+    <p>
+      To transition Swapifhy from high-friction 1-on-1 waiting into an active daily habit, we propose introducing <strong>Swapifhy Communities</strong> (`/communities`) with democratic community-elected leadership.
+    </p>
+
+    <div class="wireframe-block">
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🚀 FOUNDERS COMMUNITY   [● 64 Online]   Admin: @Aditya (Elected)   [Vote]  │
+├──────────────────────────┬─────────────────────────────────┬────────────────┤
+│ CHANNELS                 │ MAIN INTERACTIVE STAGE          │ COMMUNITY      │
+│                          │                                 │ LEADERBOARD    │
+│ 📢 #announcements        │ 🎙️ Live Audio Stage (Active)    │                │
+│    (Admin Broadcasts)    │    "SaaS MVP Feedback Session"  │ 🥇 @Elena      │
+│                          │    [Join Stage]  [✋ Raise Hand] │ 🥈 @Rahul      │
+│ 💬 #general-discussion   │ ─────────────────────────────── │ 🥉 @Alex       │
+│    (WhatsApp-Style Chat) │                                 │                │
+│                          │ 💬 Real-Time Discussion Stream  │ RECENT SWAPS   │
+│ 🤝 #swap-requests        │    (Typing indicators, voice    │ ⚡ 4 Swaps     │
+│    (Instant SOS Needs)   │     notes, code snippets)       │    Completed   │
+│                          │                                 │    Today       │
+│ 🎯 #bounty-board         │ ─────────────────────────────── │                │
+│    (Mini Challenges)     │                                 │ ONLINE MEMBERS │
+│                          │ 📊 Daily Hot Take Debate:       │ ● Sarah (Figma)│
+│ 📚 #resource-vault       │    "Bootstrapped vs VC in 2026" │ ● Kevin (Node) │
+│    (Top Upvoted Links)   │    [Vote: 62% vs 38%]           │                │
+└──────────────────────────┴─────────────────────────────────┴────────────────┘
+    </div>
+
+    <div class="callout-purple">
+      <strong>Democratic 30-Day Governance Model:</strong>
+      <ul style="margin-left: 20px; margin-top: 4px;">
+        <li><strong>👑 Super Admin (Swapifhy Core Team):</strong> Global platform safety, veto power, global moderation.</li>
+        <li><strong>⭐ Elected Admin (Voted Community Member):</strong> 30-day term. Hosts live stages, pins announcements, organizes weekly meetups.</li>
+        <li><strong>🛡️ Moderators:</strong> Appointed by the Admin to curate resources and keep chats clean.</li>
+        <li><strong>Automated Ballot:</strong> Every 30 days, candidates submit a 2-sentence manifesto; members vote via a 48-hour in-app ballot.</li>
+      </ul>
+    </div>
+
+    <div class="footer-stamp">
+      <div>Swapifhy Technologies &bull; Confidential &bull; For Internal Team Review</div>
+      <div>Page 2 of 3</div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 3 ==================== -->
+  <div class="page">
+    <div class="top-beam"></div>
+
+    <h2>🚀 5. Phased Implementation Roadmap</h2>
+    <p>
+      A disciplined 3-phase rollout ensuring we validate the core loop with the 20–25 member pilot before rolling out wider automations:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Timeline</th>
+          <th>Core Deliverables</th>
+          <th>Target Success Gate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1: Pilot Foundation &amp; Cleanup</strong></td>
+          <td>Days 1–3</td>
+          <td>
+            &bull; Implement Fixes 1, 2, 3 (hide match on empty profiles, rank complete profiles first).<br>
+            &bull; Add 3-Step Guided Checklist after onboarding.<br>
+            &bull; Soften chat notice + add 3 conversation starters.
+          </td>
+          <td>Explore displays only rich, credible profiles. Zero fake match badges.</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2: Activation &amp; Proof of Swap</strong></td>
+          <td>Days 4–7</td>
+          <td>
+            &bull; Deploy "Proof of Swap" meeting cam selfie / screenshot upload.<br>
+            &bull; Mandatory 1-step skill completion for returning 407 users.<br>
+            &bull; Launch email campaign to 20–25 pilot members with access pass.
+          </td>
+          <td>100% of pilot group have complete profiles; 3 verified swaps completed.</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3: Communities &amp; Voting Hub</strong></td>
+          <td>Week 2–3</td>
+          <td>
+            &bull; Launch <code>/communities</code> with 3 initial pods (Founders, Devs, Designers).<br>
+            &bull; Deploy #announcements and #general-chat channels.<br>
+            &bull; Deploy automated 30-day Admin Election Engine.
+          </td>
+          <td>D-30 retention increases from baseline ~12% to &gt; 35%.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Executive Sign-Off Section -->
+    <h2>✍️ 6. Executive Sign-Off &amp; Approval</h2>
+    <p>
+      By signing below, the Swapifhy leadership approves moving this specification into active code execution for Phase 1.
+    </p>
+
+    <div class="signoff-box">
+      <p style="font-weight: 700; color: #0F172A; margin-bottom: 6px;">
+        APPROVAL CHECKLIST:
+      </p>
+      <div style="font-size: 8.5pt; color: #475569; line-height: 1.6;">
+        ☑️ <strong>Priority 1 Fixes Approved:</strong> Suppress match badges on empty profiles; rank complete profiles first.<br>
+        ☑️ <strong>Pilot Target Confirmed:</strong> Focus on 20–25 pilot members first; verify 3 completed swaps before wider release.<br>
+        ☑️ <strong>Proof-of-Swap Feature Approved:</strong> Allow users to share meeting camera screenshots on the feed.<br>
+        ☑️ <strong>Community Hub Architecture Approved:</strong> Authorize Phase 3 development of <code>/communities</code>.
+      </div>
+
+      <div class="signoff-grid">
+        <div class="signoff-item">
+          <div class="signoff-role">Founder / Product Lead</div>
+          <div class="signoff-line"></div>
+          <div style="font-size: 7.5pt; color: #64748B; margin-top: 4px;">Anwesha / Executive Team</div>
+        </div>
+        <div class="signoff-item">
+          <div class="signoff-role">Lead Developer / Tech Lead</div>
+          <div class="signoff-line"></div>
+          <div style="font-size: 7.5pt; color: #64748B; margin-top: 4px;">Engineering Lead</div>
+        </div>
+        <div class="signoff-item">
+          <div class="signoff-role">Growth &amp; Community Operations</div>
+          <div class="signoff-line"></div>
+          <div style="font-size: 7.5pt; color: #64748B; margin-top: 4px;">Aditya / Pilot Lead</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-stamp">
+      <div>Swapifhy Technologies &bull; Confidential &bull; For Internal Team Review</div>
+      <div>Page 3 of 3</div>
+    </div>
+  </div>
+
+</body>
+</html>

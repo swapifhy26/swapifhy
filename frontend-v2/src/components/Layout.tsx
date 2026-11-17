@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { Loader } from './ui/Loader';
 import { ChatListPanel } from './ChatListPanel';
 import { ChatPanel } from './ChatPanel';
+import { InstallPwaBanner } from './InstallPwaBanner';
 
 // Pages that manage their own full-page layout (no global navbar)
 const STANDALONE_ROUTES = ['/auth', '/onboarding'];
@@ -67,6 +68,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 {/* Ultra-soft Radial glow 3 - Center */}
                 <div className="absolute top-[25%] left-[25%] w-[50vw] h-[50vw] rounded-full bg-secondary/10 dark:bg-secondary/[0.03] blur-[180px] transform-gpu" style={{ animationDelay: '4s' }}></div>
             </div>
+
+            {/* Mobile PWA Install Glass Banner */}
+            <InstallPwaBanner />
 
             {/* Global navbar — hidden on standalone pages like /auth */}
             {!isStandalone && <Navbar isDark={isDark} setIsDark={setIsDark} toggleChatList={() => setIsChatListOpen(!isChatListOpen)} />}

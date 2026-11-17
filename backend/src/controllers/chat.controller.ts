@@ -127,7 +127,7 @@ export const initiateSync = async (req: AuthRequest, res: Response): Promise<voi
                 data: {
                     swapId: swap.id,
                     senderId: "SYSTEM",
-                    content: "Swap started! You can now message and share contact info. Please note: Every message is recorded. Chat appropriately. Violations hindering women's safety will be reported to authorities.",
+                    content: "👋 Swap started! Welcome to your learning space. Please keep conversations friendly, respectful, and safe for everyone. Happy skill swapping!",
                     type: "TEXT"
                 }
             });

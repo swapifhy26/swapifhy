@@ -24,7 +24,8 @@ interface Message {
 interface ChatPanelProps {
     swapId: string;
     onClose: () => void;
-    }
+    currentUserId?: string;
+}
 
 const cleanJargon = (text: string) => {
     if (!text) return text;

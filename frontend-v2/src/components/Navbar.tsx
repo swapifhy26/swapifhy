@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { LogOut, User, Users, Compass, Zap, MessageSquare, Bell, HelpCircle } from "lucide-react"; // Added Bell icon
 import { motion, AnimatePresence } from "framer-motion";
 import { API_URL } from "../lib/api";
+import { haptic } from "../lib/haptics";
 
 
 
@@ -155,7 +156,7 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
                             <Link href="/progress" className={`${router.pathname === "/progress" ? "text-primary" : "text-muted-foreground hover:text-foreground"} transition-all duration-300 relative after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-primary hover:after:scale-x-100 after:origin-bottom-right hover:after:origin-bottom-left after:transition-transform after:duration-300`}>Progress</Link>
                             <Link href="/matches" className={`${router.pathname === "/matches" ? "text-primary" : "text-muted-foreground hover:text-foreground"} transition-all duration-300 relative after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-primary hover:after:scale-x-100 after:origin-bottom-right hover:after:origin-bottom-left after:transition-transform after:duration-300`}>Matches</Link>
                             <button 
-                                onClick={toggleChatList}
+                                onClick={() => { haptic.light(); toggleChatList(); }}
                                 className="text-muted-foreground hover:text-primary transition-all duration-300 flex items-center gap-2 relative group"
                             >
                                 <MessageSquare className="w-4.5 h-4.5" />
@@ -319,11 +320,11 @@ export default function Navbar({ isDark, setIsDark, toggleChatList }: { isDark: 
         
         {/* MOBILE BOTTOM NAVIGATION (GLASSMORPHIC PILL) */}
         {userName && (
-            <div className="md:hidden fixed bottom-6 left-4 right-4 z-[100]">
-                <div className="flex items-center justify-between px-2 py-2 glass-elite bg-surface/85 backdrop-blur-2xl border border-border/40 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] transition-all duration-300">
+            <div className="md:hidden fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-3 right-3 z-[100]">
+                <div className="flex items-center justify-between px-2 py-2 glass-dock rounded-[2.2rem] shadow-2xl transition-all duration-300">
                     
                     <button 
-                        onClick={toggleChatList}
+                        onClick={() => { haptic.light(); toggleChatList(); }}
                         className="relative flex flex-col items-center justify-center w-[52px] h-[52px] rounded-full transition-all duration-300 active:scale-95 hover:bg-foreground/5"
                     >
                         <MessageSquare className="w-[22px] h-[22px] text-muted-foreground" />

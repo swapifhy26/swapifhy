@@ -1,0 +1,43 @@
+{
+  "name": "Swapifhy — Peer Skill Exchange",
+  "short_name": "Swapifhy",
+  "description": "Learn with people. Not from them. The peer-to-peer modern skill exchange platform.",
+  "start_url": "/explore",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8FAFC",
+  "theme_color": "#4F46E5",
+  "categories": ["education", "social", "productivity"],
+  "icons": [
+    {
+      "src": "/images/features/swapifhy-logo-DPxPDdg-.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/features/swapifhy-logo-DPxPDdg-.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Swappers",
+      "url": "/explore",
+      "description": "Find recommended peer skill matches"
+    },
+    {
+      "name": "My Matches",
+      "url": "/matches",
+      "description": "View your skill synergy matches"
+    },
+    {
+      "name": "Feed",
+      "url": "/feed",
+      "description": "Community learning feed"
+    }
+  ]
+}

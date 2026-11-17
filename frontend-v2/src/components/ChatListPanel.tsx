@@ -12,12 +12,13 @@ interface Conversation {
     lastMessage: string;
     status: string;
     updatedAt: string;
+    unreadCount?: number;
 }
 
 interface ChatListPanelProps {
     onClose: () => void;
     onSelectChat: (swapId: string) => void;
-    currentUserId: string;
+    currentUserId?: string;
 }
 
 const cleanJargon = (text: string) => {

@@ -162,21 +162,24 @@ export default function Explore() {
         const theirTeaching = (m.teaching || []).map((s: string) => s.toLowerCase());
         const theirLearning = (m.learning || []).map((s: string) => s.toLowerCase());
         
+        // Suppress match calculation if either user has not added skills
+        if (theirTeaching.length === 0 && theirLearning.length === 0) return 0;
+        if (myTeaching.length === 0 && myLearning.length === 0) return 0;
+
         let overlapTeach = myLearning.filter(s => theirTeaching.includes(s)).length;
         let overlapLearn = myTeaching.filter(s => theirLearning.includes(s)).length;
         const totalOverlap = overlapTeach + overlapLearn;
         
-        // Deterministic base score based on ID string
+        if (totalOverlap === 0) return 0;
+        
         let hash = 0;
         for (let i = 0; i < m.id.length; i++) {
             hash += m.id.charCodeAt(i);
         }
         
-        const baseScore = 60 + (hash % 20); // 60-79
-        
-        let finalScore = baseScore;
-        if (totalOverlap === 1) finalScore = 85 + (hash % 10); // 85-94
-        if (totalOverlap >= 2) finalScore = 95 + (hash % 5);   // 95-99
+        let finalScore = 75 + (hash % 10);
+        if (totalOverlap === 1) finalScore = 85 + (hash % 10);
+        if (totalOverlap >= 2) finalScore = 95 + (hash % 5);
         
         return finalScore;
     };
@@ -185,8 +188,8 @@ export default function Explore() {
         if (myTeaching.length === 0 && myLearning.length === 0) return false;
         const theirTeaching = (m.teaching || []).map((s: string) => s.toLowerCase());
         const theirLearning = (m.learning || []).map((s: string) => s.toLowerCase());
-        const theyTeachWhatILearn = theirTeaching.some(s => myLearning.includes(s));
-        const theyLearnWhatITeach = theirLearning.some(s => myTeaching.includes(s));
+        const theyTeachWhatILearn = theirTeaching.some((s: string) => myLearning.includes(s));
+        const theyLearnWhatITeach = theirLearning.some((s: string) => myTeaching.includes(s));
         return theyTeachWhatILearn || theyLearnWhatITeach;
     };
 
@@ -299,9 +302,20 @@ export default function Explore() {
                 return all.some(t => t.includes(filterDomain));
             });
         }
-        if (sortBy === "reputation") result.sort((a, b) => (b.reputation ?? 0) - (a.reputation ?? 0));
-        else if (sortBy === "newest") result.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-        else if (sortBy === "most_skills") result.sort((a, b) => ((b.teaching?.length ?? 0) + (b.learning?.length ?? 0)) - ((a.teaching?.length ?? 0) + (a.learning?.length ?? 0)));
+        result.sort((a, b) => {
+            const aSkills = (a.teaching?.length || 0) + (a.learning?.length || 0);
+            const bSkills = (b.teaching?.length || 0) + (b.learning?.length || 0);
+            const aHasBio = a.bio && a.bio !== 'Bio pending update' && a.bio.trim() !== '';
+            const bHasBio = b.bio && b.bio !== 'Bio pending update' && b.bio.trim() !== '';
+
+            const aWeight = (aSkills > 0 ? 10 : 0) + (aHasBio ? 5 : 0);
+            const bWeight = (bSkills > 0 ? 10 : 0) + (bHasBio ? 5 : 0);
+
+            if (aWeight !== bWeight) return bWeight - aWeight; // Complete profiles first!
+            if (sortBy === "reputation") return (b.reputation ?? 0) - (a.reputation ?? 0);
+            if (sortBy === "most_skills") return bSkills - aSkills;
+            return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        });
         return result;
     }, [matches, searchQuery, sortBy, filterDomain]);
 
@@ -462,6 +476,7 @@ export default function Explore() {
                                             {/* 🔥 {/* Match Compatibility Score Pill */}
                                             {(() => {
                                                 const matchScore = calculateMatchScore(m);
+                                                if (!matchScore || matchScore <= 0) return null;
                                                 const isHighMatch = matchScore >= 85;
                                                 
                                                 // High Match Styling (Fire)
